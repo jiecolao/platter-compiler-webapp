@@ -1,0 +1,11 @@
+<svg width="1130" height="510" viewBox="0 0 1130 510" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M189 6H189.5" stroke="#EDEDED" stroke-width="5"/>
+<path d="M134.5 6H16C10.4772 6 6 10.4772 6 16V489C6 494.523 10.4772 499 16 499H1113C1118.52 499 1123 494.523 1123 489V16C1123 10.4772 1118.52 6 1113 6H478" stroke="#EDEDED" stroke-width="5"/>
+<path d="M114.224 27H32C26.4772 27 22 31.4772 22 37V470C22 475.523 26.4771 480 32 480H1095C1100.52 480 1105 475.523 1105 470V37C1105 31.4772 1100.52 27 1095 27H504.789" stroke="#EDEDED" stroke-width="5" stroke-linecap="round"/>
+<path d="M391 6H423.5" stroke="#EDEDED" stroke-width="5"/>
+<path d="M189.5 6H336.5" stroke="#EDEDED" stroke-width="5"/>
+<path d="M191.5 8C190.543 21.949 177.997 33 162 33C146.318 33 133.402 21.5598 132 8" stroke="#EDEDED" stroke-width="5"/>
+<path d="M393.5 8C392.543 21.949 379.997 33 364 33C348.318 33 335.402 21.5598 334 8" stroke="#EDEDED" stroke-width="5"/>
+<path d="M480.5 8C479.543 21.949 466.997 33 451 33C435.318 33 422.402 21.5598 421 8" stroke="#EDEDED" stroke-width="5"/>
+<line x1="206.5" y1="26.5" x2="318.503" y2="26.5" stroke="#EDEDED" stroke-width="5" stroke-linecap="round"/>
+</svg>

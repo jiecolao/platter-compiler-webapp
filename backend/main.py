@@ -42,7 +42,3 @@ async def analyze_code(input_data: CodeInput):
         return {"tokens": tokens, "success": True}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Lexical analysis failed: {str(e)}")
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}

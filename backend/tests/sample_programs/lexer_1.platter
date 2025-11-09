@@ -1,16 +1,15 @@
-
 piece of y = 3;
 piece of z = 10;
 piece[] of adas = [1,  2];
 
 chars[] of name = "?%%adkala";
 
-table of something = [
+table of Something = [
     piece of shit;
     piece of meat;
     pieces[] of another;
 ];
-somethings[] of ooo = [
+Something[] of ooo = [
     [
         shit = 1;
     ],

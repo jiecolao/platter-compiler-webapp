@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from app.core.lexer import Lexer
+from app.lexer.lexer import Lexer
 
 app = FastAPI()
 
@@ -26,10 +26,10 @@ async def analyze_code(input_data: CodeInput):
     """Analyze Platter code and return lexemes"""
     try:
         lexer = Lexer(input_data.code)
+        tokenize = lexer.tokenize()
         tokens = []
         
-        while True:
-            token = lexer.get_next_token()
+        for token in tokenize:
             if token is None:
                 break
             tokens.append({

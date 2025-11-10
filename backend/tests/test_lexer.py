@@ -3,7 +3,7 @@ import os
 from pprint import pformat
 from app.lexer.lexer import Lexer
 
-SAMPLES_DIR = "./tests/sample_programs/"
+SAMPLES_DIR = "./tests/lexer_programs/"
 
 class TestPlatterLexerStrings(unittest.TestCase):
 
@@ -30,12 +30,12 @@ class TestPlatterLexerStrings(unittest.TestCase):
 
     string_tests = [
         {
-            "code": 'piece of x = 5;',
-            "expected_types": ["piece", "of", "id", "=", "piece_lit", ";"],
-        },
-        {
             "code": 'piece;',
             "expected_types": ["Invalid Lexeme", "Invalid Character"],
+        },
+        {
+            "code": 'piece of x = 5;',
+            "expected_types": ["piece", "of", "id", "=", "piece_lit", ";"],
         },
         {
             "code": 'piece&',
@@ -49,6 +49,29 @@ class TestPlatterLexerStrings(unittest.TestCase):
             "code": '12',
             "expected_types": ["piece_lit"],
         },
+        {
+            "code": 'copy = piece_lit;',
+            "expected_types": ["copy", "=", "id", ";"],
+        },
+        {
+            "code": 'a = b ** c;',
+            "expected_types": ["id", "=", "id", "Invalid Lexeme", "Invalid Character", "id", ";"],
+        },
+        {
+            "code": '#notacomment;',
+            "expected_types": ["Invalid Lexeme", "Invalid Character", "id", ";"],
+        },
+        {
+            "code": """m{
+n}
+o"
+""",
+            "expected_types": ["Invalid Lexeme", "Invalid Character", "Invalid Lexeme", "Invalid Character","Invalid Lexeme", "Invalid Character"],
+        },
+        {
+            "code": 'B# ',
+            "expected_types": ["id", "comment_single"],
+        },
     ]
 
     def test_strings(self):
@@ -57,7 +80,7 @@ class TestPlatterLexerStrings(unittest.TestCase):
                 lexer = Lexer(case["code"])
                 tokens = [t for t in lexer.tokenize() if t.type not in ("comment", "space", "newline", "tab")]
                 actual_types = [t.type for t in tokens]
-                self.assertEqual(actual_types, case["expected_types"])
+                self.assertEqual(actual_types, case["expected_types"], msg=f"\nFAILED ON CODE:\n----------\n{case['code']}\n----------")
 
 
 if __name__ == "__main__":

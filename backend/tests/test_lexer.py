@@ -1,18 +1,64 @@
-
-from pprint import pprint
+import unittest
 import os
-print(os.getcwd())
-
+from pprint import pformat
 from app.lexer.lexer import Lexer
 
-includeWhitespace = False
-with open("./tests/sample_programs/lexer_2.platter", "r", encoding="utf-8") as f:
-    source = f.read()
+SAMPLES_DIR = "./tests/sample_programs/"
 
-lexer = Lexer(source)
-tokens = lexer.tokenize()
+class TestPlatterLexerStrings(unittest.TestCase):
 
-if not includeWhitespace: tokens = [n for n in tokens if n.type not in ("space", "newline", "tab")]
+    def test_all_files(self):
+        self.maxDiff = None
+        platter_files = [f for f in os.listdir(SAMPLES_DIR) if f.endswith(".platter")]
+        for pf in platter_files:
+            with self.subTest(platter_file=pf):
+                filepath = os.path.join(SAMPLES_DIR, pf)
+                with open(filepath, "r", encoding="utf-8") as f:
+                    source = f.read()
+                lexer = Lexer(source)
+                tokens = "\n".join(t.type for t in lexer.tokenize())
 
-print("\n\nTOKENS:")
-pprint(tokens, indent=4, width=80)
+                output_file = pf.replace(".platter", ".output")
+                output_path = os.path.join(SAMPLES_DIR, output_file)
+                if not os.path.exists(output_path):
+                    self.fail(f"Missing output file for {pf}")
+
+                with open(output_path, "r", encoding="utf-8") as f:
+                    expected = f.read().strip()
+
+                self.assertEqual(tokens, expected)
+
+    string_tests = [
+        {
+            "code": 'piece of x = 5;',
+            "expected_types": ["piece", "of", "id", "=", "piece_lit", ";"],
+        },
+        {
+            "code": 'piece;',
+            "expected_types": ["Invalid Lexeme", "Invalid Character"],
+        },
+        {
+            "code": 'piece&',
+            "expected_types": ["Invalid Lexeme", "Invalid Character"],
+        },
+        {
+            "code": 'piece_',
+            "expected_types": ["id"],
+        },
+        {
+            "code": '12',
+            "expected_types": ["piece_lit"],
+        },
+    ]
+
+    def test_strings(self):
+        for i, case in enumerate(self.string_tests, 1):
+            with self.subTest(case=i):
+                lexer = Lexer(case["code"])
+                tokens = [t for t in lexer.tokenize() if t.type not in ("comment", "space", "newline", "tab")]
+                actual_types = [t.type for t in tokens]
+                self.assertEqual(actual_types, case["expected_types"])
+
+
+if __name__ == "__main__":
+    unittest.main()

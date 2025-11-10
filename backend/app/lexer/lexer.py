@@ -135,7 +135,10 @@ class Lexer(LexerBase, LexerKeywords, LexerOperators, LexerIdentifier, LexerChar
         while self.current is not None:
             tok = self.s0()
             if tok:
-                tokens.append(tok)
+                if isinstance(tok, list):
+                    tokens.extend(tok)
+                else:
+                    tokens.append(tok)
             else:
                 break
         return tokens

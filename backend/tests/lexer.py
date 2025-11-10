@@ -7,7 +7,7 @@ def set_clipboard(text: str):
     subprocess.run("clip", universal_newlines=True, input=text)
 
 
-samples_dir = "./tests/sample_programs/"
+samples_dir = "./tests/lexer_programs/"
 
 choice = input("Include whitespace tokens (y/n)? ").lower().strip()
 include_whitespace = choice == 'y'

@@ -62,3 +62,7 @@ export async function saveContent(content: string, suggestedName = 'program.plat
   URL.revokeObjectURL(url);
   return `Downloaded ${suggestedName}`;
 }
+
+export async function copyToClipboard(content: string): Promise<void> {
+  await navigator.clipboard.writeText(content);
+}

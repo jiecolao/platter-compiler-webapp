@@ -31,7 +31,13 @@
 	} from '$lib';
 
 	import { onMount, onDestroy } from 'svelte';
-	import { loadScript, loadCSS, readFileAsText, saveContent } from '$lib/utils/browser';
+	import {
+		loadScript,
+		loadCSS,
+		readFileAsText,
+		saveContent,
+		copyToClipboard
+	} from '$lib/utils/browser';
 
 	let theme: 'dark' | 'light' = 'dark';
 	let activeTab: 'lexical' | 'syntax' | 'semantic' = 'lexical';
@@ -149,7 +155,7 @@ serve piece of start() {
 
 	async function analyzeLexical() {
 		activeTab = 'lexical';
-		if (!codeInput.trim()) {
+		if (!codeInput) {
 			setTerminalError('Editor is empty');
 			return;
 		}
@@ -164,27 +170,80 @@ serve piece of start() {
 			const data = (await res.json()) as { success: boolean; tokens: Token[] };
 			// receive tokens and separate unknown/error tokens into the terminal
 			const received = data.tokens ?? [];
-			// treat tokens with type starting with 'invalid' (case-insensitive) as lexical errors
+			// treat tokens with type starting with 'invalid' or 'exceeds' (case-insensitive) as lexical errors
 			const invalidTokens = received.filter(
-				(t) => typeof t.type === 'string' && t.type.toLowerCase().startsWith('invalid')
+				(t) =>
+					typeof t.type === 'string' &&
+					(t.type.toLowerCase().startsWith('invalid') || t.type.toLowerCase().startsWith('exceeds'))
 			);
-			// tokens to show in the lexer table (exclude invalids)
+			// tokens to show in the lexer table (exclude invalids and exceeds)
 			tokens = received.filter(
-				(t) => !(typeof t.type === 'string' && t.type.toLowerCase().startsWith('invalid'))
+				(t) =>
+					!(
+						typeof t.type === 'string' &&
+						(t.type.toLowerCase().startsWith('invalid') ||
+							t.type.toLowerCase().startsWith('exceeds'))
+					)
 			);
 
 			// update right table
 			lexerRows.length = 0;
-			for (const t of tokens) {
-				lexerRows.push({ lexeme: t.value ?? '', token: t.type });
+			// Group consecutive spaces, newlines, and tabs
+			let i = 0;
+			while (i < tokens.length) {
+				const t = tokens[i];
+				const tokenType = t.type.toLowerCase();
+
+				// Check if this is a space, newline, or tab token
+				if (tokenType === 'space' || tokenType === 'newline' || tokenType === 'tab') {
+					let count = 1;
+					// Count consecutive identical tokens
+					while (i + count < tokens.length && tokens[i + count].type.toLowerCase() === tokenType) {
+						count++;
+					}
+					// Add a single row with count if more than 1
+					const displayToken = count > 1 ? `${t.type} (${count})` : t.type;
+					lexerRows.push({ lexeme: t.value ?? '', token: displayToken });
+					i += count;
+				} else {
+					// Regular token, add as-is
+					lexerRows.push({ lexeme: t.value ?? '', token: t.type });
+					i++;
+				}
 			}
 
 			if (invalidTokens.length) {
-				// move invalid tokens into the terminal as individual error messages
-				termMessages = invalidTokens.map((u) => ({
-					icon: errorIcon,
-					text: `Lexical error: line ${u.line} col ${u.col} - invalid character ${u.value}`
-				}));
+				// Combine consecutive invalid lexeme + invalid character into single error
+				const combinedErrors: TermMsg[] = [];
+				let i = 0;
+
+				while (i < invalidTokens.length) {
+					const current = invalidTokens[i];
+					const next = invalidTokens[i + 1];
+
+					// Check if current is Invalid Identifier and next is Invalid Character on same line
+					const isInvalidIdentifier = current.type === 'Invalid Identifier';
+					const isNextInvalidChar = next && next.type === 'Invalid Character';
+					const sameLine = next && current.line === next.line;
+
+					if (isInvalidIdentifier && isNextInvalidChar && sameLine) {
+						// Combine into single error message
+						combinedErrors.push({
+							icon: errorIcon,
+							text: `Error at line ${current.line} col ${current.col} - invalid lexeme <${current.value}${next.value}>`
+						});
+						i += 2; // Skip both tokens
+					} else {
+						// Regular error message
+						combinedErrors.push({
+							icon: errorIcon,
+							text: `Error at line ${current.line} col ${current.col} - ${current.type}: ${current.value}`
+						});
+						i += 1;
+					}
+				}
+
+				termMessages = combinedErrors;
 				// also set a concise terminal summary
 				// keep lexer table OK message minimal
 				return;
@@ -203,6 +262,17 @@ serve piece of start() {
 
 	function toggleTheme() {
 		theme = theme === 'dark' ? 'light' : 'dark';
+	}
+
+	async function handleCopyToClipboard() {
+		const content =
+			cmInstance && typeof cmInstance.getValue === 'function' ? cmInstance.getValue() : codeInput;
+		try {
+			await copyToClipboard(content);
+			setTerminalOk('Content copied to clipboard');
+		} catch (err) {
+			setTerminalError('Failed to copy to clipboard');
+		}
 	}
 </script>
 
@@ -262,7 +332,7 @@ serve piece of start() {
 						<img class="icon" src={refresh1} alt="Light Theme Icon" />
 					{/if}</button
 				>
-				<button class="icon-btn" title="copy"
+				<button class="icon-btn" title="copy" on:click={handleCopyToClipboard}
 					>{#if theme === 'dark'}
 						<img class="icon" src={copy} alt="Dark Theme Icon" />
 					{:else}

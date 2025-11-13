@@ -4,7 +4,7 @@ from pprint import pformat
 from app.lexer.lexer import Lexer
 from app.lexer.token import Token
 
-SAMPLES_DIR = "./tests/lexer_programs/"
+SAMPLES_DIR = "./lexer_programs/"
 
 class TestPlatterLexerStrings(unittest.TestCase):
 
@@ -44,11 +44,11 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "code": 'piece_',
-            "expected_types": ["id"],
+            "expected_types": [Token.InvalidLexeme, "Invalid Character"],
         },
         {
-            "code": '12',
-            "expected_types": ["piece_lit"],
+            "code": '12;',
+            "expected_types": ["piece_lit", ";"],
         },
         {
             "code": 'copy = piece_lit;',
@@ -67,15 +67,15 @@ class TestPlatterLexerStrings(unittest.TestCase):
 n}
 o"
 """,
-            "expected_types": ["Invalid Lexeme", "Invalid Character", "Invalid Lexeme", "Invalid Character","Invalid Lexeme", "Invalid Character"],
+            "expected_types": [Token.InvalidLexeme, Token.InvalidCharacter, Token.InvalidLexeme, Token.InvalidCharacter, Token.InvalidLexeme, Token.InvalidCharacter],
         },
         {
-            "code": 'B# ',
+            "code": 'B# ds',
             "expected_types": ["id", "comment_single"],
         },
         {
-            "code": '3*287',
-            "expected_types": ["piece_lit", "*", "piece_lit"],
+            "code": '3*287;',
+            "expected_types": ["piece_lit", "*", "piece_lit", ";"],
         },
         {
             "code": 'long_id_long_id_long_id_long_id_long_id',
@@ -90,16 +90,16 @@ o"
             "expected_types": [Token.ExceedsLimit],
         },
         {
-            "code": '12345678912345.1234567',
-            "expected_types": ["sip_lit"],
+            "code": '12345678912345.1234567;',
+            "expected_types": ["sip_lit", ";"],
         },
         {
-            "code": '213123dasdsd',
-            "expected_types": [Token.InvalidLexeme, Token.InvalidCharacter, "id"],
+            "code": '213123dasdsd;',
+            "expected_types": [Token.InvalidLexeme, Token.InvalidCharacter, "id", ";"],
         },
         {
-            "code": '0',
-            "expected_types": ["piece_lit"],
+            "code": '0;',
+            "expected_types": ["piece_lit", ";"],
         },
     ]
 

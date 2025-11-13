@@ -188,8 +188,13 @@ serve piece of start() {
 
 			// update right table
 			lexerRows.length = 0;
-			// Group consecutive spaces, newlines, and tabs
+			// Group consecutive spaces, newlines, and tabs (but reset count when invalid tokens appear)
+			// We need to track position in original received array to detect when errors interrupt whitespace
+			const invalidPositions = new Set(invalidTokens.map((t) => `${t.line}:${t.col}:${t.value}`));
+
 			let i = 0;
+			let receivedIdx = 0;
+
 			while (i < tokens.length) {
 				const t = tokens[i];
 				const tokenType = t.type.toLowerCase();
@@ -197,10 +202,28 @@ serve piece of start() {
 				// Check if this is a space, newline, or tab token
 				if (tokenType === 'space' || tokenType === 'newline' || tokenType === 'tab') {
 					let count = 1;
-					// Count consecutive identical tokens
-					while (i + count < tokens.length && tokens[i + count].type.toLowerCase() === tokenType) {
+					let nextIdx = i + 1;
+
+					// Count consecutive identical tokens, but stop if an invalid token was between them in original stream
+					while (nextIdx < tokens.length && tokens[nextIdx].type.toLowerCase() === tokenType) {
+						// Check if there's an invalid token between current and next in the original stream
+						const currentToken = tokens[i + count - 1];
+						const nextToken = tokens[nextIdx];
+
+						// Simple heuristic: if line/col gap suggests something was between them, stop counting
+						const hasGap =
+							nextToken.line > currentToken.line + 1 ||
+							(nextToken.line === currentToken.line && nextToken.col > currentToken.col + 1);
+
+						if (hasGap) {
+							// There might be an invalid token between, stop grouping
+							break;
+						}
+
 						count++;
+						nextIdx++;
 					}
+
 					// Add a single row with count if more than 1
 					const displayToken = count > 1 ? `${t.type} (${count})` : t.type;
 					lexerRows.push({ lexeme: t.value ?? '', token: displayToken });
@@ -230,7 +253,7 @@ serve piece of start() {
 						// Combine into single error message
 						combinedErrors.push({
 							icon: errorIcon,
-							text: `Error at line ${current.line} col ${current.col} - invalid lexeme <${current.value}${next.value}>`
+							text: `Error at line ${current.line} col ${current.col} - invalid lexeme: ${current.value}${next.value}`
 						});
 						i += 2; // Skip both tokens
 					} else {

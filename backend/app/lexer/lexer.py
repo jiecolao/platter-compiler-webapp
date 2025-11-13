@@ -57,9 +57,9 @@ class Lexer(LexerBase, LexerKeywords, LexerOperators, LexerIdentifier, LexerChar
         if self.current == ",": return self.s246()
         if self.current == ";": return self.s247()
 
-        if self.current in self.ID_START: return self.s248()
+        if self.current in (self.alpha + self.underscore): return self.s248()
         if self.current == "0": return self.s298()
-        if self.current in self.DIGIT: return self.s301()
+        if self.current in self.digit: return self.s300()
         if self.current == '"': return self.s345()
         if self.current == '#': return self.s348()
 

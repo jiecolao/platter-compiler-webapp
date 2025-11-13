@@ -233,6 +233,7 @@ newline
 newline
 newline
 comment_single
+newline
 prepare
 space
 piece
@@ -307,6 +308,7 @@ space
 space
 space
 comment_single
+newline
 space
 space
 space

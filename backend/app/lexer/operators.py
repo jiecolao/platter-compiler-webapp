@@ -26,7 +26,7 @@ class LexerOperators(LexerProtocol):
         if self._match_delimiter(self.op2_dlm): return self.s206()
         if self.current == "=": return self.s207()
         if self.current == "0": return self.s298()
-        if self.current in self.NUMERIC: return self.s301()
+        if self.current in self.numeric: return self.s300()
         return [Token(Token.InvalidLexeme, self.get_lexeme(), self.start_line, self.start_col), self._error_invalid_char()]
 
     def s206(self):  # - (Accepting State 206)

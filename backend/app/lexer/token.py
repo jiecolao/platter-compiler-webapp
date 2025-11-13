@@ -8,7 +8,7 @@ class Token:
         self.col = col
 
     def __repr__(self):
-        return f"{self.type:<25} | line={self.line:<4} | col={self.col:<4} | {self.value:<25}"
+        return f"{self.type:<25} | line={self.line:<4} | col={self.col:<4} | {(self.value or 'EOF'):<25}"
 
     InvalidCharacter = "Invalid Character"
     InvalidLexeme = "Invalid Lexeme"

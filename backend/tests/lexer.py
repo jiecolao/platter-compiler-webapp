@@ -7,12 +7,12 @@ def set_clipboard(text: str):
     subprocess.run("clip", universal_newlines=True, input=text)
 
 
-samples_dir = "./tests/lexer_programs/"
+samples_dir = "./lexer_programs/"
 
 choice = input("Include whitespace tokens (y/n)? ").lower().strip()
 include_whitespace = choice == 'y'
 
-platter_files = [f for f in os.listdir(samples_dir) if f.endswith(".platter")]
+platter_files = [f for f in os.listdir(samples_dir) if f.endswith(".platter") or f.endswith(".draft")]
 
 print(f"\nFiles in {samples_dir}:")
 for i, f in enumerate(platter_files, 1):

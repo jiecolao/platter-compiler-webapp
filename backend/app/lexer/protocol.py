@@ -14,28 +14,49 @@ class LexerProtocol(Protocol):
     start_line: int
     current: Optional[str]
     
-    # Character sets
-    ID_START: list[str]
-    ID_BODY: list[str]
-    NUMERIC: list[str]
-    DIGIT: list[str]
+    # Character sets based on formal specification
+    underscore: list[str]
+    zero: list[str]
+    digit: list[str]
+    numeric: list[str]
+    lowercase: list[str]
+    uppercase: list[str]
+    alpha: list[str]
+    alphanumeric: list[str]
+    id_chars: list[str]
+    flag: list[str]
+    arithm_op: list[str]
+    logic_op: list[str]
+    assign_op: list[str]
+    rel_op: list[str]
+    period: list[str]
+    newline: list[str]
+    tab: list[str]
+    space: list[str]
+    whitespace: list[str]
+    ascii: list[str]
+    ascii_1: list[str]
+    ascii_2: list[str]
+    ascii_3: list[str]
     
     # Keywords
     KEYWORDS: list[str]
     
-    # Delimiters
+    # Delimiters based on formal specification
+    colon_dlm: list[str]
+    curly_dlm: list[str]
+    dtype_dlm: list[str]
+    equal_dlm: list[str]
+    flag_dlm: list[str]
     id_delim: list[str]
     num_delim: list[str]
     op1_dlm: list[str]
     op2_dlm: list[str]
-    equal_dlm: list[str]
     paren_dlm: list[str]
-    dtype_dlm: list[str]
-    curly_dlm: list[str]
     term_dlm: list[str]
-    flag_dlm: list[str]
+    
+    # Legacy delimiter (for backward compatibility)
     whitespace_dlm: list[str]
-    colon_dlm: list[str]
     
     # Methods
     def advance(self) -> None: ...
@@ -47,4 +68,4 @@ class LexerProtocol(Protocol):
     def _error_invalid_char(self) -> Token: ...
 
     def s298(self) -> Token: ...
-    def s301(self) -> Token: ...
+    def s300(self) -> Token: ...

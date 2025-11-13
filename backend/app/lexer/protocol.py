@@ -15,23 +15,27 @@ class LexerProtocol(Protocol):
     current: Optional[str]
     
     # Character sets
-    ID_START: str
-    ID_BODY: str
-    DIGITS: str
+    ID_START: list[str]
+    ID_BODY: list[str]
+    NUMERIC: list[str]
+    DIGIT: list[str]
+    
+    # Keywords
+    KEYWORDS: list[str]
     
     # Delimiters
-    id_delim: str
-    num_delim: str
-    op1_dlm: str
-    op2_dlm: str
-    equal_dlm: str
-    paren_dlm: str
-    dtype_dlm: str
-    curly_dlm: str
-    term_dlm: str
-    flag_dlm: str
-    whitespace_dlm: str
-    colon_dlm: str
+    id_delim: list[str]
+    num_delim: list[str]
+    op1_dlm: list[str]
+    op2_dlm: list[str]
+    equal_dlm: list[str]
+    paren_dlm: list[str]
+    dtype_dlm: list[str]
+    curly_dlm: list[str]
+    term_dlm: list[str]
+    flag_dlm: list[str]
+    whitespace_dlm: list[str]
+    colon_dlm: list[str]
     
     # Methods
     def advance(self) -> None: ...
@@ -39,5 +43,8 @@ class LexerProtocol(Protocol):
     def restore(self, state: Tuple[int, int, int, Optional[str]]) -> None: ...
     def save_start(self) -> None: ...
     def get_lexeme(self) -> str: ...
-    def _match_delimiter(self, delimiters: str) -> bool: ...
+    def _match_delimiter(self, delimiters: list[str]) -> bool: ...
     def _error_invalid_char(self) -> Token: ...
+
+    def s298(self) -> Token: ...
+    def s301(self) -> Token: ...

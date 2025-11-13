@@ -3,6 +3,15 @@ from app.lexer.protocol import LexerProtocol
 
 
 class LexerKeywords(LexerProtocol):
+    
+    # All keywords in the Platter language
+    KEYWORDS = [
+        "alt", "and", "append", "bill", "chars", "check", "choice", "copy", "cut",
+        "fact", "flag", "instead", "matches", "menu", "next", "not", "of", "or",
+        "order", "pass", "piece", "pow", "prepare", "rand", "remove", "repeat",
+        "reverse", "search", "serve", "sip", "size", "sort", "sqrt", "start",
+        "stop", "table", "take", "tochars", "topiece", "tosip", "usual"
+    ]
 
     # --- 'a' ---
     def s1(self):
@@ -19,9 +28,11 @@ class LexerKeywords(LexerProtocol):
 
     def s3(self):  # alt (Accepting State 4)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("alt", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s4()
         return None
+
+    def s4(self):
+        return Token("alt", self.get_lexeme(), self.start_line, self.start_col)
 
     def s5(self):  # an
         self.advance()
@@ -30,9 +41,11 @@ class LexerKeywords(LexerProtocol):
 
     def s6(self):  # and (Accepting State 7)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("and", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s7()
         return None
+
+    def s7(self):
+        return Token("and", self.get_lexeme(), self.start_line, self.start_col)
 
     def s8(self):  # ap
         self.advance()
@@ -56,9 +69,11 @@ class LexerKeywords(LexerProtocol):
 
     def s12(self):  # append (Accepting State 13)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("append", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s13()
         return None
+
+    def s13(self):
+        return Token("append", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'b' ---
     def s14(self):  # b
@@ -78,15 +93,17 @@ class LexerKeywords(LexerProtocol):
 
     def s17(self):  # bill (Accepting State 18)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("bill", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s18()
         return None
+
+    def s18(self):
+        return Token("bill", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'c' ---
     def s19(self):  # c
         self.advance()
         if self.current == "h": return self.s20()
-        if self.current == "o": return self.s29()
+        if self.current == "o": return self.s34()
         if self.current == "u": return self.s38()
         return None
 
@@ -94,6 +111,7 @@ class LexerKeywords(LexerProtocol):
         self.advance()
         if self.current == "a": return self.s21()
         if self.current == "e": return self.s25()
+        if self.current == "o": return self.s29()
         return None
 
     def s21(self):  # cha
@@ -108,9 +126,11 @@ class LexerKeywords(LexerProtocol):
 
     def s23(self):  # chars (Accepting State 24)
         self.advance()
-        if self._match_delimiter(self.dtype_dlm):
-            return Token("chars", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.dtype_dlm): return self.s24()
         return None
+
+    def s24(self):
+        return Token("chars", self.get_lexeme(), self.start_line, self.start_col)
 
     def s25(self):  # che
         self.advance()
@@ -124,9 +144,11 @@ class LexerKeywords(LexerProtocol):
 
     def s27(self):  # check (Accepting State 28)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("check", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s28()
         return None
+
+    def s28(self):
+        return Token("check", self.get_lexeme(), self.start_line, self.start_col)
 
     def s29(self):  # cho
         self.advance()
@@ -146,20 +168,29 @@ class LexerKeywords(LexerProtocol):
 
     def s32(self):  # choice (Accepting State 33)
         self.advance()
-        if self._match_delimiter(self.whitespace_dlm):
-            return Token("choice", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.whitespace_dlm): return self.s33()
         return None
+
+    def s33(self):
+        return Token("choice", self.get_lexeme(), self.start_line, self.start_col)
 
     def s34(self):  # cop
         self.advance()
-        if self.current == "y": return self.s35()
+        if self.current == "p": return self.s35()
         return None
 
     def s35(self):  # copy (Accepting State 37)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("copy", self.get_lexeme(), self.start_line, self.start_col)
+        if self.current == "y": return self.s36()
         return None
+
+    def s36(self):  # copy (Accepting State 37)
+        self.advance()
+        if self._match_delimiter(self.paren_dlm): return self.s37()
+        return None
+
+    def s37(self):  # copy (Accepting State 37)
+        return Token("copy", self.get_lexeme(), self.start_line, self.start_col)
 
     def s38(self):  # cu
         self.advance()
@@ -168,9 +199,11 @@ class LexerKeywords(LexerProtocol):
 
     def s39(self):  # cut (Accepting State 40)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("cut", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s40()
         return None
+
+    def s40(self):
+        return Token("cut", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'd' ---
     def s41(self):  # d
@@ -190,9 +223,11 @@ class LexerKeywords(LexerProtocol):
 
     def s44(self):  # down (Accepting State 45)
         self.advance()
-        if self._match_delimiter(self.flag_dlm):
-            return Token("flag_lit", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.flag_dlm): return self.s45()
         return None
+
+    def s45(self):
+        return Token("flag_lit", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'f' ---
     def s46(self):  # f
@@ -213,9 +248,11 @@ class LexerKeywords(LexerProtocol):
 
     def s49(self):  # fact (Accepting State 50)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("fact", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s50()
         return None
+
+    def s50(self):
+        return Token("fact", self.get_lexeme(), self.start_line, self.start_col)
 
     def s51(self):  # fl
         self.advance()
@@ -229,9 +266,11 @@ class LexerKeywords(LexerProtocol):
 
     def s53(self):  # flag (Accepting State 54)
         self.advance()
-        if self._match_delimiter(self.dtype_dlm):
-            return Token("flag", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.dtype_dlm): return self.s54()
         return None
+
+    def s54(self):
+        return Token("flag", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'i' ---
     def s55(self):  # i
@@ -266,9 +305,11 @@ class LexerKeywords(LexerProtocol):
 
     def s61(self):  # instead (Accepting State 62)
         self.advance()
-        if self._match_delimiter(self.curly_dlm):
-            return Token("instead", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.curly_dlm): return self.s62()
         return None
+
+    def s62(self):
+        return Token("instead", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'm' ---
     def s63(self):  # m
@@ -304,9 +345,11 @@ class LexerKeywords(LexerProtocol):
 
     def s69(self):  # matches (Accepting State 70)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("matches", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s70()
         return None
+
+    def s70(self):
+        return Token("matches", self.get_lexeme(), self.start_line, self.start_col)
 
     def s71(self):  # me
         self.advance()
@@ -320,9 +363,11 @@ class LexerKeywords(LexerProtocol):
 
     def s73(self):  # menu (Accepting State 74)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("menu", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s74()
         return None
+
+    def s74(self):
+        return Token("menu", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'n' ---
     def s75(self):  # n
@@ -343,9 +388,11 @@ class LexerKeywords(LexerProtocol):
 
     def s78(self):  # next (Accepting State 79)
         self.advance()
-        if self._match_delimiter(self.term_dlm):
-            return Token("next", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.term_dlm): return self.s79()
         return None
+
+    def s79(self):
+        return Token("next", self.get_lexeme(), self.start_line, self.start_col)
 
     def s80(self):  # no
         self.advance()
@@ -354,9 +401,11 @@ class LexerKeywords(LexerProtocol):
 
     def s81(self):  # not (Accepting State 82)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("not", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s82()
         return None
+
+    def s82(self):
+        return Token("not", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'o' ---
     def s83(self):  # o
@@ -367,16 +416,20 @@ class LexerKeywords(LexerProtocol):
 
     def s84(self):  # of (Accepting State 85)
         self.advance()
-        if self._match_delimiter(self.whitespace_dlm):
-            return Token("of", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.whitespace_dlm): return self.s85()
         return None
+
+    def s85(self):
+        return Token("of", self.get_lexeme(), self.start_line, self.start_col)
 
     def s86(self):  # or (Accepting State 87)
         self.advance()
         if self.current == "d": return self.s88()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("or", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s87()
         return None
+
+    def s87(self):
+        return Token("or", self.get_lexeme(), self.start_line, self.start_col)
 
     def s88(self):  # ord
         self.advance()
@@ -390,9 +443,11 @@ class LexerKeywords(LexerProtocol):
 
     def s90(self):  # order (Accepting State 91)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("order", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s91()
         return None
+
+    def s91(self):
+        return Token("order", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'p' ---
     def s92(self):  # p
@@ -415,9 +470,11 @@ class LexerKeywords(LexerProtocol):
 
     def s95(self):  # pass (Accepting State 96)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("pass", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s96()
         return None
+
+    def s96(self):
+        return Token("pass", self.get_lexeme(), self.start_line, self.start_col)
 
     def s97(self):  # pi
         self.advance()
@@ -436,9 +493,11 @@ class LexerKeywords(LexerProtocol):
 
     def s100(self):  # piece (Accepting State 101)
         self.advance()
-        if self._match_delimiter(self.dtype_dlm):
-            return Token("piece", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.dtype_dlm): return self.s101()
         return None
+
+    def s101(self):
+        return Token("piece", self.get_lexeme(), self.start_line, self.start_col)
 
     def s102(self):  # po
         self.advance()
@@ -447,9 +506,11 @@ class LexerKeywords(LexerProtocol):
 
     def s103(self):  # pow (Accepting State 104)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("pow", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s104()
         return None
+
+    def s104(self):
+        return Token("pow", self.get_lexeme(), self.start_line, self.start_col)
 
     def s105(self):  # pr
         self.advance()
@@ -478,9 +539,11 @@ class LexerKeywords(LexerProtocol):
 
     def s110(self):  # prepare (Accepting State 111)
         self.advance()
-        if self._match_delimiter(self.whitespace_dlm):
-            return Token("prepare", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.whitespace_dlm): return self.s111()
         return None
+
+    def s111(self):
+        return Token("prepare", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'r' ---
     def s112(self):  # r
@@ -501,9 +564,11 @@ class LexerKeywords(LexerProtocol):
 
     def s115(self):  # rand (Accepting State 116)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("rand", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s116()
         return None
+
+    def s116(self):
+        return Token("rand", self.get_lexeme(), self.start_line, self.start_col)
 
     def s117(self):  # re
         self.advance()
@@ -529,9 +594,11 @@ class LexerKeywords(LexerProtocol):
 
     def s121(self):  # remove (Accepting State 122)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("remove", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s122()
         return None
+
+    def s122(self):
+        return Token("remove", self.get_lexeme(), self.start_line, self.start_col)
 
     def s123(self):  # rep
         self.advance()
@@ -550,9 +617,11 @@ class LexerKeywords(LexerProtocol):
 
     def s126(self):  # repeat (Accepting State 127)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("repeat", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s127()
         return None
+
+    def s127(self):
+        return Token("repeat", self.get_lexeme(), self.start_line, self.start_col)
 
     def s128(self):  # rev
         self.advance()
@@ -576,9 +645,11 @@ class LexerKeywords(LexerProtocol):
 
     def s132(self):  # reverse (Accepting State 133)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("reverse", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s133()
         return None
+
+    def s133(self):
+        return Token("reverse", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 's' ---
     def s134(self):  # s
@@ -613,9 +684,11 @@ class LexerKeywords(LexerProtocol):
 
     def s139(self):  # search (Accepting State 140)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("search", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s140()
         return None
+
+    def s140(self):
+        return Token("search", self.get_lexeme(), self.start_line, self.start_col)
 
     def s141(self):  # ser
         self.advance()
@@ -629,9 +702,11 @@ class LexerKeywords(LexerProtocol):
 
     def s143(self):  # serve (Accepting State 144)
         self.advance()
-        if self._match_delimiter(self.whitespace_dlm):
-            return Token("serve", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.whitespace_dlm): return self.s144()
         return None
+
+    def s144(self):
+        return Token("serve", self.get_lexeme(), self.start_line, self.start_col)
 
     def s145(self):  # si
         self.advance()
@@ -641,9 +716,11 @@ class LexerKeywords(LexerProtocol):
 
     def s146(self):  # sip (Accepting State 147)
         self.advance()
-        if self._match_delimiter(self.dtype_dlm):
-            return Token("sip", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.dtype_dlm): return self.s147()
         return None
+
+    def s147(self):
+        return Token("sip", self.get_lexeme(), self.start_line, self.start_col)
 
     def s148(self):  # siz
         self.advance()
@@ -652,9 +729,11 @@ class LexerKeywords(LexerProtocol):
 
     def s149(self):  # size (Accepting State 150)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("size", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s150()
         return None
+
+    def s150(self):
+        return Token("size", self.get_lexeme(), self.start_line, self.start_col)
 
     def s151(self):  # so
         self.advance()
@@ -668,9 +747,11 @@ class LexerKeywords(LexerProtocol):
 
     def s153(self):  # sort (Accepting State 154)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("sort", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s154()
         return None
+
+    def s154(self):
+        return Token("sort", self.get_lexeme(), self.start_line, self.start_col)
 
     def s155(self):  # sq
         self.advance()
@@ -684,9 +765,11 @@ class LexerKeywords(LexerProtocol):
 
     def s157(self):  # sqrt (Accepting State 158)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("sqrt", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s158()
         return None
+
+    def s158(self):
+        return Token("sqrt", self.get_lexeme(), self.start_line, self.start_col)
 
     def s159(self):  # st
         self.advance()
@@ -706,9 +789,11 @@ class LexerKeywords(LexerProtocol):
 
     def s162(self):  # start (Accepting State 163)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("start", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s163()
         return None
+
+    def s163(self):
+        return Token("start", self.get_lexeme(), self.start_line, self.start_col)
 
     def s164(self):  # sto
         self.advance()
@@ -717,9 +802,11 @@ class LexerKeywords(LexerProtocol):
 
     def s165(self):  # stop (Accepting State 166)
         self.advance()
-        if self._match_delimiter(self.term_dlm):
-            return Token("stop", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.term_dlm): return self.s166()
         return None
+
+    def s166(self):
+        return Token("stop", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 't' ---
     def s167(self):  # t
@@ -746,9 +833,11 @@ class LexerKeywords(LexerProtocol):
 
     def s171(self):  # table (Accepting State 172)
         self.advance()
-        if self._match_delimiter(self.whitespace_dlm):
-            return Token("table", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.whitespace_dlm): return self.s172()
         return None
+
+    def s172(self):
+        return Token("table", self.get_lexeme(), self.start_line, self.start_col)
 
     def s173(self):  # tak
         self.advance()
@@ -757,9 +846,11 @@ class LexerKeywords(LexerProtocol):
 
     def s174(self):  # take (Accepting State 175)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("take", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s175()
         return None
+
+    def s175(self):
+        return Token("take", self.get_lexeme(), self.start_line, self.start_col)
 
     def s176(self):  # to
         self.advance()
@@ -790,9 +881,11 @@ class LexerKeywords(LexerProtocol):
 
     def s181(self):  # tochars (Accepting State 182)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("tochars", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s182()
         return None
+
+    def s182(self):
+        return Token("tochars", self.get_lexeme(), self.start_line, self.start_col)
 
     def s183(self):  # top
         self.advance()
@@ -816,9 +909,11 @@ class LexerKeywords(LexerProtocol):
 
     def s187(self):  # topiece (Accepting State 188)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("topiece", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s188()
         return None
+
+    def s188(self):
+        return Token("topiece", self.get_lexeme(), self.start_line, self.start_col)
 
     def s189(self):  # tos
         self.advance()
@@ -832,9 +927,11 @@ class LexerKeywords(LexerProtocol):
 
     def s191(self):  # tosip (Accepting State 192)
         self.advance()
-        if self._match_delimiter(self.paren_dlm):
-            return Token("tosip", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.paren_dlm): return self.s192()
         return None
+
+    def s192(self):
+        return Token("tosip", self.get_lexeme(), self.start_line, self.start_col)
 
     # --- 'u' ---
     def s193(self):  # u
@@ -845,9 +942,11 @@ class LexerKeywords(LexerProtocol):
 
     def s194(self):  # up (Accepting State 195)
         self.advance()
-        if self._match_delimiter(self.flag_dlm):
-            return Token("flag_lit", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.flag_dlm): return self.s195()
         return None
+
+    def s195(self):
+        return Token("flag_lit", self.get_lexeme(), self.start_line, self.start_col)
 
     def s196(self):  # us
         self.advance()
@@ -866,6 +965,8 @@ class LexerKeywords(LexerProtocol):
 
     def s199(self):  # usual (Accepting State 200)
         self.advance()
-        if self._match_delimiter(self.colon_dlm):
-            return Token("usual", self.get_lexeme(), self.start_line, self.start_col)
+        if self._match_delimiter(self.colon_dlm): return self.s200()
         return None
+
+    def s200(self):
+        return Token("usual", self.get_lexeme(), self.start_line, self.start_col)

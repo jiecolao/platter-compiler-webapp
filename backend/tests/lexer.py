@@ -34,5 +34,5 @@ tokens = [
 ]
 
 print("\n\nTOKENS:")
-print(tokens)
+pprint(tokens)
 set_clipboard(("\n".join(t.type for t in tokens)))

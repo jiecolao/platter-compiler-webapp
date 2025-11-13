@@ -5,6 +5,7 @@ from app.lexer.protocol import LexerProtocol
 class LexerCharCom(LexerProtocol):
 
     def s345(self):  # Inside string after initial '"'
+        self.advance()
         if self.current is None:
             return Token(Token.InvalidLexeme, self.get_lexeme(), self.start_line, self.start_col)
 
@@ -20,18 +21,16 @@ class LexerCharCom(LexerProtocol):
         if self.current == '\n':
             return Token(Token.InvalidLexeme, self.get_lexeme(), self.start_line, self.start_col)
 
-        self.advance()
         return self.s345()
 
     def s346(self):  # After '\' (Expects any ascii character)
         if self.current is None:
             return Token(Token.InvalidLexeme, self.get_lexeme(), self.start_line, self.start_col)
 
-        # Consume the escaped character (any char is ok, incl. '"' or 'n')
-        self.advance()
         return self.s345()  # Back to the main string state
 
     def s348(self):  # After initial '#'
+        self.advance()
         if self.current == '#':  # Start of multi-line comment (##)
             self.advance()  # Consume second '#'
             return self.s351()  # State 351 (Inside multiline comment)

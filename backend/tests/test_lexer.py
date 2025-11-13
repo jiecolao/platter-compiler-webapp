@@ -2,6 +2,7 @@ import unittest
 import os
 from pprint import pformat
 from app.lexer.lexer import Lexer
+from app.lexer.token import Token
 
 SAMPLES_DIR = "./tests/lexer_programs/"
 
@@ -31,7 +32,7 @@ class TestPlatterLexerStrings(unittest.TestCase):
     string_tests = [
         {
             "code": 'piece;',
-            "expected_types": ["Invalid Lexeme", "Invalid Character"],
+            "expected_types": [Token.InvalidIdentifier, "Invalid Character"],
         },
         {
             "code": 'piece of x = 5;',
@@ -39,7 +40,7 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "code": 'piece&',
-            "expected_types": ["Invalid Lexeme", "Invalid Character"],
+            "expected_types": [Token.InvalidIdentifier, "Invalid Character"],
         },
         {
             "code": 'piece_',
@@ -71,6 +72,34 @@ o"
         {
             "code": 'B# ',
             "expected_types": ["id", "comment_single"],
+        },
+        {
+            "code": '3*287',
+            "expected_types": ["piece_lit", "*", "piece_lit"],
+        },
+        {
+            "code": 'long_id_long_id_long_id_long_id_long_id',
+            "expected_types": [Token.ExceedsLimit],
+        },
+        {
+            "code": '123456789123456789.1234567',
+            "expected_types": [Token.ExceedsLimit],
+        },
+        {
+            "code": '123456789123456.12345678',
+            "expected_types": [Token.ExceedsLimit],
+        },
+        {
+            "code": '12345678912345.1234567',
+            "expected_types": ["sip_lit"],
+        },
+        {
+            "code": '213123dasdsd',
+            "expected_types": [Token.InvalidLexeme, Token.InvalidCharacter, "id"],
+        },
+        {
+            "code": '0',
+            "expected_types": ["piece_lit"],
         },
     ]
 

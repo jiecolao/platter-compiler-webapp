@@ -164,13 +164,13 @@ serve piece of start() {
 			const data = (await res.json()) as { success: boolean; tokens: Token[] };
 			// receive tokens and separate unknown/error tokens into the terminal
 			const received = data.tokens ?? [];
-			// treat tokens with type 'unknown' (case-insensitive) as lexical errors
-			const unknownTokens = received.filter(
-				(t) => typeof t.type === 'string' && t.type.toLowerCase() === 'unknown'
+			// treat tokens with type starting with 'invalid' (case-insensitive) as lexical errors
+			const invalidTokens = received.filter(
+				(t) => typeof t.type === 'string' && t.type.toLowerCase().startsWith('invalid')
 			);
-			// tokens to show in the lexer table (exclude unknowns)
+			// tokens to show in the lexer table (exclude invalids)
 			tokens = received.filter(
-				(t) => !(typeof t.type === 'string' && t.type.toLowerCase() === 'unknown')
+				(t) => !(typeof t.type === 'string' && t.type.toLowerCase().startsWith('invalid'))
 			);
 
 			// update right table
@@ -179,9 +179,9 @@ serve piece of start() {
 				lexerRows.push({ lexeme: t.value ?? '', token: t.type });
 			}
 
-			if (unknownTokens.length) {
-				// move unknown tokens into the terminal as individual error messages
-				termMessages = unknownTokens.map((u) => ({
+			if (invalidTokens.length) {
+				// move invalid tokens into the terminal as individual error messages
+				termMessages = invalidTokens.map((u) => ({
 					icon: errorIcon,
 					text: `Lexical error: line ${u.line} col ${u.col} - invalid character ${u.value}`
 				}));

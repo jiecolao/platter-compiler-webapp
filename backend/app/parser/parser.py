@@ -3,7 +3,9 @@ from app.parser.predict_set import PREDICT_SET
 from tests.test_parser_util import run_file
 import logging as log                                      
 
-log.basicConfig(level=log.INFO, format='%(levelname)s: <%(funcName)s> | %(message)s')
+# To disable logs, set level=log.CRITICAL. 
+# To enable logs, set level=log.INFO
+log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
@@ -24,6 +26,7 @@ class Parser:
     def __init__(self, tokens):
         """ Token Stream """
         self.tokenlist = [t for t in tokens if t.type not in ("space", "tab", "newline", "comment_single", "comment_multi")] # filter out ws and comments
+        self.result = True
 
         """ Properties """
         self.tokens = [t.type for t in self.tokenlist]
@@ -42,48 +45,67 @@ class Parser:
 
     def parse_token(self, tok):
         if self.current_tok == tok: 
+            # log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
             print(f"├──Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
             self.advance(tok)
         else:
+            # log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
-            raise SyntaxError(
-                f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' "
-                f"(line {self.current_line}, col {self.current_col})"
-            )
+            self.result = False
+            self.error_handler("InvalidToken", tok)
         print("")
 
     def advance(self, tok): 
         if self.pos < self.tokens_length:
             self.pos += 1
             self.upd_tok_attr()
+            # log.warning(f"Consuming: {tok} -> {self.current_tok}")
             print(f"└──Consuming: {tok} -> {self.current_tok}")
         else: 
-            # self.current_tok = "EOF" # end of token list, EOF reached
+            self.current_tok = "EOF" # end of token list, EOF reached
             print(f"└──Consuming: {tok} -> {self.current_tok}")
+            # log.warning(f"Consuming: {tok} -> EOF")
             # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
+
+
+    def error_handler(self, error_type, tok):        
+        errors = {
+            "InvalidToken": f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "UnknownToken": f"✘ Syntax Error: Unrecognizable token '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "MissingToken": f"✘ Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})"
+        }
+        raise SyntaxError(errors[error_type])
 
     # CFG Parsing Methods 
 
     def parse(self):
         self.program()
+        if self.result == True: print("✔ No Syntax Error")
 
     def program(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<program>"]:
-            self.global_decl()
+            self.global_decl() 
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.recipe_decl() 
         self.parse_token("start")
         self.parse_token("(")
         self.parse_token(")")
-        self.platter()
+        self.platter() if self.current_tok in PREDICT_SET["<platter>"] else self.error_handler("MissingToken", "platter block")
+
+        # Ensure EOF after parsing
+        if self.current_tok != "EOF": self.error_handler("InvalidToken", "EOF") 
+            # raise SyntaxError(
+            #     f"Syntax Error: Expected 'EOF' but got '{self.current_tok}' "
+            #     f"(line {self.current_line}, col {self.current_col})"
+            # )
         log.info("Exit: " + self.current_tok)
             
 
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<global_decl>"]:
-            self.decl_data_type()
+            self.decl_data_type() 
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_1>"]:
             self.table_prototype()
@@ -333,9 +355,6 @@ class Parser:
         if self.current_tok in PREDICT_SET["<id_tail>"]:
             self.call_tailopt()
             self.accessor_tail()
-        if self.current_tok in PREDICT_SET["<id_tail_1>"]:        
-            log.info("Exit: " + self.current_tok)
-            return
         log.info("Exit: " + self.current_tok)
         
     def call_tailopt(self):
@@ -690,7 +709,8 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.parse_token("prepare")
-            self.decl_head()
+            if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
+            else: self.error_handler("MissingToken", "declaration head")
             self.parse_token("(")
             self.spice()
             self.parse_token(")")
@@ -866,7 +886,8 @@ class Parser:
         if self.current_tok in PREDICT_SET["<cond_check>"]:
             self.parse_token("check")
             self.parse_token("(")
-            self.expr()
+            if self.current_tok in PREDICT_SET["<expr>"]: self.expr() 
+            else: raise SyntaxError(f"Syntax Error: Missing expression")
             self.parse_token(")")
             self.platter()
             self.alt_clause()
@@ -1028,6 +1049,5 @@ if __name__ == "__main__":
     parser = Parser(tokens)
     try:
         parser.parse()
-        print("✔ No Syntax Error")
     except SyntaxError as e:
         print(str(e))

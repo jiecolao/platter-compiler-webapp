@@ -1,14 +1,14 @@
 from app.lexer.lexer import Lexer
 from app.parser.token_map import TOKEN_MAP
 from app.parser.predict_set import PREDICT_SET
-from tests.test_parser import run_script
+from tests.test_parser import test_script
 import logging as log                                      
 
 log.basicConfig(level=log.INFO, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
-    [] Cleanup
+    [/] Cleanup
     [?] Additional errors
         [/] Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line '{self.current_line}', col '{self.current_col}')
         [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
@@ -40,39 +40,33 @@ class Parser:
         self.current_line = self.tokenlist[self.pos].line
         self.current_col = self.tokenlist[self.pos].col
 
-    def advance(self, tok): 
-        if self.pos < self.tokens_length:
-            self.pos += 1
-            self.upd_tok_attr()
-            print(f"--Consuming: {tok} -> {self.current_tok}")
-        else: 
-            self.current_tok = "EOF" # placeholder
-            # token not consumed upon matching, EOF reached 
-            raise SyntaxError (f"Syntax Error: Expected '{tok}' but got EOF")
-        
-        
     def parse_token(self, tok):
         if self.current_tok == tok: 
-            print(f"--Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
+            print(f"├──Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
             self.advance(tok)
         else:
-            print(f"--Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
+            print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             raise SyntaxError(
                 f"Syntax Error: Expected '{tok}' but got '{self.current_tok}' "
                 f"(line {self.current_line}, col {self.current_col})"
             )
         print("")
 
-    def tester(self):
-        a = True
-        while (a):
-            print(self.tokens)
-            print(f"Index: {self.pos}, Max: {self.tokens_length}")
-            print(f"Current tok: {self.current_tok} | line: {self.current_line} | col: {self.current_col}\n")
-            y = input("Next token? (y/n): ")
-            if y == "y" : self.parse_token("piece")
+    def advance(self, tok): 
+        if self.pos < self.tokens_length:
+            self.pos += 1
+            self.upd_tok_attr()
+            print(f"└──Consuming: {tok} -> {self.current_tok}")
+        else: 
+            # self.current_tok = "EOF" # end of token list, EOF reached
+            print(f"└──Consuming: {tok} -> {self.current_tok}")
+            # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
 
-    # ========================
+    def EOF_handler(self, tok):
+        if self.current_tok == "EOF":
+            raise SyntaxError (f"Syntax Error: Expected '{tok}' but got EOF")
+
+    # CFG Parsing Methods 
 
     def parse(self):
         self.program()
@@ -734,11 +728,11 @@ class Parser:
 
     def platter(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<platter>"]:
-            self.parse_token("{")
-            self.local_decl()
-            self.statements()
-            self.parse_token("}")
+        # if self.current_tok in PREDICT_SET["<platter>"]:
+        self.parse_token("{")
+        self.local_decl()
+        self.statements()
+        self.parse_token("}")
         log.info("Exit: " + self.current_tok)
 
     def local_decl(self):
@@ -1027,18 +1021,18 @@ class Parser:
             self.parse_token(";")
         log.info("Exit: " + self.current_tok)
 
-# Example usage
+
 if __name__ == "__main__":
     # for debugging
-    code = """
-    start()
-    """
+    # code = """start();"""
+    filename = "parser.platter" 
+    code = test_script(filename)
     lexer = Lexer(code)
     tokens = lexer.tokenize()
     parser = Parser(tokens)
 
     try:
         parser.parse()
-        print("Syntax OK!")
+        print("No Syntax Error")
     except SyntaxError as e:
         print(str(e))

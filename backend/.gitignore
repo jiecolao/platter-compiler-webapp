@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 b89845f0a9adc04bdf3859a5705aff1147c7395a
 .venv
+tests/parser_programs/parser.platter

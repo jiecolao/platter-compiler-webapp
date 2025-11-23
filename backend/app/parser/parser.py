@@ -459,7 +459,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<notation_val_6>"]:
                 self.parse_token("id")
                 self.id_notation_tail()
-        else: self.error_handler("MissingToken", "notation value")
+        else: self.error_handler("Custom", "Missing/Invalid notation value")
         log.info("Exit: " + self.current_tok)
         
     def element_value_tail(self):
@@ -900,7 +900,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
                 self.assignment_st()
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "id")
+        else: self.error_handler("Custom", "Invalid id statement")
         log.info("Exit: " + self.current_tok)
 
     def assignment_st(self):
@@ -1082,7 +1082,7 @@ class Parser:
 
     def jump_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok not in FIRST_SET["<jump_st>"]:
+        if self.current_tok in FIRST_SET["<jump_st>"]:
             if self.current_tok in PREDICT_SET["<jump_st>"]:
                 self.jump_next()
             if self.current_tok in PREDICT_SET["<jump_st_1>"]:

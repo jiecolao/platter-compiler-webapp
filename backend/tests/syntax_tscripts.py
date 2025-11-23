@@ -14,7 +14,7 @@ SYNTAX_TSCRIPTS = [
     "expected_output": "Syntax Error",
     "code":  
     """
-    prepare(){}
+    int
     """
   }
 ]

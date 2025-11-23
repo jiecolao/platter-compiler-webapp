@@ -1,6 +1,5 @@
+start() {
+  check(2){
 
-start(){
-  check(){
-    asd =
   }
 }

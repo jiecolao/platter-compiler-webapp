@@ -8,24 +8,23 @@ class TestParser():
     def run_script(self):
         # choice = input("Enter test script number: ").strip()
         for script in SYNTAX_TSCRIPTS:
-            msg = (
-                f"============ CODE #{script['number']} ================\n"
-                f"ACTUAL OUTPUT: {script['actual_output']}\n"
-                f"CODE:\n{script['code']}\n"
-                f"=====================================\n"
-            )
-            # turn off log errors
             code = script["code"]
             lexer = Lexer(code)
             tokens = lexer.tokenize()
             parser = Parser(tokens)
-            
+
             try:
-                parser.parse()
-                print("No Syntax Error")
+                result = parser.parse()
             except SyntaxError as e:
                 print(str(e))
-                
+
+            msg = (
+                f"============ CODE #{script['number']} ================\n"
+                f"CODE:\n{script['code']}\n"
+                f"EXPECTED OUTPUT: {script['expected_output']}\n"
+                f"SYNTAX OUTPUT: {result}\n"
+                f"=====================================\n"
+            )
             print(msg)
 
 if __name__=="__main__":

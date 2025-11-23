@@ -118,11 +118,12 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "number": 10,
-            "code": "12345678912345600.789",
+            "code": "12345678912345600.789;",
             "expected_types": [
                 Token.InvalidLexemeExceeds,
                 Token.InvalidLexeme,
-                Token.InvalidLexeme
+                "sip_lit",
+                ";"
             ]
         },
         {
@@ -381,7 +382,7 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "number": 27,
-            "code": "up/down, Down, DOWN",
+            "code": "up/down, Down, DOWN;",
             "expected_types": [
                 "flag_lit",
                 "/",
@@ -389,7 +390,8 @@ class TestPlatterLexerStrings(unittest.TestCase):
                 ",",
                 "id",
                 ",",
-                Token.InvalidLexeme
+                "id",
+                ";"
             ]
         },
         {
@@ -977,9 +979,9 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "number": 95,
-            "code": "bill(\"hello\");",
+            "code": "bill(\"hello\")",
             "expected_types": [
-                "bill", "(", "chars_lit", ")", ";"
+                "bill", "(", "chars_lit", ")"
             ]
         },
         {
@@ -1084,23 +1086,23 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "number": 110,
-            "code": "\"C:\\\\Users\\\\\"",
+            "code": "\"C:\\\\Users\\\\\";",
             "expected_types": [
-                "chars_lit"
+                "chars_lit", ";"
             ]
         },
         {
             "number": 111,
-            "code": "\"escape q \\q\"",
+            "code": "\"escape q \\q\";",
             "expected_types": [
-                "chars_lit"
+                "chars_lit", ";"
             ]
         },
         {
             "number": 112,
-            "code": "\"Hello \\t World\"",
+            "code": "\"Hello \\t World\";",
             "expected_types": [
-                "chars_lit"
+                "chars_lit", ";"
             ]
         },
         {

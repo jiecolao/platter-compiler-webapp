@@ -39,25 +39,12 @@ class LexerBase:
         self.ascii_1 = [c for c in self.ascii if c not in ['\\', '"']]
         self.ascii_2 = self.ascii + ['\t']
         self.ascii_3 = [c for c in self.ascii if c != '#'] + ['\n', '\t']
-        self.KEYWORDS = [
-            "alt", "and", "append", "bill", "chars", "check", "choice", "copy", "cut",
-            "fact", "flag", "instead", "matches", "menu", "next", "not", "of", "or",
-            "order", "pass", "piece", "pow", "prepare", "rand", "remove", "repeat",
-            "reverse", "search", "serve", "sip", "size", "sort", "sqrt", "start",
-            "stop", "table", "take", "tochars", "topiece", "tosip", "usual"
-        ]
 
-        self.colon_dlm = self.whitespace + [':']
-        self.curly_dlm = self.whitespace + ['{']
-        self.dtype_dlm = self.whitespace + ['[']
         self.equal_dlm = self.whitespace + self.alphanumeric + ['(', '[', '-', '_', '"']
-        self.flag_dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '!', '"']
-        self.id_delim = self.whitespace + ['(', ')', '[', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':', '#']
+        self.dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':', '#']
         self.num_delim = self.whitespace + ['(', ')', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':']
         self.op1_dlm = self.whitespace + self.alphanumeric + ['(', '-', '_', '"']
         self.op2_dlm = self.whitespace + self.alpha + ['(', '_', '"']
-        self.paren_dlm = self.whitespace + ['(']
-        self.term_dlm = self.whitespace + [';']
 
     def advance(self):
         """Moves to the next character, updating line and column."""

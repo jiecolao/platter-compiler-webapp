@@ -43,17 +43,11 @@ class LexerProtocol(Protocol):
     KEYWORDS: list[str]
     
     # Delimiters based on formal specification
-    colon_dlm: list[str]
-    curly_dlm: list[str]
-    dtype_dlm: list[str]
+    dlm: list[str]
     equal_dlm: list[str]
-    flag_dlm: list[str]
-    id_delim: list[str]
     num_delim: list[str]
     op1_dlm: list[str]
     op2_dlm: list[str]
-    paren_dlm: list[str]
-    term_dlm: list[str]
     
     # Methods
     def advance(self) -> None: ...

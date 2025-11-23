@@ -32,5 +32,16 @@ def run_script():
   # pprint(tokens)
   set_clipboard(("\n".join(t.type for t in tokens)))
 
+def test_script(filename):
+    samples_dir = "./tests/lexer_programs/"
+    filepath = os.path.join(samples_dir, filename)
+    with open(filepath, "r", encoding="utf-8") as f:
+        source = f.read()
+        return source
+        
+        # lexer = Lexer(source)
+        # tokens = lexer.tokenize()
+        # print(f"\n\nTOKENS FOR {filename}:")
+        # pprint(tokens)
 if __name__=="__main__":
-  run_script()
+    test_script()

@@ -1,7 +1,6 @@
 from app.lexer.lexer import Lexer
-from app.parser.token_map import TOKEN_MAP
 from app.parser.predict_set import PREDICT_SET
-from tests.test_parser import test_script
+from tests.test_parser_util import run_file
 import logging as log                                      
 
 log.basicConfig(level=log.INFO, format='%(levelname)s: <%(funcName)s> | %(message)s')
@@ -14,13 +13,14 @@ log.basicConfig(level=log.INFO, format='%(levelname)s: <%(funcName)s> | %(messag
         [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
         [] Syntax Error: Expected '{tok}' (line '{t.line}', col '{t.col}')
         [!] Syntax Error: Expected '{tok}' but got EOF (?)
-    [] Update error compilation
+    [/] Update error compilation
     [] Connect to front-end
 
 """
 
 
 class Parser:
+
     def __init__(self, tokens):
         """ Token Stream """
         self.tokenlist = [t for t in tokens if t.type not in ("space", "tab", "newline", "comment_single", "comment_multi")] # filter out ws and comments
@@ -47,7 +47,7 @@ class Parser:
         else:
             print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             raise SyntaxError(
-                f"Syntax Error: Expected '{tok}' but got '{self.current_tok}' "
+                f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' "
                 f"(line {self.current_line}, col {self.current_col})"
             )
         print("")
@@ -61,10 +61,6 @@ class Parser:
             # self.current_tok = "EOF" # end of token list, EOF reached
             print(f"└──Consuming: {tok} -> {self.current_tok}")
             # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
-
-    def EOF_handler(self, tok):
-        if self.current_tok == "EOF":
-            raise SyntaxError (f"Syntax Error: Expected '{tok}' but got EOF")
 
     # CFG Parsing Methods 
 
@@ -596,7 +592,7 @@ class Parser:
             return
         log.info("Exit: " + self.current_tok)
 
-    def array_declare_Tail(self):
+    def array_declare_tail(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<array_declare_tail>"]:
             self.parse_token(",")
@@ -1025,14 +1021,13 @@ class Parser:
 if __name__ == "__main__":
     # for debugging
     # code = """start();"""
-    filename = "parser.platter" 
-    code = test_script(filename)
+    filename = "parser.platter"
+    code = run_file(filename)
     lexer = Lexer(code)
     tokens = lexer.tokenize()
     parser = Parser(tokens)
-
     try:
         parser.parse()
-        print("No Syntax Error")
+        print("✔ No Syntax Error")
     except SyntaxError as e:
         print(str(e))

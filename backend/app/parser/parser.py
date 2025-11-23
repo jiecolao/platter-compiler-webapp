@@ -1,29 +1,33 @@
 from app.lexer.lexer import Lexer
-from app.parser.token_map import TOKEN_MAP
 from app.parser.predict_set import PREDICT_SET
-from tests.test_parser import run_script
+from app.parser.first_set import FIRST_SET
+from tests.test_parser_util import run_file
 import logging as log                                      
 
-log.basicConfig(level=log.INFO, format='%(levelname)s: <%(funcName)s> | %(message)s')
+# To disable logs, set level=log.CRITICAL. 
+# To enable logs, set level=log.DEBUG
+log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
-    [] Cleanup
+    [/] Cleanup
     [?] Additional errors
         [/] Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line '{self.current_line}', col '{self.current_col}')
         [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
         [] Syntax Error: Expected '{tok}' (line '{t.line}', col '{t.col}')
         [!] Syntax Error: Expected '{tok}' but got EOF (?)
-    [] Update error compilation
+    [/] Update error compilation
     [] Connect to front-end
 
 """
 
 
 class Parser:
+
     def __init__(self, tokens):
         """ Token Stream """
         self.tokenlist = [t for t in tokens if t.type not in ("space", "tab", "newline", "comment_single", "comment_multi")] # filter out ws and comments
+        self.result = True
 
         """ Properties """
         self.tokens = [t.type for t in self.tokenlist]
@@ -40,53 +44,63 @@ class Parser:
         self.current_line = self.tokenlist[self.pos].line
         self.current_col = self.tokenlist[self.pos].col
 
+    def parse_token(self, tok):
+        if self.current_tok == tok: 
+            log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
+            # print(f"├──Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
+            self.advance(tok)
+        else:
+            log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!\n")
+            # print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
+            self.result = False
+            self.error_handler("InvalidToken", tok)
+
     def advance(self, tok): 
         if self.pos < self.tokens_length:
             self.pos += 1
             self.upd_tok_attr()
-            print(f"--Consuming: {tok} -> {self.current_tok}")
+            log.warning(f"Consuming: {tok} -> {self.current_tok}\n")
+            # print(f"└──Consuming: {tok} -> {self.current_tok}")
         else: 
-            self.current_tok = "EOF" # placeholder
-            # token not consumed upon matching, EOF reached 
-            raise SyntaxError (f"Syntax Error: Expected '{tok}' but got EOF")
-        
-        
-    def parse_token(self, tok):
-        if self.current_tok == tok: 
-            print(f"--Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
-            self.advance(tok)
-        else:
-            print(f"--Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
-            raise SyntaxError(
-                f"Syntax Error: Expected '{tok}' but got '{self.current_tok}' "
-                f"(line {self.current_line}, col {self.current_col})"
-            )
-        print("")
+            self.current_tok = "EOF" # end of token list, EOF reached
+            # print(f"└──Consuming: {tok} -> {self.current_tok}")
+            log.warning(f"Consuming: {tok} -> EOF\n")
+            # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
 
-    def tester(self):
-        a = True
-        while (a):
-            print(self.tokens)
-            print(f"Index: {self.pos}, Max: {self.tokens_length}")
-            print(f"Current tok: {self.current_tok} | line: {self.current_line} | col: {self.current_col}\n")
-            y = input("Next token? (y/n): ")
-            if y == "y" : self.parse_token("piece")
 
-    # ========================
+    def error_handler(self, error_type, tok):        
+        errors = {
+            "InvalidToken": f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "UnknownToken": f"✘ Syntax Error: Unrecognizable token '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "MissingToken": f"✘ Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})",
+            "Custom": f"✘ Syntax Error: {tok} (line {self.current_line}, col {self.current_col})"
+        }
+        self.result = False
+        raise SyntaxError(errors[error_type])
+
+    # CFG Parsing Methods 
 
     def parse(self):
         self.program()
+        return self.result
 
     def program(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<program>"]:
-            self.global_decl()
+            self.global_decl() 
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.recipe_decl() 
         self.parse_token("start")
         self.parse_token("(")
         self.parse_token(")")
         self.platter()
+
+        # Ensure EOF after parsing
+        if self.current_tok != "EOF": self.error_handler("InvalidToken", "EOF") 
+            # raise SyntaxError(
+            #     f"Syntax Error: Expected 'EOF' but got '{self.current_tok}' "
+            #     f"(line {self.current_line}, col {self.current_col})"
+            # )
         log.info("Exit: " + self.current_tok)
             
 
@@ -97,10 +111,10 @@ class Parser:
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_1>"]:
             self.table_prototype()
-            self.global_decl()
+            self.global_decl() 
         if self.current_tok in PREDICT_SET["<global_decl_2>"]:
             self.parse_token("id")
-            self.table_decl()
+            self.table_decl() 
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_3>"]:
             return # λ
@@ -109,39 +123,45 @@ class Parser:
     
     def decl_data_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<decl_data_type>"]:
-            self.parse_token("piece")
-            self.decl_type()
-        if self.current_tok in PREDICT_SET["<decl_data_type_1>"]:
-            self.parse_token("sip")
-            self.decl_type()
-        if self.current_tok in PREDICT_SET["<decl_data_type_2>"]:
-            self.parse_token("flag")
-            self.decl_type()
-        if self.current_tok in PREDICT_SET["<decl_data_type_3>"]:
-            self.parse_token("chars")
-            self.decl_type()
+        if self.current_tok in FIRST_SET["<decl_data_type>"]:
+            if self.current_tok in PREDICT_SET["<decl_data_type>"]:
+                self.parse_token("piece")
+                self.decl_type()
+            if self.current_tok in PREDICT_SET["<decl_data_type_1>"]:
+                self.parse_token("sip")
+                self.decl_type()
+            if self.current_tok in PREDICT_SET["<decl_data_type_2>"]:
+                self.parse_token("flag")
+                self.decl_type()
+            if self.current_tok in PREDICT_SET["<decl_data_type_3>"]:
+                self.parse_token("chars")
+                self.decl_type()
+        else: self.error_handler("InvalidToken", "Invalid data type in ingredient declaration")
         log.info("Exit: " + self.current_tok)
 
     def decl_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<decl_type>"]:
-            self.parse_token("of")
-            self.ingredient_id()
-            self.parse_token(";")
-        if self.current_tok in PREDICT_SET["<decl_type_1>"]:
-            self.dimensions()
-            self.parse_token("of")
-            self.array_declare()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<decl_type>"]:
+            if self.current_tok in PREDICT_SET["<decl_type>"]:
+                self.parse_token("of")
+                self.ingredient_id()
+                self.parse_token(";")
+            if self.current_tok in PREDICT_SET["<decl_type_1>"]:
+                self.dimensions()
+                self.parse_token("of")
+                self.array_declare()
+                self.parse_token(";")
+        else: self.error_handler("InvalidToken", "Invalid ingredient declaration type")
         log.info("Exit: " + self.current_tok)
 
     def ingredient_id(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<ingredient_id>"]:
-            self.parse_token("id")
-            self.ingredient_init()
-            self.ingredient_id_tail()
+        if self.current_tok in FIRST_SET["<ingredient_id>"]:
+            if self.current_tok in PREDICT_SET["<ingredient_id>"]:
+                self.parse_token("id")
+                self.ingredient_init()
+                self.ingredient_id_tail()
+        else: self.error_handler("InvalidToken", "id")
         log.info("Exit: " + self.current_tok)
         
     def ingredient_init(self):
@@ -168,8 +188,10 @@ class Parser:
     
     def expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<expr>"]:
-            self.or_expr()
+        if self.current_tok in FIRST_SET["<expr>"]:
+            if self.current_tok in PREDICT_SET["<expr>"]:
+                self.or_expr()
+        else: self.error_handler("MissingToken", "expression")
         log.info("Exit: " + self.current_tok)
     
     def or_expr(self):
@@ -343,9 +365,6 @@ class Parser:
         if self.current_tok in PREDICT_SET["<id_tail>"]:
             self.call_tailopt()
             self.accessor_tail()
-        if self.current_tok in PREDICT_SET["<id_tail_1>"]:        
-            log.info("Exit: " + self.current_tok)
-            return
         log.info("Exit: " + self.current_tok)
         
     def call_tailopt(self):
@@ -372,19 +391,23 @@ class Parser:
         
     def array_accessor(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<array_accessor>"]:
-            self.parse_token("[")
-            self.expr()
-            self.parse_token("]")
-            self.accessor_tail()
+        if self.current_tok in FIRST_SET["<array_accessor>"]:
+            if self.current_tok in PREDICT_SET["<array_accessor>"]:
+                self.parse_token("[")
+                self.expr()
+                self.parse_token("]")
+                self.accessor_tail()
+        else: self.error_handler("InvalidToken", "[")
         log.info("Exit: " + self.current_tok)
 
     def table_accessor(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<table_accessor>"]:
-            self.parse_token(":")
-            self.parse_token("id")
-            self.accessor_tail()
+        if self.current_tok in FIRST_SET["<table_accessor>"]:
+            if self.current_tok in PREDICT_SET["<table_accessor>"]:
+                self.parse_token(":")
+                self.parse_token("id")
+                self.accessor_tail()
+        else: self.error_handler("InvalidToken", ":")
         log.info("Exit: " + self.current_tok)
 
     def flavor(self):
@@ -399,40 +422,44 @@ class Parser:
 
     def value(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<value>"]:
-            self.expr()
-        if self.current_tok in PREDICT_SET["<value_1>"]:
-            self.parse_token("[")
-            self.notation_val()
-            self.parse_token("]")
-            self.accessor_tail()
+        if self.current_tok in FIRST_SET["<value>"]:
+            if self.current_tok in PREDICT_SET["<value>"]:
+                self.expr()
+            if self.current_tok in PREDICT_SET["<value_1>"]:
+                self.parse_token("[")
+                self.notation_val()
+                self.parse_token("]")
+                self.accessor_tail()
+        else: self.error_handler("MissingToken", "value")
         log.info("Exit: " + self.current_tok)
 
     def notation_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<notation_val>"]:
-            self.parse_token("piece_lit")
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_1>"]:
-            self.parse_token("sip_lit")
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_2>"]:
-            self.parse_token("flag_lit")
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_3>"]:
-            self.parse_token("chars_lit")
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_4>"]:
-            self.built_in_rec_call()
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_5>"]:
-            self.parse_token("[")
-            self.notation_val()
-            self.parse_token("]")
-            self.accessor_tail()
-        if self.current_tok in PREDICT_SET["<notation_val_6>"]:
-            self.parse_token("id")
-            self.id_notation_tail()
+        if self.current_tok in FIRST_SET["<notation_val>"]:
+            if self.current_tok in PREDICT_SET["<notation_val>"]:
+                self.parse_token("piece_lit")
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_1>"]:
+                self.parse_token("sip_lit")
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_2>"]:
+                self.parse_token("flag_lit")
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_3>"]:
+                self.parse_token("chars_lit")
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_4>"]:
+                self.built_in_rec_call()
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_5>"]:
+                self.parse_token("[")
+                self.notation_val()
+                self.parse_token("]")
+                self.accessor_tail()
+            if self.current_tok in PREDICT_SET["<notation_val_6>"]:
+                self.parse_token("id")
+                self.id_notation_tail()
+        else: self.error_handler("Custom", "Missing/Invalid notation value")
         log.info("Exit: " + self.current_tok)
         
     def element_value_tail(self):
@@ -448,19 +475,21 @@ class Parser:
 
     def notation_val1(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<notation_val1>"]:
-            self.parse_token("piece_lit")
-        if self.current_tok in PREDICT_SET["<notation_val1_1>"]:
-            self.parse_token("sip_lit")
-        if self.current_tok in PREDICT_SET["<notation_val1_2>"]:
-            self.parse_token("flag_lit")
-        if self.current_tok in PREDICT_SET["<notation_val1_3>"]:
-            self.parse_token("chars_lit")
-        if self.current_tok in PREDICT_SET["<notation_val1_4>"]:
-            self.built_in_rec_call()
-        if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
-            self.parse_token("id")
-            self.id_tail()
+        if self.current_tok in FIRST_SET["<notation_val1>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1>"]:
+                self.parse_token("piece_lit")
+            if self.current_tok in PREDICT_SET["<notation_val1_1>"]:
+                self.parse_token("sip_lit")
+            if self.current_tok in PREDICT_SET["<notation_val1_2>"]:
+                self.parse_token("flag_lit")
+            if self.current_tok in PREDICT_SET["<notation_val1_3>"]:
+                self.parse_token("chars_lit")
+            if self.current_tok in PREDICT_SET["<notation_val1_4>"]:
+                self.built_in_rec_call()
+            if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
+                self.parse_token("id")
+                self.id_tail()
+        else: self.error_handler("MissingToken", "notation value")
         log.info("Exit: " + self.current_tok)
 
     def id_notation_tail(self):
@@ -475,10 +504,12 @@ class Parser:
 
     def assignment_st_eq(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<assignment_st_eq>"]:
-            self.parse_token("=")
-            self.value()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<assignment_st_eq>"]:
+            if self.current_tok in PREDICT_SET["<assignment_st_eq>"]:
+                self.parse_token("=")
+                self.value()
+                self.parse_token(";")
+        else: self.error_handler("InvalidToken", "=")
         log.info("Exit: " + self.current_tok)
 
     def field_assignments(self):
@@ -507,72 +538,82 @@ class Parser:
         
     def built_in_rec_call(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<built-in_rec_call>"]:
-            self.built_in_rec()
-            self.tail1()
+        if self.current_tok in FIRST_SET["<built-in_rec_call>"]:
+            if self.current_tok in PREDICT_SET["<built-in_rec_call>"]:
+                self.built_in_rec()
+                self.tail1()
+        else: self.error_handler("Missing", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
     def tail1(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<tail1>"]:
-            self.call_tail()
-            self.accessor_tail()
+        if self.current_tok in FIRST_SET["<tail1>"]:
+            if self.current_tok in PREDICT_SET["<tail1>"]:
+                self.call_tail()
+                self.accessor_tail()
+        else: self.error_handler("InvalidToken", "(")
         log.info("Exit: " + self.current_tok)
 
     def built_in_rec(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<built-in_rec>"]:
-            self.parse_token("append")
-        if self.current_tok in PREDICT_SET["<built-in_rec_1>"]:
-            self.parse_token("bill")
-        if self.current_tok in PREDICT_SET["<built-in_rec_2>"]:
-            self.parse_token("copy")
-        if self.current_tok in PREDICT_SET["<built-in_rec_3>"]:
-            self.parse_token("cut")
-        if self.current_tok in PREDICT_SET["<built-in_rec_4>"]:
-            self.parse_token("fact")
-        if self.current_tok in PREDICT_SET["<built-in_rec_5>"]:
-            self.parse_token("matches")
-        if self.current_tok in PREDICT_SET["<built-in_rec_6>"]:
-            self.parse_token("pow")
-        if self.current_tok in PREDICT_SET["<built-in_rec_7>"]:
-            self.parse_token("rand")
-        if self.current_tok in PREDICT_SET["<built-in_rec_8>"]:
-            self.parse_token("remove")
-        if self.current_tok in PREDICT_SET["<built-in_rec_9>"]:
-            self.parse_token("reverse")
-        if self.current_tok in PREDICT_SET["<built-in_rec_10>"]:
-            self.parse_token("search")
-        if self.current_tok in PREDICT_SET["<built-in_rec_11>"]:
-            self.parse_token("size")
-        if self.current_tok in PREDICT_SET["<built-in_rec_12>"]:
-            self.parse_token("sort")
-        if self.current_tok in PREDICT_SET["<built-in_rec_13>"]:
-            self.parse_token("sqrt")
-        if self.current_tok in PREDICT_SET["<built-in_rec_14>"]:
-            self.parse_token("take")
-        if self.current_tok in PREDICT_SET["<built-in_rec_15>"]:
-            self.parse_token("tochars")
-        if self.current_tok in PREDICT_SET["<built-in_rec_16>"]:
-            self.parse_token("topiece")
-        if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
-            self.parse_token("tosip")
+        if self.current_tok in FIRST_SET["<built-in_rec>"]:
+            if self.current_tok in PREDICT_SET["<built-in_rec>"]:
+                self.parse_token("append")
+            if self.current_tok in PREDICT_SET["<built-in_rec_1>"]:
+                self.parse_token("bill")
+            if self.current_tok in PREDICT_SET["<built-in_rec_2>"]:
+                self.parse_token("copy")
+            if self.current_tok in PREDICT_SET["<built-in_rec_3>"]:
+                self.parse_token("cut")
+            if self.current_tok in PREDICT_SET["<built-in_rec_4>"]:
+                self.parse_token("fact")
+            if self.current_tok in PREDICT_SET["<built-in_rec_5>"]:
+                self.parse_token("matches")
+            if self.current_tok in PREDICT_SET["<built-in_rec_6>"]:
+                self.parse_token("pow")
+            if self.current_tok in PREDICT_SET["<built-in_rec_7>"]:
+                self.parse_token("rand")
+            if self.current_tok in PREDICT_SET["<built-in_rec_8>"]:
+                self.parse_token("remove")
+            if self.current_tok in PREDICT_SET["<built-in_rec_9>"]:
+                self.parse_token("reverse")
+            if self.current_tok in PREDICT_SET["<built-in_rec_10>"]:
+                self.parse_token("search")
+            if self.current_tok in PREDICT_SET["<built-in_rec_11>"]:
+                self.parse_token("size")
+            if self.current_tok in PREDICT_SET["<built-in_rec_12>"]:
+                self.parse_token("sort")
+            if self.current_tok in PREDICT_SET["<built-in_rec_13>"]:
+                self.parse_token("sqrt")
+            if self.current_tok in PREDICT_SET["<built-in_rec_14>"]:
+                self.parse_token("take")
+            if self.current_tok in PREDICT_SET["<built-in_rec_15>"]:
+                self.parse_token("tochars")
+            if self.current_tok in PREDICT_SET["<built-in_rec_16>"]:
+                self.parse_token("topiece")
+            if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
+                self.parse_token("tosip")
+        else: self.error_handler("MissingToken", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
     def call_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<call_tail>"]:
-            self.parse_token("(")
-            self.flavor()
-            self.parse_token(")")
+        if self.current_tok in FIRST_SET["<call_tail>"]:
+            if self.current_tok in PREDICT_SET["<call_tail>"]:
+                self.parse_token("(")
+                self.flavor()
+                self.parse_token(")")
+        else: self.error_handler("InvalidToken", "(")
         log.info("Exit: " + self.current_tok)
         
     def dimensions(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<dimensions>"]:
-            self.parse_token("[")
-            self.parse_token("]")
-            self.dimensions_tail()
+        if self.current_tok in FIRST_SET["<dimensions>"]:
+            if self.current_tok in PREDICT_SET["<dimensions>"]:
+                self.parse_token("[")
+                self.parse_token("]")
+                self.dimensions_tail()
+        else: self.error_handler("InvalidToken", "[")
         log.info("Exit: " + self.current_tok)
 
     def dimensions_tail(self):
@@ -586,10 +627,12 @@ class Parser:
 
     def array_declare(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<array_declare>"]:
-            self.parse_token("id")
-            self.array_table_init()
-            self.array_declare_tail()
+        if self.current_tok in FIRST_SET["<array_declare>"]:
+            if self.current_tok in PREDICT_SET["<array_declare>"]:
+                self.parse_token("id")
+                self.array_table_init()
+                self.array_declare_tail()
+        else: self.error_handler("InvalidToken", "id")
         log.info("Exit: " + self.current_tok)
 
     def array_table_init(self):
@@ -602,7 +645,7 @@ class Parser:
             return
         log.info("Exit: " + self.current_tok)
 
-    def array_declare_Tail(self):
+    def array_declare_tail(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<array_declare_tail>"]:
             self.parse_token(",")
@@ -614,50 +657,58 @@ class Parser:
 
     def table_prototype(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<table_prototype>"]:
-            self.parse_token("table")
-            self.parse_token("of")
-            self.parse_token("id")
-            self.parse_token("=")
-            self.parse_token("[")
-            self.required_decl()
-            self.parse_token("]")
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<table_prototype>"]:
+            if self.current_tok in PREDICT_SET["<table_prototype>"]:
+                self.parse_token("table")
+                self.parse_token("of")
+                self.parse_token("id")
+                self.parse_token("=")
+                self.parse_token("[")
+                self.required_decl()
+                self.parse_token("]")
+                self.parse_token(";")
+        else: self.error_handler("Custom", "Invalid table prototype declaration")
         log.info("Exit: " + self.current_tok)
 
     def required_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<required_decl>"]:
-            self.decl_head()
-            self.parse_token(";")
-            self.required_decl_tail()
+        if self.current_tok in FIRST_SET["<required_decl>"]:
+            if self.current_tok in PREDICT_SET["<required_decl>"]:
+                self.decl_head()
+                self.parse_token(";")
+                self.required_decl_tail()
+        else: self.error_handler("MissingToken", "Missing declaration")
         log.info("Exit: " + self.current_tok)
 
     def decl_head(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<decl_head>"]:
-            self.data_types_dims()
-            self.parse_token("of")
-            self.parse_token("id")
+        if self.current_tok in FIRST_SET["<decl_head>"]:
+            if self.current_tok in PREDICT_SET["<decl_head>"]:
+                self.data_types_dims()
+                self.parse_token("of")
+                self.parse_token("id")
+        else: self.error_handler("MissingToken", "declaration head")
         log.info("Exit: " + self.current_tok)
 
     def data_types_dims(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<data_types_dims>"]:
-            self.parse_token("piece")
-            self.dimensions_tail()
-        if self.current_tok in PREDICT_SET["<data_types_dims_1>"]:
-            self.parse_token("sip")
-            self.dimensions_tail()
-        if self.current_tok in PREDICT_SET["<data_types_dims_2>"]:
-            self.parse_token("flag")
-            self.dimensions_tail()
-        if self.current_tok in PREDICT_SET["<data_types_dims_3>"]:
-            self.parse_token("chars")
-            self.dimensions_tail()
-        if self.current_tok in PREDICT_SET["<data_types_dims_4>"]:
-            self.parse_token("id")
-            self.dimensions_tail()
+        if self.current_tok in FIRST_SET["<data_types_dims>"]:
+            if self.current_tok in PREDICT_SET["<data_types_dims>"]:
+                self.parse_token("piece")
+                self.dimensions_tail()
+            if self.current_tok in PREDICT_SET["<data_types_dims_1>"]:
+                self.parse_token("sip")
+                self.dimensions_tail()
+            if self.current_tok in PREDICT_SET["<data_types_dims_2>"]:
+                self.parse_token("flag")
+                self.dimensions_tail()
+            if self.current_tok in PREDICT_SET["<data_types_dims_3>"]:
+                self.parse_token("chars")
+                self.dimensions_tail()
+            if self.current_tok in PREDICT_SET["<data_types_dims_4>"]:
+                self.parse_token("id")
+                self.dimensions_tail()
+        else: self.error_handler("InvalidToken", "Invalid data type in declaration head")
         log.info("Exit: " + self.current_tok)
         
     def required_decl_tail(self):
@@ -671,19 +722,23 @@ class Parser:
         
     def table_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<table_decl>"]:
-            self.dimensions_tail()
-            self.parse_token("of")
-            self.table_declare()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<table_decl>"]:
+            if self.current_tok in PREDICT_SET["<table_decl>"]:
+                self.dimensions_tail()
+                self.parse_token("of")
+                self.table_declare()
+                self.parse_token(";")
+        else: self.error_handler("Custom", "Invalid table declaration")
         log.info("Exit: " + self.current_tok)
 
     def table_declare(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<table_declare>"]:
-            self.parse_token("id")
-            self.array_table_init()
-            self.table_declare_tail()
+        if self.current_tok in FIRST_SET["<table_declare>"]:
+            if self.current_tok in PREDICT_SET["<table_declare>"]:
+                self.parse_token("id")
+                self.array_table_init()
+                self.table_declare_tail()
+        else: self.error_handler("InvalidToken", "id")
         log.info("Exit: " + self.current_tok)
 
     def table_declare_tail(self):
@@ -700,7 +755,8 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.parse_token("prepare")
-            self.decl_head()
+            if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
+            else: self.error_handler("MissingToken", "declaration head")
             self.parse_token("(")
             self.spice()
             self.parse_token(")")
@@ -739,6 +795,7 @@ class Parser:
             self.local_decl()
             self.statements()
             self.parse_token("}")
+        else: self.error_handler("MissingToken", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def local_decl(self):
@@ -779,108 +836,124 @@ class Parser:
 
     def local_id_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<local_id_tail>"]:
-            self.parse_token("of")
-            self.table_declare()
-            self.parse_token(";")
-            self.local_decl()
-        if self.current_tok in PREDICT_SET["<local_id_tail_1>"]:
-            self.parse_token("[")
-            self.endb_tail()
-        if self.current_tok in PREDICT_SET["<local_id_tail_2>"]:
-            self.table_accessor()
-            self.statements()
-        if self.current_tok in PREDICT_SET["<local_id_tail_3>"]:
-            self.assignment_op()
-            self.value()
-            self.parse_token(";")
-            self.statements()
-        if self.current_tok in PREDICT_SET["<local_id_tail_4>"]:
-            self.tail1()
-            self.parse_token(";")
-            self.statements()
+        if self.current_tok in FIRST_SET["<local_id_tail>"]:
+            if self.current_tok in PREDICT_SET["<local_id_tail>"]:
+                self.parse_token("of")
+                self.table_declare()
+                self.parse_token(";")
+                self.local_decl()
+            if self.current_tok in PREDICT_SET["<local_id_tail_1>"]:
+                self.parse_token("[")
+                self.endb_tail()
+            if self.current_tok in PREDICT_SET["<local_id_tail_2>"]:
+                self.table_accessor()
+                self.statements()
+            if self.current_tok in PREDICT_SET["<local_id_tail_3>"]:
+                self.assignment_op()
+                self.value()
+                self.parse_token(";")
+                self.statements()
+            if self.current_tok in PREDICT_SET["<local_id_tail_4>"]:
+                self.tail1()
+                self.parse_token(";")
+                self.statements()
+        else: self.error_handler("Custom", "Invalid declaration")
         log.info("Exit: " + self.current_tok)
 
     def endb_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<]_tail>"]:
-            self.parse_token("]")
-            self.dimensions_tail()
-            self.parse_token("of")
-            self.table_declare()
-            self.parse_token(";")
-            self.local_decl()
-        if self.current_tok in PREDICT_SET["<]_tail_1>"]:
-            self.expr()
-            self.parse_token("]")
-            self.accessor_tail()
-            self.assignment_op()
-            self.value()
-            self.parse_token(";")
-            self.statements()
+        if self.current_tok in FIRST_SET["<endb_tail>"]:
+            if self.current_tok in PREDICT_SET["<]_tail>"]:
+                self.parse_token("]")
+                self.dimensions_tail()
+                self.parse_token("of")
+                self.table_declare()
+                self.parse_token(";")
+                self.local_decl()
+            if self.current_tok in PREDICT_SET["<]_tail_1>"]:
+                self.expr()
+                self.parse_token("]")
+                self.accessor_tail()
+                self.assignment_op()
+                self.value()
+                self.parse_token(";")
+                self.statements()
+        else: self.error_handler("MissingToken", "] or value")
         log.info("Exit: " + self.current_tok)
 
     def id_statements(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<id_statements>"]:
-            self.parse_token("id")
-            self.id_statements_ext()
-            self.statements()
+        if self.current_tok in FIRST_SET["<id_statements>"]:
+            if self.current_tok in PREDICT_SET["<id_statements>"]:
+                self.parse_token("id")
+                self.id_statements_ext()
+                self.statements()
+        else: self.error_handler("InvalidToken", "id")
         log.info("Exit: " + self.current_tok)
 
     def id_statements_ext(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<id_statements_ext>"]:
-            self.tail1()
-            self.parse_token(";")
-        if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
-            self.assignment_st()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<id_statements_ext>"]:
+            if self.current_tok in PREDICT_SET["<id_statements_ext>"]:
+                self.tail1()
+                self.parse_token(";")
+            if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
+                self.assignment_st()
+                self.parse_token(";")
+        else: self.error_handler("Custom", "Invalid id statement")
         log.info("Exit: " + self.current_tok)
 
     def assignment_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<assignment_st>"]:
-            self.accessor_tail()
-            self.assignment_op()
-            self.value()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<assignment_st>"]:
+            if self.current_tok in PREDICT_SET["<assignment_st>"]:
+                self.accessor_tail()
+                self.assignment_op()
+                self.value()
+                self.parse_token(";")
+        else: self.error_handler("Custom", "Invalid assignment statement")
         log.info("Exit: " + self.current_tok)
 
     def assignment_op(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<assignment_op>"]:
-            self.parse_token("=")
-        if self.current_tok in PREDICT_SET["<assignment_op_1>"]:
-            self.parse_token("+=")
-        if self.current_tok in PREDICT_SET["<assignment_op_2>"]:
-            self.parse_token("-=")
-        if self.current_tok in PREDICT_SET["<assignment_op_3>"]:
-            self.parse_token("*=")
-        if self.current_tok in PREDICT_SET["<assignment_op_4>"]:
-            self.parse_token("/=")
-        if self.current_tok in PREDICT_SET["<assignment_op_5>"]:
-            self.parse_token("%=")
+        if self.current_tok in FIRST_SET["<assignment_op>"]:
+            if self.current_tok in PREDICT_SET["<assignment_op>"]:
+                self.parse_token("=")
+            if self.current_tok in PREDICT_SET["<assignment_op_1>"]:
+                self.parse_token("+=")
+            if self.current_tok in PREDICT_SET["<assignment_op_2>"]:
+                self.parse_token("-=")
+            if self.current_tok in PREDICT_SET["<assignment_op_3>"]:
+                self.parse_token("*=")
+            if self.current_tok in PREDICT_SET["<assignment_op_4>"]:
+                self.parse_token("/=")
+            if self.current_tok in PREDICT_SET["<assignment_op_5>"]:
+                self.parse_token("%=")
+        else: self.error_handler("MissingToken", "assignment operator")
         log.info("Exit: " + self.current_tok)
     
     def conditional_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<conditional_st>"]:
-            self.cond_check()
-        if self.current_tok in PREDICT_SET["<conditional_st_1>"]:
-            self.cond_menu()
+        if self.current_tok in FIRST_SET["<conditional_st>"]:
+            if self.current_tok in PREDICT_SET["<conditional_st>"]:
+                self.cond_check()
+            if self.current_tok in PREDICT_SET["<conditional_st_1>"]:
+                self.cond_menu()
+        else: self.error_handler("Custom", "Invalid conditional statement")
         log.info("Exit: " + self.current_tok)
 
     def cond_check(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<cond_check>"]:
-            self.parse_token("check")
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-            self.platter()
-            self.alt_clause()
-            self.instead_clause()
+        if self.current_tok in FIRST_SET["<cond_check>"]:
+            if self.current_tok in PREDICT_SET["<cond_check>"]:
+                self.parse_token("check")
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+                self.platter()
+                self.alt_clause()
+                self.instead_clause()
+        else: self.error_handler("MissingToken", "check")
         log.info("Exit: " + self.current_tok)
 
     def alt_clause(self):
@@ -909,21 +982,25 @@ class Parser:
 
     def cond_menu(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<cond_menu>"]:
-            self.parse_token("menu")
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-            self.menu_platter()
+        if self.current_tok in FIRST_SET["<cond_menu>"]:
+            if self.current_tok in PREDICT_SET["<cond_menu>"]:
+                self.parse_token("menu")
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+                self.menu_platter()
+        else: self.error_handler("InvalidToken", "menu")
         log.info("Exit: " + self.current_tok)
 
     def menu_platter(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<menu_platter>"]:
-            self.parse_token("{")
-            self.choice_clause()
-            self.usual_clause()
-            self.parse_token("}")
+        if self.current_tok in FIRST_SET["<menu_platter>"]:
+            if self.current_tok in PREDICT_SET["<menu_platter>"]:
+                self.parse_token("{")
+                self.choice_clause()
+                self.usual_clause()
+                self.parse_token("}")
+        else: self.error_handler("MissingToken", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def choice_clause(self):
@@ -952,93 +1029,107 @@ class Parser:
 
     def looping_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<looping_st>"]:
-            self.loop_pass()
-        if self.current_tok in PREDICT_SET["<looping_st_1>"]:
-            self.loop_repeat()
-        if self.current_tok in PREDICT_SET["<looping_st_2>"]:
-            self.loop_order()
+        if self.current_tok in FIRST_SET["<looping_st>"]:
+            if self.current_tok in PREDICT_SET["<looping_st>"]:
+                self.loop_pass()
+            if self.current_tok in PREDICT_SET["<looping_st_1>"]:
+                self.loop_repeat()
+            if self.current_tok in PREDICT_SET["<looping_st_2>"]:
+                self.loop_order()
+        else: self.error_handler("Custom", "Invalid looping statement")
         log.info("Exit: " + self.current_tok)
 
     def loop_pass(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<loop_pass>"]:
-            self.parse_token("pass")
-            self.parse_token("(")
-            self.parse_token("id")
-            self.ingredient_init()
-            self.parse_token(";")
-            self.assignment_st()
-            self.expr()
-            self.parse_token(")")
-            self.platter()
+        if self.current_tok in FIRST_SET["<loop_pass>"]:
+            if self.current_tok in PREDICT_SET["<loop_pass>"]:
+                self.parse_token("pass")
+                self.parse_token("(")
+                self.parse_token("id")
+                self.ingredient_init()
+                self.parse_token(";")
+                self.assignment_st()
+                self.expr()
+                self.parse_token(")")
+                self.platter()
+        else: self.error_handler("MissingToken", "pass")
         log.info("Exit: " + self.current_tok)
 
     def loop_repeat(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<loop_repeat>"]:
-            self.parse_token("repeat")
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-            self.platter()
+        if self.current_tok in FIRST_SET["<loop_repeat>"]:
+            if self.current_tok in PREDICT_SET["<loop_repeat>"]:
+                self.parse_token("repeat")
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+                self.platter()
+        else: self.error_handler("MissingToken", "repeat")
         log.info("Exit: " + self.current_tok)
 
     def loop_order(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<loop_order>"]:
-            self.parse_token("order")
-            self.platter()
-            self.parse_token("repeat")
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<loop_order>"]:
+            if self.current_tok in PREDICT_SET["<loop_order>"]:
+                self.parse_token("order")
+                self.platter()
+                self.parse_token("repeat")
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+                self.parse_token(";")
+        else: self.error_handler("MissingToken", "order")
 
     def jump_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<jump_st>"]:
-            self.jump_next()
-        if self.current_tok in PREDICT_SET["<jump_st_1>"]:
-            self.jump_stop()
-        if self.current_tok in PREDICT_SET["<jump_st_2>"]:
-            self.jump_serve()
+        if self.current_tok in FIRST_SET["<jump_st>"]:
+            if self.current_tok in PREDICT_SET["<jump_st>"]:
+                self.jump_next()
+            if self.current_tok in PREDICT_SET["<jump_st_1>"]:
+                self.jump_stop()
+            if self.current_tok in PREDICT_SET["<jump_st_2>"]:
+                self.jump_serve()
+        else: self.error_handler("Custom", "Invalid jump statement")
         log.info("Exit: " + self.current_tok)
 
     def jump_next(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<jump_next>"]:
-            self.parse_token("next")
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<jump_next>"]:
+            if self.current_tok in PREDICT_SET["<jump_next>"]:
+                self.parse_token("next")
+                self.parse_token(";")
+        else: self.error_handler("InvalidToken", "next")
         log.info("Exit: " + self.current_tok)
 
     def jump_stop(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<jump_stop>"]:
-            self.parse_token("stop")
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<jump_stop>"]:
+            if self.current_tok in PREDICT_SET["<jump_stop>"]:
+                self.parse_token("stop")
+                self.parse_token(";")
+        else: self.error_handler("InvalidToken", "stop")
         log.info("Exit: " + self.current_tok)
 
     def jump_serve(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<jump_serve>"]:
-            self.parse_token("serve")
-            self.value()
-            self.parse_token(";")
+        if self.current_tok in FIRST_SET["<jump_serve>"]:
+            if self.current_tok in PREDICT_SET["<jump_serve>"]:
+                self.parse_token("serve")
+                self.value()
+                self.parse_token(";")
+        else: self.error_handler("InvalidToken", "serve")
         log.info("Exit: " + self.current_tok)
 
-# Example usage
+
 if __name__ == "__main__":
     # for debugging
-    code = """
-    start()
-    """
+    # code = """start();"""
+    filename = "parser.platter"
+    code = run_file(filename)
     lexer = Lexer(code)
     tokens = lexer.tokenize()
     parser = Parser(tokens)
-
     try:
-        parser.parse()
-        print("Syntax OK!")
+        if parser.parse(): print("✔ No Syntax Error")
     except SyntaxError as e:
         print(str(e))

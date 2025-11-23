@@ -5,7 +5,7 @@ from tests.test_parser_util import run_file
 import logging as log                                      
 
 # To disable logs, set level=log.CRITICAL. 
-# To enable logs, set level=log.INFO
+# To enable logs, set level=log.DEBUG
 log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
@@ -46,26 +46,25 @@ class Parser:
 
     def parse_token(self, tok):
         if self.current_tok == tok: 
-            # log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
-            print(f"├──Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
+            log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
+            # print(f"├──Expected: {tok} | Current: {self.current_tok} | Remark: MATCH!")
             self.advance(tok)
         else:
-            # log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
-            print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
+            log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!\n")
+            # print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             self.result = False
             self.error_handler("InvalidToken", tok)
-        print("")
 
     def advance(self, tok): 
         if self.pos < self.tokens_length:
             self.pos += 1
             self.upd_tok_attr()
-            # log.warning(f"Consuming: {tok} -> {self.current_tok}")
-            print(f"└──Consuming: {tok} -> {self.current_tok}")
+            log.warning(f"Consuming: {tok} -> {self.current_tok}\n")
+            # print(f"└──Consuming: {tok} -> {self.current_tok}")
         else: 
             self.current_tok = "EOF" # end of token list, EOF reached
-            print(f"└──Consuming: {tok} -> {self.current_tok}")
-            # log.warning(f"Consuming: {tok} -> EOF")
+            # print(f"└──Consuming: {tok} -> {self.current_tok}")
+            log.warning(f"Consuming: {tok} -> EOF\n")
             # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
 
 
@@ -76,13 +75,14 @@ class Parser:
             "MissingToken": f"✘ Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})",
             "Custom": f"✘ Syntax Error: {tok} (line {self.current_line}, col {self.current_col})"
         }
+        self.result = False
         raise SyntaxError(errors[error_type])
 
     # CFG Parsing Methods 
 
     def parse(self):
         self.program()
-        if self.result == True: print("✔ No Syntax Error")
+        return self.result
 
     def program(self):
         log.info("Enter: " + self.current_tok)
@@ -107,14 +107,14 @@ class Parser:
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<global_decl>"]:
-            self.decl_data_type() if self.current_tok in PREDICT_SET["<decl_data_type>"] else self.error_handler("InvalidToken", "Invalid ingredient declaration")
+            self.decl_data_type()
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_1>"]:
-            self.table_prototype() if self.current_tok in PREDICT_SET["<table_prototype>"] else self.error_handler("Custom", "Invalid table prototype declaration")
+            self.table_prototype()
             self.global_decl() 
         if self.current_tok in PREDICT_SET["<global_decl_2>"]:
             self.parse_token("id")
-            self.table_decl() if self.current_tok in PREDICT_SET["<table_decl>"] else self.error_handler("Custom", "Invalid table declaration")
+            self.table_decl() 
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_3>"]:
             return # λ
@@ -1130,6 +1130,6 @@ if __name__ == "__main__":
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     try:
-        parser.parse()
+        if parser.parse(): print("✔ No Syntax Error")
     except SyntaxError as e:
         print(str(e))

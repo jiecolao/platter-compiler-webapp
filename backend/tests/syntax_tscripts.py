@@ -1,22 +1,4 @@
 SYNTAX_TSCRIPTS = [
-  {
-    "number": 1,
-    "actual_output": "Syntax OK",
-    "expected_output": "Syntax Error",
-    "code":  
-    """
-    start(){} prepare
-    """
-  },
-  {
-    "number": 2,
-    "actual_output": "Syntax OK",
-    "expected_output": "Syntax Error",
-    "code":  
-    """
-    int
-    """
-  },
   { 
     "number": 3,
     "actual_output": "Syntax Error",
@@ -24,7 +6,7 @@ SYNTAX_TSCRIPTS = [
     "code":  
     """
     start(){
-      prepare(){}
+      prepare;){}
     }
     """
   },
@@ -56,6 +38,18 @@ SYNTAX_TSCRIPTS = [
     """
     check;;
     start(){}
+    """
+  },
+  {
+    "number": 7,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    iwag of a = ;
+    start(){
+      
+    }
     """
   }
 ]

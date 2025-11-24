@@ -6,18 +6,18 @@ import logging as log
 
 # To disable logs, set level=log.CRITICAL. 
 # To enable logs, set level=log.DEBUG
-log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
+log.basicConfig(level=log.CRITICAL, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
     [/] Cleanup
-    [?] Additional errors
+    [/] Additional errors
         [/] Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line '{self.current_line}', col '{self.current_col}')
         [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
         [] Syntax Error: Expected '{tok}' (line '{t.line}', col '{t.col}')
         [!] Syntax Error: Expected '{tok}' but got EOF (?)
     [/] Update error compilation
-    [] Connect to front-end
+    [/] Connect to front-end
 
 """
 
@@ -40,7 +40,7 @@ class Parser:
         self.current_col = (self.tokenlist[self.pos].col)-1
 
     def upd_tok_attr(self):
-        self.current_tok = self.tokens[self.pos] # if self.tokens else None
+        self.current_tok = self.tokens[self.pos] 
         self.current_line = self.tokenlist[self.pos].line
         self.current_col = self.tokenlist[self.pos].col
 
@@ -66,7 +66,6 @@ class Parser:
             # print(f"└──Consuming: {tok} -> {self.current_tok}")
             log.warning(f"Consuming: {tok} -> EOF\n")
             # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
-
 
     def error_handler(self, error_type, tok):        
         errors = {

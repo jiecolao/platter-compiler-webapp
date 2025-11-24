@@ -70,10 +70,10 @@ class Parser:
 
     def error_handler(self, error_type, tok):        
         errors = {
-            "InvalidToken": f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
-            "UnknownToken": f"✘ Syntax Error: Unrecognizable token '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
-            "MissingToken": f"✘ Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})",
-            "Custom": f"✘ Syntax Error: {tok} (line {self.current_line}, col {self.current_col})"
+            "InvalidToken": f"Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "UnknownToken": f"Syntax Error: Unrecognizable token '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
+            "MissingToken": f"Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})",
+            "Custom": f"Syntax Error: {tok} (line {self.current_line}, col {self.current_col})"
         }
         self.result = False
         raise SyntaxError(errors[error_type])

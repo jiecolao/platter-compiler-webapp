@@ -143,7 +143,11 @@ serve piece of start() {
 
 	// Compute error count: treat messages that start with "Lexical OK" as non-errors (count as zero)
 	$: errorCount = termMessages.filter(
-		(m) => !(typeof m.text === 'string' && m.text.startsWith('Lexical OK'))
+		(m) =>
+			!(
+				typeof m.text === 'string' &&
+				(m.text.startsWith('Lexical OK') || m.text.startsWith('No Syntax Error'))
+			)
 	).length;
 
 	function setTerminalOk(message = 'No Error') {

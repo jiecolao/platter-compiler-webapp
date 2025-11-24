@@ -54,7 +54,7 @@ async def analyze_syntax(input_data: CodeInput):
         parser = Parser(tokens)
         parser.parse()
         
-        return {"message": "Syntax OK", "success": True}
+        return {"message": "No Syntax Error", "success": True}
     except SyntaxError as e:
         return {"message": str(e), "success": False}
     except Exception as e:

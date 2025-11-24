@@ -1,47 +1,39 @@
-from pprint import pprint
 import os
 from app.lexer.lexer import Lexer
-import subprocess
+from app.parser.parser import Parser
+from tests.syntax_tscripts import SYNTAX_TSCRIPTS
 
-samples_dir = "./tests/lexer_programs/"
+class TestParser():
 
-def set_clipboard(text: str):
-    subprocess.run("clip", universal_newlines=True, input=text)
+    def run_script(self):
+        # choice = input("Enter test script number: ").strip()
+        for script in SYNTAX_TSCRIPTS:
+            code = script["code"]
+            lexer = Lexer(code)
+            tokens = lexer.tokenize()
+            parser = Parser(tokens)
+            result = ""
 
-def run_script():
-  choice = input("Include whitespace tokens (y/n)? ").lower().strip()
-  include_whitespace = choice == 'y'
-  platter_files = [f for f in os.listdir(samples_dir) if f.endswith(".platter") or f.endswith(".draft")]
-  print(f"\nFiles in {samples_dir}:")
-  for i, f in enumerate(platter_files, 1):
-      print(f" {i}. {f}")
-  index = int(input("\nEnter file index from above: ").strip())
-  filename = platter_files[index - 1]
-  filepath = os.path.join(samples_dir, filename)
-  with open(filepath, "r", encoding="utf-8") as f:
-      source = f.read()
-  lexer = Lexer(source)
-  tokens = lexer.tokenize()
-  tokens = [
-      t for t in tokens
-      if t.type not in ("comment", "space", "newline", "tab") or include_whitespace
-  ]
-  for t in tokens:
-     print(t)
-  # print("\n\nTOKENS:")
-  # pprint(tokens)
-  set_clipboard(("\n".join(t.type for t in tokens)))
+            try:
+                result = parser.parse()
+                msg = (
+                    f"============ CODE #{script['number']} ================\n"
+                    f"CODE:\n{script['code']}\n"
+                    f"EXPECTED OUTPUT: {script['expected_output']}\n"
+                    f"SYNTAX OUTPUT: {"✔ No Syntax Error" if result else None}\n"
+                    f"=====================================\n"
+                )
+            except SyntaxError as e:
+                msg = (
+                    f"============ CODE #{script['number']} ================\n"
+                    f"CODE:\n{script['code']}\n"
+                    f"EXPECTED OUTPUT: {script['expected_output']}\n"
+                    f"SYNTAX OUTPUT: {e}\n"
+                    f"=====================================\n"
+                )
+            
+            print(msg)
 
-def test_script(filename):
-    samples_dir = "./tests/lexer_programs/"
-    filepath = os.path.join(samples_dir, filename)
-    with open(filepath, "r", encoding="utf-8") as f:
-        source = f.read()
-        return source
-        
-        # lexer = Lexer(source)
-        # tokens = lexer.tokenize()
-        # print(f"\n\nTOKENS FOR {filename}:")
-        # pprint(tokens)
 if __name__=="__main__":
-    test_script()
+    tester = TestParser()
+    tester.run_script()

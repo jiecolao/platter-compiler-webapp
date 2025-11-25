@@ -46,10 +46,12 @@
 sip of y = 3.67;
 chars[] of names = ["Hello Platter", "Raph", "Jieco"];
 
-prepare sip of sips() { serve y; }
+prepare sip of sips() { check(topiece(y) > x) { serve x;} instead {serve y;} }
+
 prepare piece of pieces() {
 	serve x;
 }
+
 start() {
 	piece of z = topiece(topiece(sips()) + pieces());
 	serve z;
@@ -409,7 +411,16 @@ start() {
 
 				<div class="spacer"></div>
 				<!-- replace icons based on theme -->
-				<button class="icon-btn" title="refresh"
+				<button
+					class="icon-btn"
+					title="refresh"
+					on:click={() => {
+						if (cmInstance) cmInstance.setValue('');
+						codeInput = '';
+						clearTerminal();
+						lexerRows.length = 0;
+						tokens = [];
+					}}
 					>{#if theme === 'dark'}
 						<img class="icon" src={refresh} alt="Dark Theme Icon" />
 					{:else}
@@ -473,7 +484,7 @@ start() {
 		<!-- RIGHT SIDEBAR -->
 		<aside class="right">
 			<div class="actions">
-				<button class="btn">
+				<button class="btn" on:click={() => window.open(window.location.href, '_blank')}>
 					{#if theme === 'dark'}
 						<img class="icon" src={newFile} alt="Dark Theme Icon" />
 					{:else}

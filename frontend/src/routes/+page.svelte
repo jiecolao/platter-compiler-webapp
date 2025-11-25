@@ -43,11 +43,16 @@
 	let activeTab: 'lexical' | 'syntax' | 'semantic' = 'lexical';
 
 	let codeInput = `piece of x = 42;
-piece of y = 3;
-chars[] of name = "Hello Platter";
+sip of y = 3.67;
+chars[] of names = ["Hello Platter", "Raph", "Jieco"];
 
-serve piece of start() {
-  piece of y = y + x;
+prepare sip of sips() { serve y; }
+prepare piece of pieces() {
+	serve x;
+}
+start() {
+	piece of z = topiece(topiece(sips()) + pieces());
+	serve z;
 }`;
 
 	type Token = { type: string; value: string; line: number; col: number };

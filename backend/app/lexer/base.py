@@ -40,11 +40,17 @@ class LexerBase:
         self.ascii_2 = self.ascii + ['\t']
         self.ascii_3 = [c for c in self.ascii if c != '#'] + ['\n', '\t']
 
+        self.colon_dlm = self.whitespace + [':']
+        self.curly_dlm = self.whitespace + ['{']
+        self.dtype_dlm = self.whitespace + ['[']
         self.equal_dlm = self.whitespace + self.alphanumeric + ['(', '[', '-', '_', '"']
-        self.dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':', '#']
+        self.flag_dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '!', '"']
+        self.id_delim = self.whitespace + ['(', ')', '[', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':', '#']
         self.num_delim = self.whitespace + ['(', ')', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':']
         self.op1_dlm = self.whitespace + self.alphanumeric + ['(', '-', '_', '"']
         self.op2_dlm = self.whitespace + self.alpha + ['(', '_', '"']
+        self.paren_dlm = self.whitespace + ['(']
+        self.term_dlm = self.whitespace + [';']
 
     def advance(self):
         """Moves to the next character, updating line and column."""

@@ -805,10 +805,9 @@ class TestPlatterLexerStrings(unittest.TestCase):
         },
         {
             "number": 73,
-            "code": "5..2\r\n.5.5 ",
+            "code": "5..2\n.5.5 ",
             "expected_types": [
-                "Invalid Lexeme", "Invalid Character", "Invalid Lexeme", "Invalid Character", "Invalid Character",
-                "sip_lit"
+                "Invalid Lexeme", "Invalid Character", "piece_lit", "Invalid Character", "sip_lit"
             ]
         },
         {

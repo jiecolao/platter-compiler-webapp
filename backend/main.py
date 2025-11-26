@@ -59,3 +59,19 @@ async def analyze_syntax(input_data: CodeInput):
         return {"message": str(e), "success": False}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Syntax analysis failed: {str(e)}")
+    
+
+@app.post("/analyzeSemantic")
+async def analyze_semantic(input_data: CodeInput):
+    """Analyze Sementics of Platter code"""
+    try:
+        # lexer = Lexer(input_data.code)
+        # tokens = lexer.tokenize()
+        # parser = Parser(tokens)
+        # parser.parse()
+        
+        return {"message": "Semantic Analysis not yet implemented", "success": False}
+    except SyntaxError as e:
+        return {"message": str(e), "success": False}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Semantic analysis failed: {str(e)}")

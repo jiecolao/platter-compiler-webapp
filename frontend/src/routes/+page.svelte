@@ -167,6 +167,27 @@ start() {
 		termMessages = [];
 	}
 
+	async function analyzeSemantic() {
+		activeTab = 'semantic';
+		setTerminalError('Semantics not yet implemented');
+
+		try {
+			const res = await fetch('http://localhost:8000/analyzeSemantic', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code: codeInput })
+			});
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			const data = await res.json();
+
+			if (data.success) {
+				setTerminalOk(data.message || 'Semantic analysis completed successfully');
+			} else {
+				setTerminalError(data.message || 'Semantic analysis failed');
+			}
+		} catch (err) {}
+	}
+
 	async function analyzeSyntax() {
 		await analyzeLexical();
 
@@ -400,7 +421,7 @@ start() {
 					{/if}
 					<span>Syntax</span>
 				</button>
-				<button class="pill {activeTab === 'semantic' ? 'active' : ''}" on:click={analyzeLexical}>
+				<button class="pill {activeTab === 'semantic' ? 'active' : ''}" on:click={analyzeSemantic}>
 					{#if theme === 'dark'}
 						<img class="icon" src={synSemLexIcon} alt="Semantic Icon" />
 					{:else}
@@ -484,7 +505,13 @@ start() {
 		<!-- RIGHT SIDEBAR -->
 		<aside class="right">
 			<div class="actions">
-				<button class="btn" on:click={() => window.open(window.location.href, '_blank')}>
+				<button
+					class="btn"
+					on:click={() => {
+						const newWindow = window.open(window.location.href, '_blank');
+						if (newWindow) setTimeout(() => (newWindow.document.body.style.zoom = '80%'), 100);
+					}}
+				>
 					{#if theme === 'dark'}
 						<img class="icon" src={newFile} alt="Dark Theme Icon" />
 					{:else}

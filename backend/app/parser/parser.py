@@ -6,18 +6,18 @@ import logging as log
 
 # To disable logs, set level=log.CRITICAL. 
 # To enable logs, set level=log.DEBUG
-log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
+log.basicConfig(level=log.CRITICAL, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
     [/] Cleanup
-    [?] Additional errors
+    [/] Additional errors
         [/] Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line '{self.current_line}', col '{self.current_col}')
         [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
         [] Syntax Error: Expected '{tok}' (line '{t.line}', col '{t.col}')
         [!] Syntax Error: Expected '{tok}' but got EOF (?)
     [/] Update error compilation
-    [] Connect to front-end
+    [/] Connect to front-end
 
 """
 
@@ -31,18 +31,13 @@ class Parser:
 
         """ Properties """
         self.tokens = [t.type for t in self.tokenlist]
-        self.tokens_length = len(self.tokens)-1 
+        self.tokens_length = len(self.tokens)-1
         self.pos = 0
 
         """ Token Attributes """
         self.current_tok = self.tokens[self.pos]
         self.current_line = self.tokenlist[self.pos].line
-        self.current_col = (self.tokenlist[self.pos].col)-1
-
-    def upd_tok_attr(self):
-        self.current_tok = self.tokens[self.pos] # if self.tokens else None
-        self.current_line = self.tokenlist[self.pos].line
-        self.current_col = self.tokenlist[self.pos].col
+        self.current_col = (self.tokenlist[self.pos].col)
 
     def parse_token(self, tok):
         if self.current_tok == tok: 
@@ -53,7 +48,7 @@ class Parser:
             log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!\n")
             # print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             self.result = False
-            self.error_handler("InvalidToken", tok)
+            self.error_handler("UnexpectedTok_err", tok)
 
     def advance(self, tok): 
         if self.pos < self.tokens_length:
@@ -67,13 +62,19 @@ class Parser:
             log.warning(f"Consuming: {tok} -> EOF\n")
             # raise SyntaxError (f"Syntax Error: Expected '{tok}' but got {self.current_tok}")
 
+    def upd_tok_attr(self):
+        self.current_tok = self.tokens[self.pos] 
+        self.current_line = self.tokenlist[self.pos].line
+        self.current_col = self.tokenlist[self.pos].col
 
-    def error_handler(self, error_type, tok):        
+    def error_handler(self, error_type, tok, expected_toklist=None):        
         errors = {
-            "InvalidToken": f"✘ Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
-            "UnknownToken": f"✘ Syntax Error: Unrecognizable token '{self.current_tok}' (line {self.current_line}, col {self.current_col})",
-            "MissingToken": f"✘ Syntax Error: Missing {tok} (line {self.current_line}, col {self.current_col})",
-            "Custom": f"✘ Syntax Error: {tok} (line {self.current_line}, col {self.current_col})"
+            "Program_err": f"Syntax Error: Program cannot begin with token '{self.current_tok}'. Expected a declaration or 'prepare/start'",
+            "ExpectedEOF_err": f"Syntax Error: Unexpected token '{self.current_tok}' after start platter, Expected EOF (line {self.current_line}, col {self.current_col})",
+            "Invalid_err": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}. Expected {expected_toklist}",
+            "Missing_err": f"Syntax Error: Missing {tok} at line {self.current_line}, col {self.current_col}",
+            "UnexpectedTok_err": f"Syntax Error: Unexpected '{self.current_tok}' at line {self.current_line}, col {self.current_col}. Expected {tok}.",
+            "Custom_err": f"Syntax Error: {tok} (line {self.current_line}, col {self.current_col})",
         }
         self.result = False
         raise SyntaxError(errors[error_type])
@@ -86,23 +87,20 @@ class Parser:
 
     def program(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<program>"]:
-            self.global_decl() 
-        if self.current_tok in PREDICT_SET["<recipe_decl>"]:
-            self.recipe_decl() 
-        self.parse_token("start")
-        self.parse_token("(")
-        self.parse_token(")")
-        self.platter()
+        if self.current_tok in FIRST_SET["<program>"]:
+            if self.current_tok in PREDICT_SET["<program>"]:
+                self.global_decl() 
+            if self.current_tok in PREDICT_SET["<recipe_decl>"]:
+                self.recipe_decl() 
+            self.parse_token("start")
+            self.parse_token("(")
+            self.parse_token(")")
+            self.platter()
+        else: self.error_handler("Program_err", None)
 
         # Ensure EOF after parsing
-        if self.current_tok != "EOF": self.error_handler("InvalidToken", "EOF") 
-            # raise SyntaxError(
-            #     f"Syntax Error: Expected 'EOF' but got '{self.current_tok}' "
-            #     f"(line {self.current_line}, col {self.current_col})"
-            # )
+        if self.current_tok != "EOF": self.error_handler("ExpectedEOF_err", None) 
         log.info("Exit: " + self.current_tok)
-            
 
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
@@ -120,7 +118,6 @@ class Parser:
             return # λ
         log.info("Exit: " + self.current_tok)
 
-    
     def decl_data_type(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in FIRST_SET["<decl_data_type>"]:
@@ -136,7 +133,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<decl_data_type_3>"]:
                 self.parse_token("chars")
                 self.decl_type()
-        else: self.error_handler("InvalidToken", "Invalid data type in ingredient declaration")
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<program>"])))
         log.info("Exit: " + self.current_tok)
 
     def decl_type(self):
@@ -151,7 +148,7 @@ class Parser:
                 self.parse_token("of")
                 self.array_declare()
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "Invalid ingredient declaration type")
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<decl_type>"])))
         log.info("Exit: " + self.current_tok)
 
     def ingredient_id(self):
@@ -161,7 +158,7 @@ class Parser:
                 self.parse_token("id")
                 self.ingredient_init()
                 self.ingredient_id_tail()
-        else: self.error_handler("InvalidToken", "id")
+        else: self.error_handler("UnexpectedTok_err", "'id'")
         log.info("Exit: " + self.current_tok)
         
     def ingredient_init(self):
@@ -191,21 +188,25 @@ class Parser:
         if self.current_tok in FIRST_SET["<expr>"]:
             if self.current_tok in PREDICT_SET["<expr>"]:
                 self.or_expr()
-        else: self.error_handler("MissingToken", "expression")
+        else: self.error_handler("Missing_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def or_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<or_expr>"]:
-            self.and_expr()
-            self.or_tail()
+        if self.current_tok in FIRST_SET["<or_expr>"]:
+            if self.current_tok in PREDICT_SET["<or_expr>"]:
+                self.and_expr()
+                self.or_tail()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
         log.info("Exit: " + self.current_tok)
     
     def and_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<and_expr>"]:
-            self.eq_expr()
-            self.and_tail()
+        if self.current_tok in FIRST_SET["<and_expr>"]:
+            if self.current_tok in PREDICT_SET["<and_expr>"]:
+                self.eq_expr()
+                self.and_tail() 
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<and_expr>"])))
         log.info("Exit: " + self.current_tok)
     
     def or_tail(self):
@@ -221,9 +222,11 @@ class Parser:
         
     def eq_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<eq_expr>"]:
-            self.rel_expr()
-            self.eq_tail()
+        if self.current_tok in FIRST_SET["<eq_expr>"]:
+            if self.current_tok in PREDICT_SET["<eq_expr>"]:
+                self.rel_expr()
+                self.eq_tail()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<eq_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def and_tail(self):
@@ -239,9 +242,11 @@ class Parser:
     
     def rel_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<rel_expr>"]:
-            self.add_expr()
-            self.rel_tail()
+        if self.current_tok in FIRST_SET["<rel_expr>"]:
+            if self.current_tok in PREDICT_SET["<rel_expr>"]:
+                self.add_expr()
+                self.rel_tail()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<rel_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def eq_tail(self):
@@ -261,9 +266,11 @@ class Parser:
 
     def add_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<add_expr>"]:
-            self.mult_expr()
-            self.add_tail()
+        if self.current_tok in FIRST_SET["<add_expr>"]:
+            if self.current_tok in PREDICT_SET["<add_expr>"]:
+                self.mult_expr()
+                self.add_tail()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<add_expr>"])))
         log.info("Exit: " + self.current_tok)
             
     def rel_tail(self):
@@ -291,9 +298,11 @@ class Parser:
         
     def mult_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<mult_expr>"]:
-            self.unary_expr()
-            self.mult_tail()
+        if self.current_tok in FIRST_SET["<mult_expr>"]:
+            if self.current_tok in PREDICT_SET["<mult_expr>"]:
+                self.unary_expr()
+                self.mult_tail()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<mult_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def add_tail(self):
@@ -313,11 +322,13 @@ class Parser:
 
     def unary_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<unary_expr>"]:
-            self.parse_token("not")
-            self.unary_expr()
-        if self.current_tok in PREDICT_SET["<unary_expr_1>"]:
-            self.primary_val()
+        if self.current_tok in FIRST_SET["<unary_expr>"]:
+            if self.current_tok in PREDICT_SET["<unary_expr>"]:
+                self.parse_token("not")
+                self.unary_expr()
+            if self.current_tok in PREDICT_SET["<unary_expr_1>"]:
+                self.primary_val()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<unary_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def mult_tail(self):
@@ -341,23 +352,25 @@ class Parser:
 
     def primary_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<primary_val>"]:
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-        if self.current_tok in PREDICT_SET["<primary_val_1>"]:
-            self.parse_token("piece_lit")
-        if self.current_tok in PREDICT_SET["<primary_val_2>"]:
-            self.parse_token("sip_lit")
-        if self.current_tok in PREDICT_SET["<primary_val_3>"]:
-            self.parse_token("flag_lit")
-        if self.current_tok in PREDICT_SET["<primary_val_4>"]:
-            self.parse_token("chars_lit")
-        if self.current_tok in PREDICT_SET["<primary_val_5>"]:
-            self.parse_token("id")
-            self.id_tail()
-        if self.current_tok in PREDICT_SET["<primary_val_6>"]:
-            self.built_in_rec_call()
+        if self.current_tok in FIRST_SET["<primary_val>"]:
+            if self.current_tok in PREDICT_SET["<primary_val>"]:
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+            if self.current_tok in PREDICT_SET["<primary_val_1>"]:
+                self.parse_token("piece_lit")
+            if self.current_tok in PREDICT_SET["<primary_val_2>"]:
+                self.parse_token("sip_lit")
+            if self.current_tok in PREDICT_SET["<primary_val_3>"]:
+                self.parse_token("flag_lit")
+            if self.current_tok in PREDICT_SET["<primary_val_4>"]:
+                self.parse_token("chars_lit")
+            if self.current_tok in PREDICT_SET["<primary_val_5>"]:
+                self.parse_token("id")
+                self.id_tail()
+            if self.current_tok in PREDICT_SET["<primary_val_6>"]:
+                self.built_in_rec_call()
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primary_val>"])))
         log.info("Exit: " + self.current_tok)
 
     def id_tail(self):
@@ -397,7 +410,7 @@ class Parser:
                 self.expr()
                 self.parse_token("]")
                 self.accessor_tail()
-        else: self.error_handler("InvalidToken", "[")
+        else: self.error_handler("UnexpectedTok_err", "'['")
         log.info("Exit: " + self.current_tok)
 
     def table_accessor(self):
@@ -407,7 +420,7 @@ class Parser:
                 self.parse_token(":")
                 self.parse_token("id")
                 self.accessor_tail()
-        else: self.error_handler("InvalidToken", ":")
+        else: self.error_handler("UnexpectedTok_err", "':'")
         log.info("Exit: " + self.current_tok)
 
     def flavor(self):
@@ -430,7 +443,7 @@ class Parser:
                 self.notation_val()
                 self.parse_token("]")
                 self.accessor_tail()
-        else: self.error_handler("MissingToken", "value")
+        else: self.error_handler("Missing_err", "value")
         log.info("Exit: " + self.current_tok)
 
     def notation_val(self):
@@ -459,7 +472,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<notation_val_6>"]:
                 self.parse_token("id")
                 self.id_notation_tail()
-        else: self.error_handler("Custom", "Missing/Invalid notation value")
+        else: self.error_handler("Missing_err", "notation value")
         log.info("Exit: " + self.current_tok)
         
     def element_value_tail(self):
@@ -489,7 +502,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
                 self.parse_token("id")
                 self.id_tail()
-        else: self.error_handler("MissingToken", "notation value")
+        else: self.error_handler("Missing_err", "notation value")
         log.info("Exit: " + self.current_tok)
 
     def id_notation_tail(self):
@@ -509,7 +522,7 @@ class Parser:
                 self.parse_token("=")
                 self.value()
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "=")
+        else: self.error_handler("UnexpectedTok_err", "'='")
         log.info("Exit: " + self.current_tok)
 
     def field_assignments(self):
@@ -551,7 +564,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<tail1>"]:
                 self.call_tail()
                 self.accessor_tail()
-        else: self.error_handler("InvalidToken", "(")
+        else: self.error_handler("UnexpectedTok_err", "'('")
         log.info("Exit: " + self.current_tok)
 
     def built_in_rec(self):
@@ -593,7 +606,7 @@ class Parser:
                 self.parse_token("topiece")
             if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
                 self.parse_token("tosip")
-        else: self.error_handler("MissingToken", "built-in recipe")
+        else: self.error_handler("Missing_err", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
     def call_tail(self):
@@ -603,7 +616,7 @@ class Parser:
                 self.parse_token("(")
                 self.flavor()
                 self.parse_token(")")
-        else: self.error_handler("InvalidToken", "(")
+        else: self.error_handler("UnexpectedTok_err", "'('")
         log.info("Exit: " + self.current_tok)
         
     def dimensions(self):
@@ -613,7 +626,7 @@ class Parser:
                 self.parse_token("[")
                 self.parse_token("]")
                 self.dimensions_tail()
-        else: self.error_handler("InvalidToken", "[")
+        else: self.error_handler("UnexpectedTok_err", "'['")
         log.info("Exit: " + self.current_tok)
 
     def dimensions_tail(self):
@@ -632,7 +645,7 @@ class Parser:
                 self.parse_token("id")
                 self.array_table_init()
                 self.array_declare_tail()
-        else: self.error_handler("InvalidToken", "id")
+        else: self.error_handler("UnexpectedTok_err", "'id'")
         log.info("Exit: " + self.current_tok)
 
     def array_table_init(self):
@@ -667,7 +680,7 @@ class Parser:
                 self.required_decl()
                 self.parse_token("]")
                 self.parse_token(";")
-        else: self.error_handler("Custom", "Invalid table prototype declaration")
+        else: self.error_handler("UnexpectedTok_err", "'table'")
         log.info("Exit: " + self.current_tok)
 
     def required_decl(self):
@@ -677,7 +690,7 @@ class Parser:
                 self.decl_head()
                 self.parse_token(";")
                 self.required_decl_tail()
-        else: self.error_handler("MissingToken", "Missing declaration")
+        else: self.error_handler("Missing_err", "declaration")
         log.info("Exit: " + self.current_tok)
 
     def decl_head(self):
@@ -687,7 +700,7 @@ class Parser:
                 self.data_types_dims()
                 self.parse_token("of")
                 self.parse_token("id")
-        else: self.error_handler("MissingToken", "declaration head")
+        else: self.error_handler("Missing_err", "declaration head")
         log.info("Exit: " + self.current_tok)
 
     def data_types_dims(self):
@@ -708,7 +721,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<data_types_dims_4>"]:
                 self.parse_token("id")
                 self.dimensions_tail()
-        else: self.error_handler("InvalidToken", "Invalid data type in declaration head")
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<data_types_dims>"])))
         log.info("Exit: " + self.current_tok)
         
     def required_decl_tail(self):
@@ -728,7 +741,7 @@ class Parser:
                 self.parse_token("of")
                 self.table_declare()
                 self.parse_token(";")
-        else: self.error_handler("Custom", "Invalid table declaration")
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<table_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def table_declare(self):
@@ -738,7 +751,7 @@ class Parser:
                 self.parse_token("id")
                 self.array_table_init()
                 self.table_declare_tail()
-        else: self.error_handler("InvalidToken", "id")
+        else: self.error_handler("UnexpectedTok_err", "id")
         log.info("Exit: " + self.current_tok)
 
     def table_declare_tail(self):
@@ -756,7 +769,7 @@ class Parser:
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.parse_token("prepare")
             if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
-            else: self.error_handler("MissingToken", "declaration head")
+            else: self.error_handler("Missing_err", "declaration head")
             self.parse_token("(")
             self.spice()
             self.parse_token(")")
@@ -795,7 +808,7 @@ class Parser:
             self.local_decl()
             self.statements()
             self.parse_token("}")
-        else: self.error_handler("MissingToken", "platter block")
+        else: self.error_handler("Missing_err", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def local_decl(self):
@@ -857,12 +870,12 @@ class Parser:
                 self.tail1()
                 self.parse_token(";")
                 self.statements()
-        else: self.error_handler("Custom", "Invalid declaration")
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<local_id_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def endb_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<endb_tail>"]:
+        if self.current_tok in FIRST_SET["<]_tail>"]:
             if self.current_tok in PREDICT_SET["<]_tail>"]:
                 self.parse_token("]")
                 self.dimensions_tail()
@@ -878,7 +891,7 @@ class Parser:
                 self.value()
                 self.parse_token(";")
                 self.statements()
-        else: self.error_handler("MissingToken", "] or value")
+        else: self.error_handler("UnexpectedTok_err", "']' or value")
         log.info("Exit: " + self.current_tok)
 
     def id_statements(self):
@@ -888,7 +901,7 @@ class Parser:
                 self.parse_token("id")
                 self.id_statements_ext()
                 self.statements()
-        else: self.error_handler("InvalidToken", "id")
+        else: self.error_handler("UnexpectedTok_err", "id")
         log.info("Exit: " + self.current_tok)
 
     def id_statements_ext(self):
@@ -900,7 +913,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
                 self.assignment_st()
                 self.parse_token(";")
-        else: self.error_handler("Custom", "Invalid id statement")
+        else: self.error_handler("Invalid_err", "id statement", (", ".join(f"'{tok}'" for tok in FIRST_SET["<id_statements_ext>"])))
         log.info("Exit: " + self.current_tok)
 
     def assignment_st(self):
@@ -911,7 +924,7 @@ class Parser:
                 self.assignment_op()
                 self.value()
                 self.parse_token(";")
-        else: self.error_handler("Custom", "Invalid assignment statement")
+        else: self.error_handler("Custom_err", "Invalid assignment statement")
         log.info("Exit: " + self.current_tok)
 
     def assignment_op(self):
@@ -929,7 +942,7 @@ class Parser:
                 self.parse_token("/=")
             if self.current_tok in PREDICT_SET["<assignment_op_5>"]:
                 self.parse_token("%=")
-        else: self.error_handler("MissingToken", "assignment operator")
+        else: self.error_handler("Missing_err", "assignment operator")
         log.info("Exit: " + self.current_tok)
     
     def conditional_st(self):
@@ -939,7 +952,7 @@ class Parser:
                 self.cond_check()
             if self.current_tok in PREDICT_SET["<conditional_st_1>"]:
                 self.cond_menu()
-        else: self.error_handler("Custom", "Invalid conditional statement")
+        else: self.error_handler("Invalid_err", "conditional statement", (", ".join(f"'{tok}'" for tok in FIRST_SET["<and_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def cond_check(self):
@@ -953,7 +966,7 @@ class Parser:
                 self.platter()
                 self.alt_clause()
                 self.instead_clause()
-        else: self.error_handler("MissingToken", "check")
+        else: self.error_handler("UnexpectedTok_err", "check")
         log.info("Exit: " + self.current_tok)
 
     def alt_clause(self):
@@ -989,7 +1002,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.menu_platter()
-        else: self.error_handler("InvalidToken", "menu")
+        else: self.error_handler("UnexpectedTok_err", "menu")
         log.info("Exit: " + self.current_tok)
 
     def menu_platter(self):
@@ -1000,7 +1013,7 @@ class Parser:
                 self.choice_clause()
                 self.usual_clause()
                 self.parse_token("}")
-        else: self.error_handler("MissingToken", "platter block")
+        else: self.error_handler("Missing_err", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def choice_clause(self):
@@ -1036,7 +1049,7 @@ class Parser:
                 self.loop_repeat()
             if self.current_tok in PREDICT_SET["<looping_st_2>"]:
                 self.loop_order()
-        else: self.error_handler("Custom", "Invalid looping statement")
+        else: self.error_handler("Custom_err", "Invalid looping statement")
         log.info("Exit: " + self.current_tok)
 
     def loop_pass(self):
@@ -1052,7 +1065,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("MissingToken", "pass")
+        else: self.error_handler("Missing_err", "pass")
         log.info("Exit: " + self.current_tok)
 
     def loop_repeat(self):
@@ -1064,7 +1077,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("MissingToken", "repeat")
+        else: self.error_handler("Missing_err", "repeat")
         log.info("Exit: " + self.current_tok)
 
     def loop_order(self):
@@ -1078,7 +1091,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.parse_token(";")
-        else: self.error_handler("MissingToken", "order")
+        else: self.error_handler("Missing_err", "order")
 
     def jump_st(self):
         log.info("Enter: " + self.current_tok)
@@ -1089,7 +1102,7 @@ class Parser:
                 self.jump_stop()
             if self.current_tok in PREDICT_SET["<jump_st_2>"]:
                 self.jump_serve()
-        else: self.error_handler("Custom", "Invalid jump statement")
+        else: self.error_handler("Custom_err", "Invalid jump statement")
         log.info("Exit: " + self.current_tok)
 
     def jump_next(self):
@@ -1098,7 +1111,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<jump_next>"]:
                 self.parse_token("next")
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "next")
+        else: self.error_handler("UnexpectedTok_err", "next")
         log.info("Exit: " + self.current_tok)
 
     def jump_stop(self):
@@ -1107,7 +1120,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<jump_stop>"]:
                 self.parse_token("stop")
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "stop")
+        else: self.error_handler("UnexpectedTok_err", "stop")
         log.info("Exit: " + self.current_tok)
 
     def jump_serve(self):
@@ -1117,7 +1130,7 @@ class Parser:
                 self.parse_token("serve")
                 self.value()
                 self.parse_token(";")
-        else: self.error_handler("InvalidToken", "serve")
+        else: self.error_handler("UnexpectedTok_err", "serve")
         log.info("Exit: " + self.current_tok)
 
 

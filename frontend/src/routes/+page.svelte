@@ -143,7 +143,11 @@ serve piece of start() {
 
 	// Compute error count: treat messages that start with "Lexical OK" as non-errors (count as zero)
 	$: errorCount = termMessages.filter(
-		(m) => !(typeof m.text === 'string' && m.text.startsWith('Lexical OK'))
+		(m) =>
+			!(
+				typeof m.text === 'string' &&
+				(m.text.startsWith('Lexical OK') || m.text.startsWith('No Syntax Error'))
+			)
 	).length;
 
 	function setTerminalOk(message = 'No Error') {
@@ -151,6 +155,42 @@ serve piece of start() {
 	}
 	function setTerminalError(message: string) {
 		termMessages = [{ icon: errorIcon, text: message }];
+	}
+	function clearTerminal() {
+		termMessages = [];
+	}
+
+	async function analyzeSyntax() {
+		await analyzeLexical();
+
+		if (termMessages.length === 1 && termMessages[0].text.startsWith('Lexical OK')) {
+			clearTerminal();
+
+			try {
+				const res = await fetch('http://localhost:8000/analyzeSyntax', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ code: codeInput })
+				});
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				const data = await res.json();
+
+				if (data.success) {
+					setTerminalOk(data.message || 'Syntax analysis completed successfully');
+				} else {
+					setTerminalError(data.message || 'Syntax analysis failed');
+				}
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : 'Unknown error';
+				setTerminalError(`Syntax analysis failed: ${msg}`);
+			}
+		} else if (termMessages.length > 0) {
+			setTerminalError('Syntax analysis not performed due to lexical errors');
+		} else {
+			setTerminalOk('Syntax analysis not yet implemented');
+		}
+
+		activeTab = 'syntax';
 	}
 
 	async function analyzeLexical() {
@@ -161,7 +201,7 @@ serve piece of start() {
 		}
 		isAnalyzing = true;
 		try {
-			const res = await fetch('http://localhost:8000/analyze', {
+			const res = await fetch('http://localhost:8000/analyzeLexical', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ code: codeInput })
@@ -345,7 +385,7 @@ serve piece of start() {
 					<span>Lexical</span>
 				</button>
 				<!-- syntax and semantic methods to be replacesrd -->
-				<button class="pill {activeTab === 'syntax' ? 'active' : ''}" on:click={analyzeLexical}>
+				<button class="pill {activeTab === 'syntax' ? 'active' : ''}" on:click={analyzeSyntax}>
 					{#if theme === 'dark'}
 						<img class="icon" src={synSemLexIcon} alt="Lexical Icon" />
 					{:else}

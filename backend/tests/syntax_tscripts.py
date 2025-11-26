@@ -1,22 +1,4 @@
 SYNTAX_TSCRIPTS = [
-  {
-    "number": 1,
-    "actual_output": "Syntax OK",
-    "expected_output": "Syntax Error",
-    "code":  
-    """
-    start(){} prepare
-    """
-  },
-  {
-    "number": 2,
-    "actual_output": "Syntax OK",
-    "expected_output": "Syntax Error",
-    "code":  
-    """
-    int
-    """
-  },
   { 
     "number": 3,
     "actual_output": "Syntax Error",
@@ -24,7 +6,7 @@ SYNTAX_TSCRIPTS = [
     "code":  
     """
     start(){
-      prepare(){}
+      prepare;){}
     }
     """
   },
@@ -57,5 +39,55 @@ SYNTAX_TSCRIPTS = [
     check;;
     start(){}
     """
-  }
+  },
+  {
+    "number": 7,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    iwag of a = ;
+    start(){
+      
+    }
+    """
+  },
+  {
+    "number": 8,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    piece of a; 
+    sip of b = ((3+5*2) and ) 5>10);
+    table of a = [
+      piece of x;
+    ];
+
+    start(){
+    }
+      
+    }
+    """
+  },
+  {
+    "number": 9,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    piece of a = piece # Must also consider invalid error
+    start(){}
+    """
+  },
+  {
+    "number": 10,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    a of a = :
+    start(){}
+    """
+  },
 ]

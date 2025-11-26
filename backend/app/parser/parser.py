@@ -6,7 +6,7 @@ import logging as log
 
 # To disable logs, set level=log.CRITICAL. 
 # To enable logs, set level=log.DEBUG
-log.basicConfig(level=log.CRITICAL, format='%(levelname)s: <%(funcName)s> | %(message)s')
+log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
@@ -177,7 +177,7 @@ class Parser:
             self.parse_token(",")
             self.parse_token("id")
             self.ingredient_init()
-            self.ingredient_id_tail(self)
+            self.ingredient_id_tail()
         if self.current_tok in PREDICT_SET["<ingredient_id_tail_1>"]:
             log.info("Exit: " + self.current_tok)
             return # λ
@@ -448,71 +448,79 @@ class Parser:
 
     def notation_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<notation_val>"]:
-            if self.current_tok in PREDICT_SET["<notation_val>"]:
+        if self.current_tok in PREDICT_SET["<notation_val>"]:
+            self.notation_val1()
+        if self.current_tok in PREDICT_SET["<notation_val_1>"]:
+            self.parse_token("id")
+            self.id_notation_tail()
+        if self.current_tok in PREDICT_SET["<notation_val_2>"]:
+            log.info("Exit: " + self.current_tok)
+            return
+        log.info("Exit: " + self.current_tok)
+
+    # rev
+    def notation_val1(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<notation_val1>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1>"]:
                 self.parse_token("piece_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_1>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1_1>"]:
                 self.parse_token("sip_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_2>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1_2>"]:
                 self.parse_token("flag_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_3>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1_3>"]:
                 self.parse_token("chars_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_4>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1_4>"]:
                 self.built_in_rec_call()
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_5>"]:
+            if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
                 self.parse_token("[")
                 self.notation_val()
                 self.parse_token("]")
                 self.accessor_tail()
-            if self.current_tok in PREDICT_SET["<notation_val_6>"]:
-                self.parse_token("id")
-                self.id_notation_tail()
+                self.element_value_tail()
         else: self.error_handler("Missing_err", "notation value")
         log.info("Exit: " + self.current_tok)
-        
+    
+
     def element_value_tail(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<element_value_tail>"]:
             self.parse_token(",")
-            self.notation_val1()
+            self.notation_val2()
             self.element_value_tail()
         if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
 
-    def notation_val1(self):
+    def notation_val2(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<notation_val1>"]:
-            if self.current_tok in PREDICT_SET["<notation_val1>"]:
-                self.parse_token("piece_lit")
-            if self.current_tok in PREDICT_SET["<notation_val1_1>"]:
-                self.parse_token("sip_lit")
-            if self.current_tok in PREDICT_SET["<notation_val1_2>"]:
-                self.parse_token("flag_lit")
-            if self.current_tok in PREDICT_SET["<notation_val1_3>"]:
-                self.parse_token("chars_lit")
-            if self.current_tok in PREDICT_SET["<notation_val1_4>"]:
-                self.built_in_rec_call()
-            if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
+        if self.current_tok in FIRST_SET["<notation_val2>"]:
+            if self.current_tok in PREDICT_SET["<notation_val2>"]:
                 self.parse_token("id")
                 self.id_tail()
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<notation_val2_1>"]:
+                self.notation_val1()
         else: self.error_handler("Missing_err", "notation value")
         log.info("Exit: " + self.current_tok)
 
+    # last
     def id_notation_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<id_notation_tail>"]:
-            self.id_tail()
-            self.element_value_tail()
-        if self.current_tok in PREDICT_SET["<id_notation_tail_1>"]:
-            self.assignment_st_eq()
-            self.field_assignments()
+        if self.current_tok in FIRST_SET["<id_notation_tail>"]:
+            if self.current_tok in PREDICT_SET["<id_notation_tail>"]:
+                self.id_tail()
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<id_notation_tail_1>"]:
+                self.assignment_st_eq()
+                self.field_assignments()        
+        else: self.error_handler("Missing_err", "notation value")
         log.info("Exit: " + self.current_tok)
 
     def assignment_st_eq(self):
@@ -860,6 +868,9 @@ class Parser:
                 self.endb_tail()
             if self.current_tok in PREDICT_SET["<local_id_tail_2>"]:
                 self.table_accessor()
+                self.assignment_op()
+                self.value()
+                self.parse_token(";")
                 self.statements()
             if self.current_tok in PREDICT_SET["<local_id_tail_3>"]:
                 self.assignment_op()

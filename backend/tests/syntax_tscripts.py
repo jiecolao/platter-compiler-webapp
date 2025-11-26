@@ -90,4 +90,15 @@ SYNTAX_TSCRIPTS = [
     start(){}
     """
   },
+  {
+    "number": 11,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    start(){
+      a:a
+    }
+    """
+  },
 ]

@@ -51,5 +51,43 @@ SYNTAX_TSCRIPTS = [
       
     }
     """
-  }
+  },
+  {
+    "number": 8,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    piece of a; 
+    sip of b = ((3+5*2) and ) 5>10);
+    table of a = [
+      piece of x;
+    ];
+
+    start(){
+    }
+      
+    }
+    """
+  },
+  {
+    "number": 9,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    piece of a = piece # Must also consider invalid error
+    start(){}
+    """
+  },
+  {
+    "number": 10,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
+    a of a = :
+    start(){}
+    """
+  },
 ]

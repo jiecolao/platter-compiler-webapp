@@ -6,7 +6,7 @@ import logging as log
 
 # To disable logs, set level=log.CRITICAL. 
 # To enable logs, set level=log.DEBUG
-log.basicConfig(level=log.CRITICAL, format='%(levelname)s: <%(funcName)s> | %(message)s')
+log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
 
 """
     TODO:
@@ -177,7 +177,7 @@ class Parser:
             self.parse_token(",")
             self.parse_token("id")
             self.ingredient_init()
-            self.ingredient_id_tail(self)
+            self.ingredient_id_tail()
         if self.current_tok in PREDICT_SET["<ingredient_id_tail_1>"]:
             log.info("Exit: " + self.current_tok)
             return # λ

@@ -1,38 +1,38 @@
-import os
 from app.lexer.lexer import Lexer
 from app.parser.parser import Parser
 from tests.syntax_tscripts import SYNTAX_TSCRIPTS
 
 class TestParser():
 
+    def msg(self, num, code, exp_outp, result):
+        print(
+            f"============ CODE #{num} ================\n"
+            f"CODE:\n{code}\n"
+            f"EXPECTED OUTPUT: {exp_outp}\n"
+            f"SYNTAX OUTPUT: {result}\n"
+            f"=====================================\n"
+        )
+
     def run_script(self):
         # choice = input("Enter test script number: ").strip()
         for script in SYNTAX_TSCRIPTS:
-            code = script["code"]
-            lexer = Lexer(code)
+            lexer = Lexer(script["code"])
             tokens = lexer.tokenize()
             parser = Parser(tokens)
             result = ""
 
             try:
                 result = parser.parse()
-                msg = (
-                    f"============ CODE #{script['number']} ================\n"
-                    f"CODE:\n{script['code']}\n"
-                    f"EXPECTED OUTPUT: {script['expected_output']}\n"
-                    f"SYNTAX OUTPUT: {"✔ No Syntax Error" if result else None}\n"
-                    f"=====================================\n"
-                )
+                self.msg(script["number"], 
+                         script["code"], 
+                         script["expected_output"], 
+                         "✔ No Syntax Error" if result else None)
+
             except SyntaxError as e:
-                msg = (
-                    f"============ CODE #{script['number']} ================\n"
-                    f"CODE:\n{script['code']}\n"
-                    f"EXPECTED OUTPUT: {script['expected_output']}\n"
-                    f"SYNTAX OUTPUT: {e}\n"
-                    f"=====================================\n"
-                )
-            
-            print(msg)
+                self.msg(script["number"], 
+                         script["code"], 
+                         script["expected_output"], 
+                         e)
 
 if __name__=="__main__":
     tester = TestParser()

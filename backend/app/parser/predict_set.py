@@ -1,6 +1,6 @@
 PREDICT_SET = {
-    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "λ"],
-
+    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "prepare", "start"],
+                # ["piece", "sip", "flag", "chars", "table", "id", "λ"] 
     "<global_decl>": ["piece", "sip", "flag", "chars"],
     "<global_decl_1>": ["table"],
     "<global_decl_2>": ["id"],
@@ -98,7 +98,9 @@ PREDICT_SET = {
                         "remove", "reverse", "search", "size", "sort", "sqrt", "take",
                         "tochars", "topiece", "tosip"],
 
-    "<id_tail>": ["(", "λ"],
+    "<id_tail>": ["(", "[", ":", "*", "/", "%", # ["(", λ]
+                  "+", "-", ">", "<", ">=", "<=", "==", 
+                  "!=", "and", "or", ",", ")", "]", "=", ";"],
 
     "<call_tailopt>": ["("],
     "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==",
@@ -150,7 +152,9 @@ PREDICT_SET = {
                            "sqrt", "take", "tochars", "topiece", "tosip"],
     "<notation_val1_5>": ["id"],
 
-    "<id_notation_tail>": ["(", "[", ":", "λ"],
+    "<id_notation_tail>": ["(", "[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", "]"],
+                        # ["(", "[", ":", "λ"],
+
     "<id_notation_tail_1>": ["="],
 
     "<assignment_st_eq>": ["="],
@@ -216,7 +220,8 @@ PREDICT_SET = {
     "<required_decl_tail>": ["piece", "sip", "flag", "chars", "id"],
     "<required_decl_tail_1>": ["]"],
 
-    "<table_decl>": ["[", "λ"],
+    "<table_decl>": ["[", "of"],
+                  # ["[", "λ"],
 
     "<table_declare>": ["id"],
 
@@ -271,7 +276,15 @@ PREDICT_SET = {
     "<id_statements_ext>": ["("],
     "<id_statements_ext_1>": ["[", ":", "=", "+=", "-=", "*=", "/=", "%="],
 
-    "<assignment_st>": ["[", ":", "λ"],
+    "<assignment_st>": ["[", ":", "*", "/", "%", "+", "-", ">", 
+                        "<", ">=", "<=", "==", "!=", "and", ";", ",", ")", 
+                        "]", "=", "+=", "-=", "*=", "/=", "%=", "id", "append", 
+                        "bill", "copy", "cut", "fact", "matches", "pow", 
+                        "rand", "remove", "reverse", "search", "size", 
+                        "sort", "sqrt", "take", "tochars", "topiece", 
+                        "tosip", "check", "menu", "pass", "repeat", "order", 
+                        "next", "stop", "serve", "}" ],
+                     # ["[", ":", "λ"],
 
     "<assignment_op>": ["="],
     "<assignment_op_1>": ["+="],

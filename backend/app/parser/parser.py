@@ -1039,9 +1039,9 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<choice_clause>"]:
             self.parse_token("choice")
-            self.expr()
-            # if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
-            # else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
+            # self.expr()
+            if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
+            else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
             self.parse_token(":")
             self.statements()
             self.choice_clause()

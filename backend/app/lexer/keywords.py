@@ -503,7 +503,7 @@ class LexerKeywords(LexerProtocol):
 
     def s90(self):  # order (Accepting State 91)
         self.advance()
-        if self._match_delimiter(self.paren_dlm): return self.s91()
+        if self._match_delimiter(self.curly_dlm): return self.s91()
         self.restore()
         return None
 

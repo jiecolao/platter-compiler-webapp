@@ -96,8 +96,11 @@ SYNTAX_TSCRIPTS = [
     "expected_output": "Syntax Error",
     "code":  
     """
+
     start(){
-      a:a
+      menu(a){
+        choice a:a:a:a:
+      }
     }
     """
   },

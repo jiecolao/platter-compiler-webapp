@@ -1165,6 +1165,6 @@ if __name__ == "__main__":
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     try:
-        if parser.parse(): print("✔ No Syntax Error")
+        if parser.parse(): print("Syntax OK")
     except SyntaxError as e:
         print(str(e))

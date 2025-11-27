@@ -43,11 +43,18 @@
 	let activeTab: 'lexical' | 'syntax' | 'semantic' = 'lexical';
 
 	let codeInput = `piece of x = 42;
-piece of y = 3;
-chars[] of name = "Hello Platter";
+sip of y = 3.67;
+chars[] of names = ["Hello Platter", "Raph", "Jieco"];
 
-serve piece of start() {
-  piece of y = y + x;
+prepare sip of sips() { check(topiece(y) > x) { serve x;} instead {serve y;} }
+
+prepare piece of pieces() {
+	serve x;
+}
+
+start() {
+	piece of z = topiece(topiece(sips()) + pieces());
+	serve z;
 }`;
 
 	type Token = { type: string; value: string; line: number; col: number };
@@ -143,7 +150,11 @@ serve piece of start() {
 
 	// Compute error count: treat messages that start with "Lexical OK" as non-errors (count as zero)
 	$: errorCount = termMessages.filter(
-		(m) => !(typeof m.text === 'string' && m.text.startsWith('Lexical OK'))
+		(m) =>
+			!(
+				typeof m.text === 'string' &&
+				(m.text.startsWith('Lexical OK') || m.text.startsWith('No Syntax Error'))
+			)
 	).length;
 
 	function setTerminalOk(message = 'No Error') {
@@ -151,6 +162,63 @@ serve piece of start() {
 	}
 	function setTerminalError(message: string) {
 		termMessages = [{ icon: errorIcon, text: message }];
+	}
+	function clearTerminal() {
+		termMessages = [];
+	}
+
+	async function analyzeSemantic() {
+		activeTab = 'semantic';
+		setTerminalError('Semantics not yet implemented');
+
+		try {
+			const res = await fetch('http://localhost:8000/analyzeSemantic', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code: codeInput })
+			});
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			const data = await res.json();
+
+			if (data.success) {
+				setTerminalOk(data.message || 'Semantic analysis completed successfully');
+			} else {
+				setTerminalError(data.message || 'Semantic analysis failed');
+			}
+		} catch (err) {}
+	}
+
+	async function analyzeSyntax() {
+		await analyzeLexical();
+
+		if (termMessages.length === 1 && termMessages[0].text.startsWith('Lexical OK')) {
+			clearTerminal();
+
+			try {
+				const res = await fetch('http://localhost:8000/analyzeSyntax', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ code: codeInput })
+				});
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				const data = await res.json();
+
+				if (data.success) {
+					setTerminalOk(data.message || 'Syntax analysis completed successfully');
+				} else {
+					setTerminalError(data.message || 'Syntax analysis failed');
+				}
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : 'Unknown error';
+				setTerminalError(`Syntax analysis failed: ${msg}`);
+			}
+		} else if (termMessages.length > 0) {
+			setTerminalError('Syntax analysis not performed due to lexical errors');
+		} else {
+			setTerminalOk('Syntax analysis not yet implemented');
+		}
+
+		activeTab = 'syntax';
 	}
 
 	async function analyzeLexical() {
@@ -161,7 +229,7 @@ serve piece of start() {
 		}
 		isAnalyzing = true;
 		try {
-			const res = await fetch('http://localhost:8000/analyze', {
+			const res = await fetch('http://localhost:8000/analyzeLexical', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ code: codeInput })
@@ -345,7 +413,7 @@ serve piece of start() {
 					<span>Lexical</span>
 				</button>
 				<!-- syntax and semantic methods to be replacesrd -->
-				<button class="pill {activeTab === 'syntax' ? 'active' : ''}" on:click={analyzeLexical}>
+				<button class="pill {activeTab === 'syntax' ? 'active' : ''}" on:click={analyzeSyntax}>
 					{#if theme === 'dark'}
 						<img class="icon" src={synSemLexIcon} alt="Lexical Icon" />
 					{:else}
@@ -353,7 +421,7 @@ serve piece of start() {
 					{/if}
 					<span>Syntax</span>
 				</button>
-				<button class="pill {activeTab === 'semantic' ? 'active' : ''}" on:click={analyzeLexical}>
+				<button class="pill {activeTab === 'semantic' ? 'active' : ''}" on:click={analyzeSemantic}>
 					{#if theme === 'dark'}
 						<img class="icon" src={synSemLexIcon} alt="Semantic Icon" />
 					{:else}
@@ -364,7 +432,16 @@ serve piece of start() {
 
 				<div class="spacer"></div>
 				<!-- replace icons based on theme -->
-				<button class="icon-btn" title="refresh"
+				<button
+					class="icon-btn"
+					title="refresh"
+					on:click={() => {
+						if (cmInstance) cmInstance.setValue('');
+						codeInput = '';
+						clearTerminal();
+						lexerRows.length = 0;
+						tokens = [];
+					}}
 					>{#if theme === 'dark'}
 						<img class="icon" src={refresh} alt="Dark Theme Icon" />
 					{:else}
@@ -428,7 +505,13 @@ serve piece of start() {
 		<!-- RIGHT SIDEBAR -->
 		<aside class="right">
 			<div class="actions">
-				<button class="btn">
+				<button
+					class="btn"
+					on:click={() => {
+						const newWindow = window.open(window.location.href, '_blank');
+						if (newWindow) setTimeout(() => (newWindow.document.body.style.zoom = '80%'), 100);
+					}}
+				>
 					{#if theme === 'dark'}
 						<img class="icon" src={newFile} alt="Dark Theme Icon" />
 					{:else}

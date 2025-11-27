@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.lexer.lexer import Lexer
+from app.parser.parser import Parser
 
 app = FastAPI()
 
@@ -21,7 +22,7 @@ class CodeInput(BaseModel):
 async def root():
     return {"message": "Platter Compiler Backend is running"}
 
-@app.post("/analyze")
+@app.post("/analyzeLexical")
 async def analyze_code(input_data: CodeInput):
     """Analyze Platter code and return lexemes"""
     try:
@@ -42,3 +43,35 @@ async def analyze_code(input_data: CodeInput):
         return {"tokens": tokens, "success": True}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Lexical analysis failed: {str(e)}")
+    
+
+@app.post("/analyzeSyntax")
+async def analyze_syntax(input_data: CodeInput):
+    """Analyze syntax of Platter code"""
+    try:
+        lexer = Lexer(input_data.code)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        parser.parse()
+        
+        return {"message": "No Syntax Error", "success": True}
+    except SyntaxError as e:
+        return {"message": str(e), "success": False}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Syntax analysis failed: {str(e)}")
+    
+
+@app.post("/analyzeSemantic")
+async def analyze_semantic(input_data: CodeInput):
+    """Analyze Sementics of Platter code"""
+    try:
+        # lexer = Lexer(input_data.code)
+        # tokens = lexer.tokenize()
+        # parser = Parser(tokens)
+        # parser.parse()
+        
+        return {"message": "Semantic Analysis not yet implemented", "success": False}
+    except SyntaxError as e:
+        return {"message": str(e), "success": False}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Semantic analysis failed: {str(e)}")

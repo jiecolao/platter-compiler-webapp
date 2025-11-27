@@ -71,7 +71,8 @@ class Parser:
         errors = {
             "Program_err": f"Syntax Error: Program cannot begin with token '{self.current_tok}'. Expected a declaration or 'prepare/start'",
             "ExpectedEOF_err": f"Syntax Error: Unexpected token '{self.current_tok}' after start platter, Expected EOF (line {self.current_line}, col {self.current_col})",
-            "Invalid_err": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}. Expected {expected_toklist}",
+            "Invalid_err": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}.",
+            "Invalid_err1": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}. Expected {expected_toklist}",
             "Missing_err": f"Syntax Error: Missing {tok} at line {self.current_line}, col {self.current_col}",
             "UnexpectedTok_err": f"Syntax Error: Unexpected '{self.current_tok}' at line {self.current_line}, col {self.current_col}. Expected {tok}.",
             "Custom_err": f"Syntax Error: {tok} (line {self.current_line}, col {self.current_col})",
@@ -188,7 +189,7 @@ class Parser:
         if self.current_tok in FIRST_SET["<expr>"]:
             if self.current_tok in PREDICT_SET["<expr>"]:
                 self.or_expr()
-        else: self.error_handler("Missing_err", "expression")
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def or_expr(self):
@@ -443,7 +444,7 @@ class Parser:
                 self.notation_val()
                 self.parse_token("]")
                 self.accessor_tail()
-        else: self.error_handler("Missing_err", "value")
+        else: self.error_handler("Invalid_err", "value")
         log.info("Exit: " + self.current_tok)
 
     def notation_val(self):
@@ -483,7 +484,7 @@ class Parser:
                 self.parse_token("]")
                 self.accessor_tail()
                 self.element_value_tail()
-        else: self.error_handler("Missing_err", "notation value")
+        else: self.error_handler("Invalid_err", "notation value")
         log.info("Exit: " + self.current_tok)
     
 
@@ -507,7 +508,7 @@ class Parser:
                 self.element_value_tail()
             if self.current_tok in PREDICT_SET["<notation_val2_1>"]:
                 self.notation_val1()
-        else: self.error_handler("Missing_err", "notation value")
+        else: self.error_handler("Invalid_err", "notation value")
         log.info("Exit: " + self.current_tok)
 
     # last
@@ -520,7 +521,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<id_notation_tail_1>"]:
                 self.assignment_st_eq()
                 self.field_assignments()        
-        else: self.error_handler("Missing_err", "notation value")
+        else: self.error_handler("Invalid_err", "notation value")
         log.info("Exit: " + self.current_tok)
 
     def assignment_st_eq(self):
@@ -614,7 +615,7 @@ class Parser:
                 self.parse_token("topiece")
             if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
                 self.parse_token("tosip")
-        else: self.error_handler("Missing_err", "built-in recipe")
+        else: self.error_handler("Invalid_err", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
     def call_tail(self):
@@ -698,7 +699,7 @@ class Parser:
                 self.decl_head()
                 self.parse_token(";")
                 self.required_decl_tail()
-        else: self.error_handler("Missing_err", "declaration")
+        else: self.error_handler("Invalid_err", "declaration")
         log.info("Exit: " + self.current_tok)
 
     def decl_head(self):
@@ -708,7 +709,7 @@ class Parser:
                 self.data_types_dims()
                 self.parse_token("of")
                 self.parse_token("id")
-        else: self.error_handler("Missing_err", "declaration head")
+        else: self.error_handler("Invalid_err", "declaration head")
         log.info("Exit: " + self.current_tok)
 
     def data_types_dims(self):
@@ -777,7 +778,7 @@ class Parser:
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.parse_token("prepare")
             if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
-            else: self.error_handler("Missing_err", "declaration head")
+            else: self.error_handler("Invalid_err", "declaration head")
             self.parse_token("(")
             self.spice()
             self.parse_token(")")
@@ -816,7 +817,7 @@ class Parser:
             self.local_decl()
             self.statements()
             self.parse_token("}")
-        else: self.error_handler("Missing_err", "platter block")
+        else: self.error_handler("Invalid_err", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def local_decl(self):
@@ -923,7 +924,6 @@ class Parser:
                 self.parse_token(";")
             if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
                 self.assignment_st()
-                self.parse_token(";")
         else: self.error_handler("Invalid_err", "id statement", (", ".join(f"'{tok}'" for tok in FIRST_SET["<id_statements_ext>"])))
         log.info("Exit: " + self.current_tok)
 
@@ -953,7 +953,7 @@ class Parser:
                 self.parse_token("/=")
             if self.current_tok in PREDICT_SET["<assignment_op_5>"]:
                 self.parse_token("%=")
-        else: self.error_handler("Missing_err", "assignment operator")
+        else: self.error_handler("Invalid_err", "assignment operator")
         log.info("Exit: " + self.current_tok)
     
     def conditional_st(self):
@@ -1024,7 +1024,7 @@ class Parser:
                 self.choice_clause()
                 self.usual_clause()
                 self.parse_token("}")
-        else: self.error_handler("Missing_err", "platter block")
+        else: self.error_handler("Invalid_err", "platter block")
         log.info("Exit: " + self.current_tok)
 
     def choice_clause(self):
@@ -1076,7 +1076,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("Missing_err", "pass")
+        else: self.error_handler("Invalid_err", "pass")
         log.info("Exit: " + self.current_tok)
 
     def loop_repeat(self):
@@ -1088,7 +1088,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("Missing_err", "repeat")
+        else: self.error_handler("Invalid_err", "repeat")
         log.info("Exit: " + self.current_tok)
 
     def loop_order(self):
@@ -1102,7 +1102,7 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.parse_token(";")
-        else: self.error_handler("Missing_err", "order")
+        else: self.error_handler("Invalid_err", "order")
 
     def jump_st(self):
         log.info("Enter: " + self.current_tok)

@@ -18,6 +18,7 @@ log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(messa
         [!] Syntax Error: Expected '{tok}' but got EOF (?)
     [/] Update error compilation
     [/] Connect to front-end
+    [] Return
 
 """
 
@@ -360,15 +361,20 @@ class Parser:
                 self.parse_token(")")
             if self.current_tok in PREDICT_SET["<primary_val_1>"]:
                 self.parse_token("piece_lit")
+                return
             if self.current_tok in PREDICT_SET["<primary_val_2>"]:
                 self.parse_token("sip_lit")
+                return
             if self.current_tok in PREDICT_SET["<primary_val_3>"]:
                 self.parse_token("flag_lit")
+                return
             if self.current_tok in PREDICT_SET["<primary_val_4>"]:
                 self.parse_token("chars_lit")
+                return
             if self.current_tok in PREDICT_SET["<primary_val_5>"]:
                 self.parse_token("id")
                 self.id_tail()
+                return
             if self.current_tok in PREDICT_SET["<primary_val_6>"]:
                 self.built_in_rec_call()
         else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primary_val>"])))
@@ -439,6 +445,7 @@ class Parser:
         if self.current_tok in FIRST_SET["<value>"]:
             if self.current_tok in PREDICT_SET["<value>"]:
                 self.expr()
+                return
             if self.current_tok in PREDICT_SET["<value_1>"]:
                 self.parse_token("[")
                 self.notation_val()
@@ -451,6 +458,7 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<notation_val>"]:
             self.notation_val1()
+            return
         if self.current_tok in PREDICT_SET["<notation_val_1>"]:
             self.parse_token("id")
             self.id_notation_tail()
@@ -1032,6 +1040,8 @@ class Parser:
         if self.current_tok in PREDICT_SET["<choice_clause>"]:
             self.parse_token("choice")
             self.expr()
+            # if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
+            # else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
             self.parse_token(":")
             self.statements()
             self.choice_clause()

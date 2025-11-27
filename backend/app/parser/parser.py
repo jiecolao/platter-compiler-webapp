@@ -1039,9 +1039,9 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<choice_clause>"]:
             self.parse_token("choice")
-            self.expr()
-            # if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
-            # else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
+            # self.expr()
+            if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
+            else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
             self.parse_token(":")
             self.statements()
             self.choice_clause()
@@ -1082,6 +1082,7 @@ class Parser:
                 self.parse_token("id")
                 self.ingredient_init()
                 self.parse_token(";")
+                self.parse_token("id")
                 self.assignment_st()
                 self.expr()
                 self.parse_token(")")
@@ -1164,6 +1165,6 @@ if __name__ == "__main__":
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     try:
-        if parser.parse(): print("✔ No Syntax Error")
+        if parser.parse(): print("Syntax OK")
     except SyntaxError as e:
         print(str(e))

@@ -36,9 +36,15 @@ class Parser:
         self.pos = 0
 
         """ Token Attributes """
-        self.current_tok = self.tokens[self.pos]
-        self.current_line = self.tokenlist[self.pos].line
-        self.current_col = (self.tokenlist[self.pos].col)
+        if self.tokens: # catch for empty tokens
+            self.current_tok = self.tokens[self.pos] 
+            self.current_line = self.tokenlist[self.pos].line 
+            self.current_col = (self.tokenlist[self.pos].col) 
+        else:
+            self.current_tok = None
+            self.current_line = None
+            self.current_col = None
+
 
     def parse_token(self, tok):
         if self.current_tok == tok: 
@@ -70,6 +76,7 @@ class Parser:
 
     def error_handler(self, error_type, tok, expected_toklist=None):        
         errors = {
+            "Parse_err": f"Syntax Error: Missing start.",
             "Program_err": f"Syntax Error: Program cannot begin with token '{self.current_tok}'. Expected a declaration or 'prepare/start'",
             "ExpectedEOF_err": f"Syntax Error: Unexpected token '{self.current_tok}' after start platter, Expected EOF (line {self.current_line}, col {self.current_col})",
             "Invalid_err": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}.",
@@ -84,7 +91,9 @@ class Parser:
     # CFG Parsing Methods 
 
     def parse(self):
-        self.program()
+        if self.tokenlist:
+            self.program()
+        else: self.error_handler("Parse_err", None)
         return self.result
 
     def program(self):

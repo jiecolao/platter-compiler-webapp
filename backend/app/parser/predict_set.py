@@ -1,5 +1,5 @@
 PREDICT_SET = {
-    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "prepare", "start"],
+    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "λ"],
 
     "<global_decl>": ["piece", "sip", "flag", "chars"],
     "<global_decl_1>": ["table"],
@@ -22,47 +22,71 @@ PREDICT_SET = {
     "<ingredient_id_tail>": [","],
     "<ingredient_id_tail_1>": [";"],
 
-    "<expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+               "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+               "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+               "tochars", "topiece", "tosip"],
 
-    "<or_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<or_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                  "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                  "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                  "tochars", "topiece", "tosip"],
 
-    "<and_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<and_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                   "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                   "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                   "tochars", "topiece", "tosip"],
 
     "<or_tail>": ["or"],
-    "<or_tail_1>": [",,", ";", ")", "]", ":"],
+    "<or_tail_1>": [",,", ";", ")", "]"],
 
-    "<eq_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<eq_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                  "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                  "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                  "tochars", "topiece", "tosip"],
 
     "<and_tail>": ["and"],
-    "<and_tail_1>": [";"],
+    "<and_tail_1>": ["or", ",,", ";", ")", "]"],
 
-    "<rel_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<rel_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                   "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                   "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                   "tochars", "topiece", "tosip"],
 
     "<eq_tail>": ["=="],
     "<eq_tail_1>": ["!="],
-    "<eq_tail_2>": ["and", ";"],
+    "<eq_tail_2>": ["and", "or", ",,", ";", ")", "]"],
 
-    "<add_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<add_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                   "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                   "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                   "tochars", "topiece", "tosip"],
 
     "<rel_tail>": [">"],
     "<rel_tail_1>": ["<"],
     "<rel_tail_2>": [">="],
     "<rel_tail_3>": ["<="],
-    "<rel_tail_4>": ["==", "!=", "and", ";"],
+    "<rel_tail_4>": ["==", "!=", "and", "or", ",,", ";", ")", "]"],
 
-    "<mult_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<mult_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                    "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                    "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                    "tochars", "topiece", "tosip"],
 
     "<add_tail>": ["+"],
     "<add_tail_1>": ["-"],
-    "<add_tail_2>": [">", "<", ">=", "<=", "==", "!=", "and", ";"],
+    "<add_tail_2>": [">", "<", ">=", "<=", "==", "!=", "and", "or", ",,", ";", ")", "]"],
 
     "<unary_expr>": ["not"],
-    "<unary_expr_1>": ["(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<unary_expr_1>": ["(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                       "append", "bill", "copy", "cut", "fact", "matches", "pow",
+                       "rand", "remove", "reverse", "search", "size", "sort",
+                       "sqrt", "take", "tochars", "topiece", "tosip"],
 
     "<mult_tail>": ["*"],
     "<mult_tail_1>": ["/"],
     "<mult_tail_2>": ["%"],
-    "<mult_tail_3>": ["+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";"],
+    "<mult_tail_3>": ["+", "-", ">", "<", ">=", "<=", "==", "!=", "and", "or", ",,", ";", ")", "]"],
 
     "<primary_val>": ["("],
     "<primary_val_1>": ["piece_lit"],
@@ -70,55 +94,58 @@ PREDICT_SET = {
     "<primary_val_3>": ["flag_lit"],
     "<primary_val_4>": ["chars_lit"],
     "<primary_val_5>": ["id"],
-    "<primary_val_6>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<primary_val_6>": ["append", "bill", "copy", "cut", "fact", "matches", "pow",
+                        "rand", "remove", "reverse", "search", "size", "sort",
+                        "sqrt", "take", "tochars", "topiece", "tosip"],
 
-    "<id_tail>": [ "(", "[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", "]" ],
+    "<id_tail>": ["(", "λ"],
 
     "<call_tailopt>": ["("],
-    "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", "]"],
+    "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==",
+                         "!=", "and", "or", ",,", ";", ")", "]"],
 
     "<accessor_tail>": ["["],
     "<accessor_tail_1>": [":"],
-    "<accessor_tail_2>": ["*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", ")", "]", "=", "+=", "-=", "*=", "/=", "%="],
+    "<accessor_tail_2>": ["*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=",
+                          "and", "or", ",,", ";", ")", "=", "+=", "-=", "*=", "/=", "%=", "]"],
 
     "<array_accessor>": ["["],
     "<table_accessor>": [":"],
 
-    "<flavor>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "["],
+    "<flavor>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                 "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                 "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                 "tochars", "topiece", "tosip", "["],
     "<flavor_1>": [")"],
 
-    "<value>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<value>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                "tochars", "topiece", "tosip"],
     "<value_1>": ["["],
 
-    "<notation_val>": ["piece_lit", "sip_lit", "flag_lit", "chars_lit", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "["],
+    "<notation_val>": ["piece_lit", "sip_lit", "flag_lit", "chars_lit", "["],
     "<notation_val_1>": ["id"],
     "<notation_val_2>": ["]"],
 
-    "<notation_val1>": ["piece_lit"],
-    "<notation_val1_1>": ["sip_lit"],
-    "<notation_val1_2>": ["flag_lit"],
-    "<notation_val1_3>": ["chars_lit"],
-    "<notation_val1_4>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
-    "<notation_val1_5>": ["["],
-
-    "<element_value_tail>": [","],
-    "<element_value_tail_1>": ["]", ","],
-
-    "<notation_val2>": ["id"],
-    "<notation_val2_1>": ["piece_lit", "sip_lit", "flag_lit", "chars_lit", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "["],
-
-    "<id_notation_tail>": [ "(", "[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", "]" ],
-    "<id_notation_tail_1>": ["="],
-
-    "<assignment_st_eq>": ["="],
+    "<array_element>": ["piece_lit"],
+    "<array_element_1>": ["sip_lit"],
+    "<array_element_2>": ["flag_lit"],
+    "<array_element_3>": ["chars_lit"],
+    "<array_element_4>": ["["],
 
     "<field_assignments>": ["id"],
     "<field_assignments_1>": ["]"],
 
+    "<element_value_tail>": [","],
+    "<element_value_tail_1>": ["]"],
+
     "<flavor_tail>": [","],
     "<flavor_tail_1>": [")"],
 
-    "<built-in_rec_call>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<built-in_rec_call>": ["append", "bill", "copy", "cut", "fact", "matches", "pow",
+                            "rand", "remove", "reverse", "search", "size", "sort",
+                            "sqrt", "take", "tochars", "topiece", "tosip"],
 
     "<tail1>": ["("],
 
@@ -158,19 +185,18 @@ PREDICT_SET = {
     "<table_prototype>": ["table"],
 
     "<required_decl>": ["piece", "sip", "flag", "chars", "id"],
-
     "<decl_head>": ["piece", "sip", "flag", "chars", "id"],
 
-    "<data_types_dims>": ["piece"],
-    "<data_types_dims_1>": ["sip"],
-    "<data_types_dims_2>": ["flag"],
-    "<data_types_dims_3>": ["chars"],
-    "<data_types_dims_4>": ["id"],
+    "<primitive_types_dims>": ["piece"],
+    "<primitive_types_dims_1>": ["sip"],
+    "<primitive_types_dims_2>": ["flag"],
+    "<primitive_types_dims_3>": ["chars"],
+    "<primitive_types_dims_4>": ["id"],
 
     "<required_decl_tail>": ["piece", "sip", "flag", "chars", "id"],
     "<required_decl_tail_1>": ["]"],
 
-    "<table_decl>": ["[", "of"],
+    "<table_decl>": ["[", "λ"],
 
     "<table_declare>": ["id"],
 
@@ -179,6 +205,8 @@ PREDICT_SET = {
 
     "<recipe_decl>": ["prepare"],
     "<recipe_decl_1>": ["start"],
+
+    "<serve_type>": ["piece", "sip", "flag", "chars", "id"],
 
     "<spice>": ["piece", "sip", "flag", "chars", "id"],
     "<spice_1>": [")"],
@@ -190,14 +218,23 @@ PREDICT_SET = {
 
     "<local_decl>": ["piece", "sip", "flag", "chars"],
     "<local_decl_1>": ["id"],
-    "<local_decl_2>": ["id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu", "pass", "repeat", "order", "next", "stop", "serve"],
+    "<local_decl_2>": ["id", "append", "bill", "copy", "cut", "fact", "matches", "pow",
+                       "rand", "remove", "reverse", "search", "size", "sort", "sqrt",
+                       "take", "tochars", "topiece", "tosip", "check", "menu", "pass",
+                       "repeat", "order", "next", "stop", "serve", "}"],
 
     "<statements>": ["id"],
-    "<statements_1>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<statements_1>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                       "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                       "tochars", "topiece", "tosip"],
     "<statements_2>": ["check", "menu"],
     "<statements_3>": ["pass", "repeat", "order"],
     "<statements_4>": ["next", "stop", "serve"],
-    "<statements_5>": ["}", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu", "pass", "repeat", "order", "next", "stop", "serve", "choice", "usual"],
+    "<statements_5>": ["}", "id", "append", "bill", "copy", "cut", "fact", "matches",
+                       "pow", "rand", "remove", "reverse", "search", "size", "sort",
+                       "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu",
+                       "pass", "repeat", "order", "next", "stop", "serve",
+                       "choice", "usual"],
 
     "<local_id_tail>": ["of"],
     "<local_id_tail_1>": ["["],
@@ -206,14 +243,17 @@ PREDICT_SET = {
     "<local_id_tail_4>": ["("],
 
     "<]_tail>": ["]"],
-    "<]_tail_1>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip"],
+    "<]_tail_1>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
+                   "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
+                   "remove", "reverse", "search", "size", "sort", "sqrt", "take",
+                   "tochars", "topiece", "tosip"],
 
     "<id_statements>": ["id"],
 
     "<id_statements_ext>": ["("],
     "<id_statements_ext_1>": ["[", ":", "=", "+=", "-=", "*=", "/=", "%="],
 
-    "<assignment_st>": [ "[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=", "and", ";", ",", ")", "]", "=", "+=", "-=", "*=", "/=", "%=" ],
+    "<assignment_st>": ["[", ":", "λ"],
 
     "<assignment_op>": ["="],
     "<assignment_op_1>": ["+="],
@@ -228,10 +268,18 @@ PREDICT_SET = {
     "<cond_check>": ["check"],
 
     "<alt_clause>": ["alt"],
-    "<alt_clause_1>": ["instead", "id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu", "pass", "repeat", "order", "next", "stop", "serve", "}", "choice", "usual"],
+    "<alt_clause_1>": ["instead", "id", "append", "bill", "copy", "cut", "fact",
+                       "matches", "pow", "rand", "remove", "reverse", "search",
+                       "size", "sort", "sqrt", "take", "tochars", "topiece",
+                       "tosip", "check", "menu", "pass", "repeat", "order",
+                       "next", "stop", "serve", "}", "choice", "usual"],
 
     "<instead_clause>": ["instead"],
-    "<instead_clause_1>": ["id", "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand", "remove", "reverse", "search", "size", "sort", "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu", "pass", "repeat", "order", "next", "stop", "serve", "}", "choice", "usual"],
+    "<instead_clause_1>": ["id", "append", "bill", "copy", "cut", "fact", "matches",
+                           "pow", "rand", "remove", "reverse", "search", "size",
+                           "sort", "sqrt", "take", "tochars", "topiece", "tosip",
+                           "check", "menu", "pass", "repeat", "order", "next",
+                           "stop", "serve", "}", "choice", "usual"],
 
     "<cond_menu>": ["menu"],
 
@@ -239,6 +287,9 @@ PREDICT_SET = {
 
     "<choice_clause>": ["choice"],
     "<choice_clause_1>": ["usual", "}"],
+
+    "<choice_val>": ["piece_lit"],
+    "<choice_val_1>": ["chars_lit"],
 
     "<usual_clause>": ["usual"],
     "<usual_clause_1>": ["}"],
@@ -248,6 +299,10 @@ PREDICT_SET = {
     "<looping_st_2>": ["order"],
 
     "<loop_pass>": ["pass"],
+
+    "<initialization>": ["id"],
+    "<update>": ["id"],
+
     "<loop_repeat>": ["repeat"],
     "<loop_order>": ["order"],
 
@@ -257,5 +312,5 @@ PREDICT_SET = {
 
     "<jump_next>": ["next"],
     "<jump_stop>": ["stop"],
-    "<jump_serve>": ["serve"]
+    "<jump_serve>": ["serve"],
 }

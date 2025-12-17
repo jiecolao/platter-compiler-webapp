@@ -126,6 +126,7 @@ class Parser:
             self.table_decl() 
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_3>"]:
+            log.info("Exit: " + self.current_tok)
             return # λ
         log.info("Exit: " + self.current_tok)
 
@@ -208,7 +209,8 @@ class Parser:
             if self.current_tok in PREDICT_SET["<or_expr>"]:
                 self.and_expr()
                 self.or_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
+        # else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def and_expr(self):
@@ -217,7 +219,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<and_expr>"]:
                 self.eq_expr()
                 self.and_tail() 
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<and_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def or_tail(self):
@@ -237,7 +239,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<eq_expr>"]:
                 self.rel_expr()
                 self.eq_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<eq_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def and_tail(self):
@@ -257,7 +259,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<rel_expr>"]:
                 self.add_expr()
                 self.rel_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<rel_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def eq_tail(self):
@@ -281,7 +283,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<add_expr>"]:
                 self.mult_expr()
                 self.add_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<add_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
             
     def rel_tail(self):
@@ -313,7 +315,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<mult_expr>"]:
                 self.unary_expr()
                 self.mult_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<mult_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def add_tail(self):
@@ -339,7 +341,7 @@ class Parser:
                 self.unary_expr()
             if self.current_tok in PREDICT_SET["<unary_expr_1>"]:
                 self.primary_val()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<unary_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def mult_tail(self):
@@ -386,7 +388,7 @@ class Parser:
                 return
             if self.current_tok in PREDICT_SET["<primary_val_6>"]:
                 self.built_in_rec_call()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primary_val>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def id_tail(self):

@@ -94,9 +94,13 @@ FIRST_SET = {
 
     "<array_element>": ["piece_lit", "sip_lit", "flag_lit", "chars_lit", "["],
 
-    "<field_assignments>": ["id", "λ"],
-
     "<element_value_tail>": [",", "λ"],
+
+    "<array_element_id>": ["id", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "["],
+
+    "<array_or_table>": [",", "=", "λ"],
+
+    "<field_assignments>": ["id", "λ"],
 
     "<flavor_tail>": [",", "λ"],
 

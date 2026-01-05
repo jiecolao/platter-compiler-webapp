@@ -115,7 +115,7 @@ class Parser:
 
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<global_decl>"]:
+        if self.current_tok in PREDICT_SET["<global_decl>"]: # if has null in set
             self.decl_data_type()
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_1>"]:
@@ -132,7 +132,7 @@ class Parser:
 
     def decl_data_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<decl_data_type>"]:
+        if self.current_tok in FIRST_SET["<decl_data_type>"]: # if no null in set
             if self.current_tok in PREDICT_SET["<decl_data_type>"]:
                 self.parse_token("piece")
                 self.decl_type()
@@ -472,16 +472,12 @@ class Parser:
             return
         if self.current_tok in PREDICT_SET["<notation_val_1>"]:
             self.parse_token("id")
-            self.parse_token("=")
-            self.value()
-            self.parse_token(";")
-            self.field_assignments()
+            self.array_or_table()
         if self.current_tok in PREDICT_SET["<notation_val_2>"]:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
 
-    # rev
     def array_element(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in FIRST_SET["<array_element>"]:
@@ -504,7 +500,43 @@ class Parser:
                 self.element_value_tail()
         else: self.error_handler("Invalid_err", "notation value")
         log.info("Exit: " + self.current_tok)
-    
+
+    def element_value_tail(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in PREDICT_SET["<element_value_tail>"]:
+            self.parse_token(",")
+            self.array_element_id()
+        if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
+            log.info("Exit: " + self.current_tok)
+            return
+        log.info("Exit: " + self.current_tok)
+
+    def array_element_id(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<array_element_id>"]:
+            if self.current_tok in PREDICT_SET["<array_element_id>"]:
+                self.parse_token("id")
+                self.element_value_tail()
+            if self.current_tok in PREDICT_SET["<array_element_id_1>"]:
+                self.array_element()
+        else: self.error_handler("Invalid_err", "array element")
+        log.info("Exit: " + self.current_tok)
+
+    def array_or_table(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in PREDICT_SET["<array_or_table>"]:
+            self.parse_token(",")
+            self.array_element_id()
+        if self.current_tok in PREDICT_SET["<array_or_table_1>"]:
+            self.parse_token("=")
+            self.value()
+            self.parse_token(";")
+            self.field_assignments()
+        if self.current_tok in PREDICT_SET["<array_or_table_2>"]:
+            log.info("Exit: " + self.current_tok)
+            return
+        log.info("Exit: " + self.current_tok)
+
     def field_assignments(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<field_assignments>"]:
@@ -514,16 +546,6 @@ class Parser:
             self.parse_token(";")
             self.field_assignments()
         if self.current_tok in PREDICT_SET["<field_assignments_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
-        log.info("Exit: " + self.current_tok)
-
-    def element_value_tail(self):
-        log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<element_value_tail>"]:
-            self.parse_token(",")
-            self.array_element()
-        if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)

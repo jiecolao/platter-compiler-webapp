@@ -17,7 +17,7 @@ PREDICT_SET = {
     "<ingredient_id>": ["id"],
 
     "<ingredient_init>": ["="],
-    "<ingredient_init_1>": [",,", ";"],
+    "<ingredient_init_1>": [",", ";"],
 
     "<ingredient_id_tail>": [","],
     "<ingredient_id_tail_1>": [";"],
@@ -38,7 +38,7 @@ PREDICT_SET = {
                    "tochars", "topiece", "tosip"],
 
     "<or_tail>": ["or"],
-    "<or_tail_1>": [",,", ";", ")", "]"],
+    "<or_tail_1>": [",", ";", ")", "]"],
 
     "<eq_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
                   "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
@@ -46,7 +46,7 @@ PREDICT_SET = {
                   "tochars", "topiece", "tosip"],
 
     "<and_tail>": ["and"],
-    "<and_tail_1>": ["or", ",,", ";", ")", "]"],
+    "<and_tail_1>": ["or", ",", ";", ")", "]"],
 
     "<rel_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
                    "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
@@ -55,7 +55,7 @@ PREDICT_SET = {
 
     "<eq_tail>": ["=="],
     "<eq_tail_1>": ["!="],
-    "<eq_tail_2>": ["and", "or", ",,", ";", ")", "]"],
+    "<eq_tail_2>": ["and", "or", ",", ";", ")", "]"],
 
     "<add_expr>": ["not", "(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
                    "append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
@@ -75,18 +75,19 @@ PREDICT_SET = {
 
     "<add_tail>": ["+"],
     "<add_tail_1>": ["-"],
-    "<add_tail_2>": [">", "<", ">=", "<=", "==", "!=", "and", "or", ",,", ";", ")", "]"],
+    "<add_tail_2>": [">", "<", ">=", "<=", "==", "!=", "and", "or", ",", ";", ")", "]"],
 
     "<unary_expr>": ["not"],
     "<unary_expr_1>": ["(", "piece_lit", "sip_lit", "flag_lit", "chars_lit", "id",
                        "append", "bill", "copy", "cut", "fact", "matches", "pow",
-                       "rand", "remove", "reverse", "search", "size", "sort",
-                       "sqrt", "take", "tochars", "topiece", "tosip"],
+                       "rand", "remove", "reverse", "search", "size", "sort", "sqrt",
+                       "take", "tochars", "topiece", "tosip"],
 
     "<mult_tail>": ["*"],
     "<mult_tail_1>": ["/"],
     "<mult_tail_2>": ["%"],
-    "<mult_tail_3>": ["+", "-", ">", "<", ">=", "<=", "==", "!=", "and", "or", ",,", ";", ")", "]"],
+    "<mult_tail_3>": ["+", "-", ">", "<", ">=", "<=", "==", "!=", "and", "or",
+                      ",", ";", ")", "]"],
 
     "<primary_val>": ["("],
     "<primary_val_1>": ["piece_lit"],
@@ -101,13 +102,14 @@ PREDICT_SET = {
     "<id_tail>": ["(", "λ"],
 
     "<call_tailopt>": ["("],
-    "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==",
-                         "!=", "and", "or", ",,", ";", ")", "]"],
+    "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=",
+                         "==", "!=", "and", "or", ",", ";", ")", "]"],
 
     "<accessor_tail>": ["["],
     "<accessor_tail_1>": [":"],
     "<accessor_tail_2>": ["*", "/", "%", "+", "-", ">", "<", ">=", "<=", "==", "!=",
-                          "and", "or", ",,", ";", ")", "=", "+=", "-=", "*=", "/=", "%=", "]"],
+                          "and", "or", ",", ";", ")", "=", "+=", "-=", "*=", "/=",
+                          "%=", "]"],
 
     "<array_accessor>": ["["],
     "<table_accessor>": [":"],
@@ -134,11 +136,18 @@ PREDICT_SET = {
     "<array_element_3>": ["chars_lit"],
     "<array_element_4>": ["["],
 
-    "<field_assignments>": ["id"],
-    "<field_assignments_1>": ["]"],
-
     "<element_value_tail>": [","],
     "<element_value_tail_1>": ["]"],
+
+    "<array_element_id>": ["id"],
+    "<array_element_id_1>": ["piece_lit", "sip_lit", "flag_lit", "chars_lit", "["],
+
+    "<array_or_table>": [","],
+    "<array_or_table_1>": ["="],
+    "<array_or_table_2>": ["]"],
+
+    "<field_assignments>": ["id"],
+    "<field_assignments_1>": ["]"],
 
     "<flavor_tail>": [","],
     "<flavor_tail_1>": [")"],
@@ -177,7 +186,7 @@ PREDICT_SET = {
     "<array_declare>": ["id"],
 
     "<array_table_init>": ["="],
-    "<array_table_init_1>": [",,", ";"],
+    "<array_table_init_1>": [",", ";"],
 
     "<array_declare_tail>": [","],
     "<array_declare_tail_1>": [";"],
@@ -185,6 +194,7 @@ PREDICT_SET = {
     "<table_prototype>": ["table"],
 
     "<required_decl>": ["piece", "sip", "flag", "chars", "id"],
+
     "<decl_head>": ["piece", "sip", "flag", "chars", "id"],
 
     "<primitive_types_dims>": ["piece"],
@@ -218,22 +228,22 @@ PREDICT_SET = {
 
     "<local_decl>": ["piece", "sip", "flag", "chars"],
     "<local_decl_1>": ["id"],
-    "<local_decl_2>": ["id", "append", "bill", "copy", "cut", "fact", "matches", "pow",
-                       "rand", "remove", "reverse", "search", "size", "sort", "sqrt",
-                       "take", "tochars", "topiece", "tosip", "check", "menu", "pass",
-                       "repeat", "order", "next", "stop", "serve", "}"],
+    "<local_decl_2>": ["id", "append", "bill", "copy", "cut", "fact", "matches",
+                       "pow", "rand", "remove", "reverse", "search", "size", "sort",
+                       "sqrt", "take", "tochars", "topiece", "tosip", "check",
+                       "menu", "pass", "repeat", "order", "next", "stop", "serve", "}"],
 
     "<statements>": ["id"],
-    "<statements_1>": ["append", "bill", "copy", "cut", "fact", "matches", "pow", "rand",
-                       "remove", "reverse", "search", "size", "sort", "sqrt", "take",
-                       "tochars", "topiece", "tosip"],
+    "<statements_1>": ["append", "bill", "copy", "cut", "fact", "matches", "pow",
+                       "rand", "remove", "reverse", "search", "size", "sort", "sqrt",
+                       "take", "tochars", "topiece", "tosip"],
     "<statements_2>": ["check", "menu"],
     "<statements_3>": ["pass", "repeat", "order"],
     "<statements_4>": ["next", "stop", "serve"],
     "<statements_5>": ["}", "id", "append", "bill", "copy", "cut", "fact", "matches",
                        "pow", "rand", "remove", "reverse", "search", "size", "sort",
-                       "sqrt", "take", "tochars", "topiece", "tosip", "check", "menu",
-                       "pass", "repeat", "order", "next", "stop", "serve",
+                       "sqrt", "take", "tochars", "topiece", "tosip", "check",
+                       "menu", "pass", "repeat", "order", "next", "stop", "serve",
                        "choice", "usual"],
 
     "<local_id_tail>": ["of"],
@@ -301,9 +311,11 @@ PREDICT_SET = {
     "<loop_pass>": ["pass"],
 
     "<initialization>": ["id"],
+
     "<update>": ["id"],
 
     "<loop_repeat>": ["repeat"],
+
     "<loop_order>": ["order"],
 
     "<jump_st>": ["next"],

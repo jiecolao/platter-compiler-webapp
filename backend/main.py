@@ -56,7 +56,24 @@ async def analyze_syntax(input_data: CodeInput):
         
         return {"message": "No Syntax Error", "success": True}
     except SyntaxError as e:
-        return {"message": str(e), "success": False}
+        error_msg = str(e)
+        # Try to extract line and col from error message
+        # Format: "Syntax Error: ... (line X, col Y)"
+        import re
+        match = re.search(r'line (\d+), col (\d+)', error_msg)
+        if match:
+            line = int(match.group(1))
+            col = int(match.group(2))
+            return {
+                "message": error_msg,
+                "success": False,
+                "error": {
+                    "line": line,
+                    "col": col,
+                    "message": error_msg
+                }
+            }
+        return {"message": error_msg, "success": False}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Syntax analysis failed: {str(e)}")
     

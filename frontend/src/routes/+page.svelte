@@ -205,8 +205,20 @@ start() {
 			const data = await res.json();
 
 			if (data.success) {
+				clearErrorMarkers();
 				setTerminalOk(data.message || 'Semantic analysis completed successfully');
 			} else {
+				// Handle syntax errors with line/col information
+				if (data.error && data.error.line && data.error.col) {
+				// Create a token-like object for the error marker
+				const errorToken = {
+				type: 'Syntax Error',
+				value: 'error',
+				line: data.error.line,
+				col: data.error.col
+				};
+				addErrorMarkers([errorToken]);
+				}
 				setTerminalError(data.message || 'Semantic analysis failed');
 			}
 		} catch (err) {}
@@ -228,8 +240,20 @@ start() {
 				const data = await res.json();
 
 				if (data.success) {
+					clearErrorMarkers();
 					setTerminalOk(data.message || 'Syntax analysis completed successfully');
 				} else {
+					// Handle syntax errors with line/col information
+					if (data.error && data.error.line && data.error.col) {
+						// Create a token-like object for the error marker
+						const errorToken = {
+							type: 'Syntax Error',
+							value: 'error',
+							line: data.error.line,
+							col: data.error.col
+						};
+						addErrorMarkers([errorToken]);
+					}
 					setTerminalError(data.message || 'Syntax analysis failed');
 				}
 			} catch (err) {
@@ -548,7 +572,7 @@ start() {
 						<img class="icon" src={newFile} alt="Dark Theme Icon" />
 					{:else}
 						<img class="icon" src={newFile1} alt="Light Theme Icon" />
-					{/if} <span>New File</span></button
+					{/if} <span>New Tab</span></button
 				>
 				<button class="btn" type="button" on:click={openFileDialog}>
 					{#if theme === 'dark'}

@@ -1,5 +1,13 @@
+"""
+    When pasting a new predict set:
+        1. Replace "#NA" for prod 31 and 33
+        2. Replace "λ" with the follow set of the prod
+            | or the follow set of the first terminal
+        3. Verify
+"""
+
 PREDICT_SET = {
-    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "λ"],
+    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "prepare", "start"], # ["piece", "sip", "flag", "chars", "table", "id", "λ"]
 
     "<global_decl>": ["piece", "sip", "flag", "chars"],
     "<global_decl_1>": ["table"],
@@ -99,7 +107,8 @@ PREDICT_SET = {
                         "rand", "remove", "reverse", "search", "size", "sort",
                         "sqrt", "take", "tochars", "topiece", "tosip"],
 
-    "<id_tail>": ["(", "λ"],
+    "<id_tail>": ["(", "[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", 
+                  "<=", "==", "!=", "and", "or", ",", ";", ")", "]"], # ["(", "λ"]
 
     "<call_tailopt>": ["("],
     "<call_tailopt_1>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", "<=",
@@ -206,7 +215,7 @@ PREDICT_SET = {
     "<required_decl_tail>": ["piece", "sip", "flag", "chars", "id"],
     "<required_decl_tail_1>": ["]"],
 
-    "<table_decl>": ["[", "λ"],
+    "<table_decl>": ["[", "of"], # ["[", "λ"]
 
     "<table_declare>": ["id"],
 
@@ -263,7 +272,9 @@ PREDICT_SET = {
     "<id_statements_ext>": ["("],
     "<id_statements_ext_1>": ["[", ":", "=", "+=", "-=", "*=", "/=", "%="],
 
-    "<assignment_st>": ["[", ":", "λ"],
+    "<assignment_st>": ["[", ":", "*", "/", "%", "+", "-", ">", "<", ">=", 
+                        "<=", "==", "!=", "and", "or", ",", ";", ")", "=", 
+                        "+=", "-=", "*=", "/=", "%=", "]"], # ["[", ":", "λ"]
 
     "<assignment_op>": ["="],
     "<assignment_op_1>": ["+="],

@@ -213,7 +213,7 @@ start() {
 				setTerminalError(`Syntax analysis failed: ${msg}`);
 			}
 		} else if (termMessages.length > 0) {
-			setTerminalError('Syntax analysis not performed due to lexical errors');
+			// Keep existing lexical errors displayed - don't replace them
 		} else {
 			setTerminalOk('Syntax analysis not yet implemented');
 		}

@@ -65,6 +65,7 @@ start() {
 	// CodeMirror integration
 	let textareaEl: HTMLTextAreaElement | null = null;
 	let cmInstance: any = null;
+	let errorMarkers: any[] = []; // Track CodeMirror text markers for error highlighting
 
 	// file input for opening .platter files
 	let fileInputEl: HTMLInputElement;
@@ -165,6 +166,29 @@ start() {
 	}
 	function clearTerminal() {
 		termMessages = [];
+	}
+
+	function clearErrorMarkers() {
+		if (cmInstance) {
+			errorMarkers.forEach((marker) => marker.clear());
+			errorMarkers = [];
+		}
+	}
+
+	function addErrorMarkers(errors: Token[]) {
+		if (!cmInstance) return;
+		clearErrorMarkers();
+		errors.forEach((error) => {
+			const line = error.line - 1; // CodeMirror uses 0-based line numbers
+			const col = error.col - 1; // CodeMirror uses 0-based columns
+			const valueLength = error.value?.length || 1;
+			const marker = cmInstance.markText(
+				{ line, ch: col },
+				{ line, ch: col + valueLength },
+				{ className: 'error-underline' }
+			);
+			errorMarkers.push(marker);
+		});
 	}
 
 	async function analyzeSemantic() {
@@ -354,10 +378,14 @@ start() {
 				}
 
 				termMessages = combinedErrors;
+				// Highlight errors in CodeMirror
+				addErrorMarkers(invalidTokens);
 				// also set a concise terminal summary
 				// keep lexer table OK message minimal
 				return;
 			}
+
+			clearErrorMarkers();
 
 			setTerminalOk(
 				tokens.length ? `Lexical OK • ${tokens.length} token(s)` : 'No tokens produced'
@@ -442,6 +470,7 @@ start() {
 						if (cmInstance) cmInstance.setValue('');
 						codeInput = '';
 						clearTerminal();
+						clearErrorMarkers();
 						lexerRows.length = 0;
 						tokens = [];
 					}}
@@ -979,5 +1008,11 @@ start() {
 	}
 	:global(.ide[data-theme='light'] .CodeMirror .CodeMirror-cursor) {
 		border-left: 1px solid #000000 !important; /* black cursor for light theme */
+	}
+
+	/* Error underline styling */
+	:global(.error-underline) {
+		border-bottom: 2px solid #ff0000 !important;
+		background-color: rgba(255, 0, 0, 0.1) !important;
 	}
 </style>

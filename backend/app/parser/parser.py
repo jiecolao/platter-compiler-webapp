@@ -115,7 +115,7 @@ class Parser:
 
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<global_decl>"]:
+        if self.current_tok in PREDICT_SET["<global_decl>"]: # if has null in set
             self.decl_data_type()
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_1>"]:
@@ -126,12 +126,13 @@ class Parser:
             self.table_decl() 
             self.global_decl()
         if self.current_tok in PREDICT_SET["<global_decl_3>"]:
+            log.info("Exit: " + self.current_tok)
             return # λ
         log.info("Exit: " + self.current_tok)
 
     def decl_data_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<decl_data_type>"]:
+        if self.current_tok in FIRST_SET["<decl_data_type>"]: # if no null in set
             if self.current_tok in PREDICT_SET["<decl_data_type>"]:
                 self.parse_token("piece")
                 self.decl_type()
@@ -208,7 +209,8 @@ class Parser:
             if self.current_tok in PREDICT_SET["<or_expr>"]:
                 self.and_expr()
                 self.or_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
+        # else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def and_expr(self):
@@ -217,7 +219,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<and_expr>"]:
                 self.eq_expr()
                 self.and_tail() 
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<and_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
     
     def or_tail(self):
@@ -237,7 +239,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<eq_expr>"]:
                 self.rel_expr()
                 self.eq_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<eq_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def and_tail(self):
@@ -257,7 +259,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<rel_expr>"]:
                 self.add_expr()
                 self.rel_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<rel_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def eq_tail(self):
@@ -281,7 +283,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<add_expr>"]:
                 self.mult_expr()
                 self.add_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<add_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
             
     def rel_tail(self):
@@ -313,7 +315,7 @@ class Parser:
             if self.current_tok in PREDICT_SET["<mult_expr>"]:
                 self.unary_expr()
                 self.mult_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<mult_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def add_tail(self):
@@ -339,7 +341,7 @@ class Parser:
                 self.unary_expr()
             if self.current_tok in PREDICT_SET["<unary_expr_1>"]:
                 self.primary_val()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<unary_expr>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def mult_tail(self):
@@ -386,7 +388,7 @@ class Parser:
                 return
             if self.current_tok in PREDICT_SET["<primary_val_6>"]:
                 self.built_in_rec_call()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primary_val>"])))
+        else: self.error_handler("Invalid_err", "expression")
         log.info("Exit: " + self.current_tok)
 
     def id_tail(self):
@@ -466,89 +468,73 @@ class Parser:
     def notation_val(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<notation_val>"]:
-            self.notation_val1()
+            self.array_element()
             return
         if self.current_tok in PREDICT_SET["<notation_val_1>"]:
             self.parse_token("id")
-            self.id_notation_tail()
+            self.array_or_table()
         if self.current_tok in PREDICT_SET["<notation_val_2>"]:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
 
-    # rev
-    def notation_val1(self):
+    def array_element(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<notation_val1>"]:
-            if self.current_tok in PREDICT_SET["<notation_val1>"]:
+        if self.current_tok in FIRST_SET["<array_element>"]:
+            if self.current_tok in PREDICT_SET["<array_element>"]:
                 self.parse_token("piece_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val1_1>"]:
+            if self.current_tok in PREDICT_SET["<array_element_1>"]:
                 self.parse_token("sip_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val1_2>"]:
+            if self.current_tok in PREDICT_SET["<array_element_2>"]:
                 self.parse_token("flag_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val1_3>"]:
+            if self.current_tok in PREDICT_SET["<array_element_3>"]:
                 self.parse_token("chars_lit")
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val1_4>"]:
-                self.built_in_rec_call()
-                self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val1_5>"]:
+            if self.current_tok in PREDICT_SET["<array_element_4>"]:
                 self.parse_token("[")
                 self.notation_val()
                 self.parse_token("]")
-                self.accessor_tail()
                 self.element_value_tail()
         else: self.error_handler("Invalid_err", "notation value")
         log.info("Exit: " + self.current_tok)
-    
 
     def element_value_tail(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<element_value_tail>"]:
             self.parse_token(",")
-            self.notation_val2()
-            self.element_value_tail()
+            self.array_element_id()
         if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
 
-    def notation_val2(self):
+    def array_element_id(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<notation_val2>"]:
-            if self.current_tok in PREDICT_SET["<notation_val2>"]:
+        if self.current_tok in FIRST_SET["<array_element_id>"]:
+            if self.current_tok in PREDICT_SET["<array_element_id>"]:
                 self.parse_token("id")
-                self.id_tail()
                 self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<notation_val2_1>"]:
-                self.notation_val1()
-        else: self.error_handler("Invalid_err", "notation value")
+            if self.current_tok in PREDICT_SET["<array_element_id_1>"]:
+                self.array_element()
+        else: self.error_handler("Invalid_err", "array element")
         log.info("Exit: " + self.current_tok)
 
-    # last
-    def id_notation_tail(self):
+    def array_or_table(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<id_notation_tail>"]:
-            if self.current_tok in PREDICT_SET["<id_notation_tail>"]:
-                self.id_tail()
-                self.element_value_tail()
-            if self.current_tok in PREDICT_SET["<id_notation_tail_1>"]:
-                self.assignment_st_eq()
-                self.field_assignments()        
-        else: self.error_handler("Invalid_err", "notation value")
-        log.info("Exit: " + self.current_tok)
-
-    def assignment_st_eq(self):
-        log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<assignment_st_eq>"]:
-            if self.current_tok in PREDICT_SET["<assignment_st_eq>"]:
-                self.parse_token("=")
-                self.value()
-                self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", "'='")
+        if self.current_tok in PREDICT_SET["<array_or_table>"]:
+            self.parse_token(",")
+            self.array_element_id()
+        if self.current_tok in PREDICT_SET["<array_or_table_1>"]:
+            self.parse_token("=")
+            self.value()
+            self.parse_token(";")
+            self.field_assignments()
+        if self.current_tok in PREDICT_SET["<array_or_table_2>"]:
+            log.info("Exit: " + self.current_tok)
+            return
         log.info("Exit: " + self.current_tok)
 
     def field_assignments(self):
@@ -563,7 +549,7 @@ class Parser:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
-    
+
     def flavor_tail(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<flavor_tail>"]:
@@ -723,31 +709,31 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in FIRST_SET["<decl_head>"]:
             if self.current_tok in PREDICT_SET["<decl_head>"]:
-                self.data_types_dims()
+                self.primitive_types_dims()
                 self.parse_token("of")
                 self.parse_token("id")
         else: self.error_handler("Invalid_err", "declaration head")
         log.info("Exit: " + self.current_tok)
 
-    def data_types_dims(self):
+    def primitive_types_dims(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<data_types_dims>"]:
-            if self.current_tok in PREDICT_SET["<data_types_dims>"]:
+        if self.current_tok in FIRST_SET["<primitive_types_dims>"]:
+            if self.current_tok in PREDICT_SET["<primitive_types_dims>"]:
                 self.parse_token("piece")
                 self.dimensions_tail()
-            if self.current_tok in PREDICT_SET["<data_types_dims_1>"]:
+            if self.current_tok in PREDICT_SET["<primitive_types_dims_1>"]:
                 self.parse_token("sip")
                 self.dimensions_tail()
-            if self.current_tok in PREDICT_SET["<data_types_dims_2>"]:
+            if self.current_tok in PREDICT_SET["<primitive_types_dims_2>"]:
                 self.parse_token("flag")
                 self.dimensions_tail()
-            if self.current_tok in PREDICT_SET["<data_types_dims_3>"]:
+            if self.current_tok in PREDICT_SET["<primitive_types_dims_3>"]:
                 self.parse_token("chars")
                 self.dimensions_tail()
-            if self.current_tok in PREDICT_SET["<data_types_dims_4>"]:
+            if self.current_tok in PREDICT_SET["<primitive_types_dims_4>"]:
                 self.parse_token("id")
                 self.dimensions_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<data_types_dims>"])))
+        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primitive_types_dims>"])))
         log.info("Exit: " + self.current_tok)
         
     def required_decl_tail(self):
@@ -794,8 +780,9 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<recipe_decl>"]:
             self.parse_token("prepare")
-            if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
-            else: self.error_handler("Invalid_err", "declaration head")
+            self.serve_type()
+            # if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
+            # else: self.error_handler("Invalid_err", "declaration head")
             self.parse_token("(")
             self.spice()
             self.parse_token(")")
@@ -804,6 +791,14 @@ class Parser:
         if self.current_tok in PREDICT_SET["<recipe_decl_1>"]:
             log.info("Exit: " + self.current_tok)
             return
+        log.info("Exit: " + self.current_tok)
+
+    def serve_type(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<serve_type>"]:
+            if self.current_tok in PREDICT_SET["<serve_type>"]:
+                self.decl_head()
+        else: self.error_handler("Invalid_err", "serve type")
         log.info("Exit: " + self.current_tok)
 
     def spice(self):
@@ -1048,9 +1043,9 @@ class Parser:
         log.info("Enter: " + self.current_tok)
         if self.current_tok in PREDICT_SET["<choice_clause>"]:
             self.parse_token("choice")
-            # self.expr()
-            if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
-            else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
+            self.choice_val()
+            # if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
+            # else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
             self.parse_token(":")
             self.statements()
             self.choice_clause()
@@ -1058,6 +1053,17 @@ class Parser:
             log.info("Exit: " + self.current_tok)
             return
         log.info("Exit: " + self.current_tok)
+
+    def choice_val(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<choice_val>"]:
+            if self.current_tok in PREDICT_SET["<choice_val>"]:
+                self.parse_token("piece_lit")
+            if self.current_tok in PREDICT_SET["<choice_val_1>"]:
+                self.parse_token("chars_lit")
+        else: self.error_handler("Invalid_err", "choice value")
+        log.info("Exit: " + self.current_tok)
+
 
     def usual_clause(self):
         log.info("Enter: " + self.current_tok)
@@ -1088,15 +1094,31 @@ class Parser:
             if self.current_tok in PREDICT_SET["<loop_pass>"]:
                 self.parse_token("pass")
                 self.parse_token("(")
-                self.parse_token("id")
-                self.ingredient_init()
-                self.parse_token(";")
-                self.parse_token("id")
-                self.assignment_st()
+                self.initialization()
+                self.update()
                 self.expr()
                 self.parse_token(")")
                 self.platter()
         else: self.error_handler("Invalid_err", "pass")
+        log.info("Exit: " + self.current_tok)
+
+    def initialization(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<initialization>"]:
+            if self.current_tok in PREDICT_SET["<initialization>"]:
+                self.parse_token("id")
+                self.ingredient_init()
+                self.parse_token(";")
+        else: self.error_handler("Invalid_err", "initialization")
+        log.info("Exit: " + self.current_tok)
+
+    def update(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<update>"]:
+            if self.current_tok in PREDICT_SET["<update>"]:
+                self.parse_token("id")
+                self.assignment_st()
+        else: self.error_handler("Invalid_err", "update")
         log.info("Exit: " + self.current_tok)
 
     def loop_repeat(self):

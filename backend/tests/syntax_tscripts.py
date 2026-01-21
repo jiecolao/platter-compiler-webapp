@@ -5,6 +5,23 @@ SYNTAX_TSCRIPTS = [
     "expected_output": "Syntax Error",
     "code":  
     """
+    piece of x = 2;
+
+    table of Food = [piece of qty;];
+
+    start(){
+      Food of hotdog = [a;];
+        
+      bill();
+    }
+    """
+  },
+  { 
+    "number": 3,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":  
+    """
     start(){
       prepare;){}
     }
@@ -104,4 +121,37 @@ SYNTAX_TSCRIPTS = [
     }
     """
   },
+  {
+    "number": 11,
+    "actual_output": "Syntax Error",
+    "expected_output": "Syntax Error",
+    "code":
+    """
+      
+    table of Student = [
+      piece of Name;
+        chars of Age;
+    ];
+
+    start() {
+      Student of Student1 = [
+          Name = 1;
+            Age = "Hello";
+        ];
+        
+        Student of Student2 = [
+          Name = 2;
+            Age = "World";
+        ];
+        
+      Student[] of Class = [
+        
+        ];
+        
+        chars[] of Class1 = [Student1:Name, Student1:Age];
+        
+      serve 0;
+    }
+    """  
+  }
 ]

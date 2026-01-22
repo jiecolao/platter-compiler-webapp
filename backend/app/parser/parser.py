@@ -570,6 +570,66 @@ class Parser:
         else: self.error_handler("Missing", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
+    def built_in_rec(self):
+        log.info("Enter: " + self.current_tok)
+        if self.current_tok in FIRST_SET["<built-in_rec>"]:
+            if self.current_tok in PREDICT_SET["<built-in_rec>"]:
+                self.parse_token("append")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_1>"]:
+                self.parse_token("bill")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_2>"]:
+                self.parse_token("copy")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_3>"]:
+                self.parse_token("cut")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_4>"]:
+                self.parse_token("fact")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_5>"]:
+                self.parse_token("matches")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_6>"]:
+                self.parse_token("pow")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_7>"]:
+                self.parse_token("rand")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_8>"]:
+                self.parse_token("remove")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_9>"]:
+                self.parse_token("reverse")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_10>"]:
+                self.parse_token("search")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_11>"]:
+                self.parse_token("size")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_12>"]:
+                self.parse_token("sort")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_13>"]:
+                self.parse_token("sqrt")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_14>"]:
+                self.parse_token("take")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_15>"]:
+                self.parse_token("tochars")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_16>"]:
+                self.parse_token("topiece")
+                return
+            if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
+                self.parse_token("tosip")
+                return
+        else: self.error_handler("Invalid_err", "built-in recipe")
+        log.info("Exit: " + self.current_tok)
+
     def tail1(self):
         log.info("Enter: " + self.current_tok)
         if self.current_tok in FIRST_SET["<tail1>"]:
@@ -577,48 +637,6 @@ class Parser:
                 self.call_tail()
                 self.accessor_tail()
         else: self.error_handler("UnexpectedTok_err", "'('")
-        log.info("Exit: " + self.current_tok)
-
-    def built_in_rec(self):
-        log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<built-in_rec>"]:
-            if self.current_tok in PREDICT_SET["<built-in_rec>"]:
-                self.parse_token("append")
-            if self.current_tok in PREDICT_SET["<built-in_rec_1>"]:
-                self.parse_token("bill")
-            if self.current_tok in PREDICT_SET["<built-in_rec_2>"]:
-                self.parse_token("copy")
-            if self.current_tok in PREDICT_SET["<built-in_rec_3>"]:
-                self.parse_token("cut")
-            if self.current_tok in PREDICT_SET["<built-in_rec_4>"]:
-                self.parse_token("fact")
-            if self.current_tok in PREDICT_SET["<built-in_rec_5>"]:
-                self.parse_token("matches")
-            if self.current_tok in PREDICT_SET["<built-in_rec_6>"]:
-                self.parse_token("pow")
-            if self.current_tok in PREDICT_SET["<built-in_rec_7>"]:
-                self.parse_token("rand")
-            if self.current_tok in PREDICT_SET["<built-in_rec_8>"]:
-                self.parse_token("remove")
-            if self.current_tok in PREDICT_SET["<built-in_rec_9>"]:
-                self.parse_token("reverse")
-            if self.current_tok in PREDICT_SET["<built-in_rec_10>"]:
-                self.parse_token("search")
-            if self.current_tok in PREDICT_SET["<built-in_rec_11>"]:
-                self.parse_token("size")
-            if self.current_tok in PREDICT_SET["<built-in_rec_12>"]:
-                self.parse_token("sort")
-            if self.current_tok in PREDICT_SET["<built-in_rec_13>"]:
-                self.parse_token("sqrt")
-            if self.current_tok in PREDICT_SET["<built-in_rec_14>"]:
-                self.parse_token("take")
-            if self.current_tok in PREDICT_SET["<built-in_rec_15>"]:
-                self.parse_token("tochars")
-            if self.current_tok in PREDICT_SET["<built-in_rec_16>"]:
-                self.parse_token("topiece")
-            if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
-                self.parse_token("tosip")
-        else: self.error_handler("Invalid_err", "built-in recipe")
         log.info("Exit: " + self.current_tok)
 
     def call_tail(self):

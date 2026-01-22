@@ -1,27 +1,12 @@
 from app.lexer.lexer import Lexer
 from app.parser.predict_set import PREDICT_SET
-from app.parser.first_set import FIRST_SET
+from app.parser.predict_set_err import PREDICT_SET_ERR
 from tests.test_parser_util import run_file
 import logging as log                                      
 
 # To disable logs, set level=log.CRITICAL. 
 # To enable logs, set level=log.DEBUG
 log.basicConfig(level=log.DEBUG, format='%(levelname)s: <%(funcName)s> | %(message)s')
-
-"""
-    TODO:
-    [/] Cleanup
-    [/] Additional errors
-        [/] Syntax Error: Expected '{tok}' but got '{self.current_tok}' (line '{self.current_line}', col '{self.current_col}')
-        [] Syntax Error: Unrecognizable token '{t.type}' (line '{t.line}', col '{t.col}')
-        [] Syntax Error: Expected '{tok}' (line '{t.line}', col '{t.col}')
-        [!] Syntax Error: Expected '{tok}' but got EOF (?)
-    [/] Update error compilation
-    [/] Connect to front-end
-    [] Return
-
-"""
-
 
 class Parser:
 
@@ -55,7 +40,7 @@ class Parser:
             log.warning(f"Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!\n")
             # print(f"└──Expected: {tok} | Current: {self.current_tok} | Remark: INVALID!")
             self.result = False
-            self.error_handler("UnexpectedTok_err", tok)
+            self.error_handler("Unexpected_err", tok)
 
     def advance(self, tok): 
         if self.pos < self.tokens_length:
@@ -76,13 +61,14 @@ class Parser:
 
     def error_handler(self, error_type, tok, expected_toklist=None):        
         errors = {
-            "Parse_err": f"Syntax Error: Missing start.",
+            "Parse_err": f"Syntax Error: Program empty. Expected {tok}.",
+            "Unexpected_err": f"Syntax Error: Unexpected '{self.current_tok}' at line {self.current_line}, col {self.current_col}. Expected {tok}.",
+            
             "Program_err": f"Syntax Error: Program cannot begin with token '{self.current_tok}'. Expected a declaration or 'prepare/start'",
             "ExpectedEOF_err": f"Syntax Error: Unexpected token '{self.current_tok}' after start platter, Expected EOF (line {self.current_line}, col {self.current_col})",
             "Invalid_err": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}.",
             "Invalid_err1": f"Syntax Error: Invalid {tok} at line {self.current_line}, col {self.current_col}. Expected {expected_toklist}",
             "Missing_err": f"Syntax Error: Missing {tok} at line {self.current_line}, col {self.current_col}",
-            "UnexpectedTok_err": f"Syntax Error: Unexpected '{self.current_tok}' at line {self.current_line}, col {self.current_col}. Expected {tok}.",
             "Custom_err": f"Syntax Error: {tok} (line {self.current_line}, col {self.current_col})",
         }
         self.result = False
@@ -93,12 +79,12 @@ class Parser:
     def parse(self):
         if self.tokenlist:
             self.program()
-        else: self.error_handler("Parse_err", None)
+        else: self.error_handler("Parse_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<program>"])))
         return self.result
 
     def program(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<program>"]:
+        if self.current_tok in PREDICT_SET_ERR["<program>"]:
             if self.current_tok in PREDICT_SET["<program>"]:
                 self.global_decl() 
             if self.current_tok in PREDICT_SET["<recipe_decl>"]:
@@ -107,7 +93,7 @@ class Parser:
             self.parse_token("(")
             self.parse_token(")")
             self.platter()
-        else: self.error_handler("Program_err", None)
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<program>"])))
 
         # Ensure EOF after parsing
         if self.current_tok != "EOF": self.error_handler("ExpectedEOF_err", None) 
@@ -115,24 +101,26 @@ class Parser:
 
     def global_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<global_decl>"]: # if has null in set
-            self.decl_data_type()
-            self.global_decl()
-        if self.current_tok in PREDICT_SET["<global_decl_1>"]:
-            self.table_prototype()
-            self.global_decl() 
-        if self.current_tok in PREDICT_SET["<global_decl_2>"]:
-            self.parse_token("id")
-            self.table_decl() 
-            self.global_decl()
-        if self.current_tok in PREDICT_SET["<global_decl_3>"]:
-            log.info("Exit: " + self.current_tok)
-            return # λ
+        if self.current_tok in PREDICT_SET_ERR["<global_decl>"]:
+            if self.current_tok in PREDICT_SET["<global_decl>"]: # if has null in set
+                self.decl_data_type()
+                self.global_decl()
+            if self.current_tok in PREDICT_SET["<global_decl_1>"]:
+                self.table_prototype()
+                self.global_decl() 
+            if self.current_tok in PREDICT_SET["<global_decl_2>"]:
+                self.parse_token("id")
+                self.table_decl() 
+                self.global_decl()
+            if self.current_tok in PREDICT_SET["<global_decl_3>"]:
+                log.info("Exit: " + self.current_tok)
+                return # λ
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<global_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def decl_data_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<decl_data_type>"]: # if no null in set
+        if self.current_tok in PREDICT_SET_ERR["<decl_data_type>"]: # if no null in set
             if self.current_tok in PREDICT_SET["<decl_data_type>"]:
                 self.parse_token("piece")
                 self.decl_type()
@@ -145,12 +133,12 @@ class Parser:
             if self.current_tok in PREDICT_SET["<decl_data_type_3>"]:
                 self.parse_token("chars")
                 self.decl_type()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<program>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<decl_data_type>"])))
         log.info("Exit: " + self.current_tok)
 
     def decl_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<decl_type>"]:
+        if self.current_tok in PREDICT_SET_ERR["<decl_type>"]:
             if self.current_tok in PREDICT_SET["<decl_type>"]:
                 self.parse_token("of")
                 self.ingredient_id()
@@ -160,66 +148,69 @@ class Parser:
                 self.parse_token("of")
                 self.array_declare()
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<decl_type>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<decl_type>"])))
         log.info("Exit: " + self.current_tok)
 
     def ingredient_id(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<ingredient_id>"]:
+        if self.current_tok in PREDICT_SET_ERR["<ingredient_id>"]:
             if self.current_tok in PREDICT_SET["<ingredient_id>"]:
                 self.parse_token("id")
                 self.ingredient_init()
                 self.ingredient_id_tail()
-        else: self.error_handler("UnexpectedTok_err", "'id'")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<ingredient_id>"])))
         log.info("Exit: " + self.current_tok)
         
     def ingredient_init(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<ingredient_init>"]:
-            self.parse_token("=")
-            self.expr()
-        if self.current_tok in PREDICT_SET["<ingredient_init_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return # λ
+        if self.current_tok in PREDICT_SET_ERR["<ingredient_init>"]:
+            if self.current_tok in PREDICT_SET["<ingredient_init>"]:
+                self.parse_token("=")
+                self.expr()
+            if self.current_tok in PREDICT_SET["<ingredient_init_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return # λ
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<ingredient_init>"])))
         log.info("Exit: " + self.current_tok)
 
     def ingredient_id_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<ingredient_id_tail>"]:
-            self.parse_token(",")
-            self.parse_token("id")
-            self.ingredient_init()
-            self.ingredient_id_tail()
-        if self.current_tok in PREDICT_SET["<ingredient_id_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return # λ
+        if self.current_tok in PREDICT_SET_ERR["<ingredient_id_tail>"]:
+            if self.current_tok in PREDICT_SET["<ingredient_id_tail>"]:
+                self.parse_token(",")
+                self.parse_token("id")
+                self.ingredient_init()
+                self.ingredient_id_tail()
+            if self.current_tok in PREDICT_SET["<ingredient_id_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return # λ
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<ingredient_id_tail>"])))
         log.info("Exit: " + self.current_tok)
     
     def expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<expr>"]:
             if self.current_tok in PREDICT_SET["<expr>"]:
                 self.or_expr()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<expr>"])))
         log.info("Exit: " + self.current_tok)
     
     def or_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<or_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<or_expr>"]:
             if self.current_tok in PREDICT_SET["<or_expr>"]:
                 self.and_expr()
                 self.or_tail()
-        # else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<or_expr>"])))
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<or_expr>"])))
         log.info("Exit: " + self.current_tok)
     
     def and_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<and_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<and_expr>"]:
             if self.current_tok in PREDICT_SET["<and_expr>"]:
                 self.eq_expr()
                 self.and_tail() 
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<and_expr>"])))
         log.info("Exit: " + self.current_tok)
     
     def or_tail(self):
@@ -235,11 +226,11 @@ class Parser:
         
     def eq_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<eq_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<eq_expr>"]:
             if self.current_tok in PREDICT_SET["<eq_expr>"]:
                 self.rel_expr()
                 self.eq_tail()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<eq_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def and_tail(self):
@@ -255,11 +246,11 @@ class Parser:
     
     def rel_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<rel_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<rel_expr>"]:
             if self.current_tok in PREDICT_SET["<rel_expr>"]:
                 self.add_expr()
                 self.rel_tail()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<rel_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def eq_tail(self):
@@ -279,11 +270,11 @@ class Parser:
 
     def add_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<add_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<add_expr>"]:
             if self.current_tok in PREDICT_SET["<add_expr>"]:
                 self.mult_expr()
                 self.add_tail()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<add_expr>"])))
         log.info("Exit: " + self.current_tok)
             
     def rel_tail(self):
@@ -311,11 +302,11 @@ class Parser:
         
     def mult_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<mult_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<mult_expr>"]:
             if self.current_tok in PREDICT_SET["<mult_expr>"]:
                 self.unary_expr()
                 self.mult_tail()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<mult_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def add_tail(self):
@@ -335,13 +326,13 @@ class Parser:
 
     def unary_expr(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<unary_expr>"]:
+        if self.current_tok in PREDICT_SET_ERR["<unary_expr>"]:
             if self.current_tok in PREDICT_SET["<unary_expr>"]:
                 self.parse_token("not")
                 self.unary_expr()
             if self.current_tok in PREDICT_SET["<unary_expr_1>"]:
                 self.primary_val()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<unary_expr>"])))
         log.info("Exit: " + self.current_tok)
 
     def mult_tail(self):
@@ -365,7 +356,7 @@ class Parser:
 
     def primary_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<primary_val>"]:
+        if self.current_tok in PREDICT_SET_ERR["<primary_val>"]:
             if self.current_tok in PREDICT_SET["<primary_val>"]:
                 self.parse_token("(")
                 self.expr()
@@ -388,72 +379,80 @@ class Parser:
                 return
             if self.current_tok in PREDICT_SET["<primary_val_6>"]:
                 self.built_in_rec_call()
-        else: self.error_handler("Invalid_err", "expression")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<primary_val>"])))
         log.info("Exit: " + self.current_tok)
 
     def id_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<id_tail>"]:
-            self.call_tailopt()
-            self.accessor_tail()
+        if self.current_tok in PREDICT_SET_ERR["<id_tail>"]:
+            if self.current_tok in PREDICT_SET["<id_tail>"]:
+                self.call_tailopt()
+                self.accessor_tail()
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<id_tail>"])))
         log.info("Exit: " + self.current_tok)
         
     def call_tailopt(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<call_tailopt>"]:
-            self.parse_token("(")
-            self.flavor()
-            self.parse_token(")")
-        if self.current_tok in PREDICT_SET["<call_tailopt_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return        
+        if self.current_tok in PREDICT_SET_ERR["<call_tailopt>"]:
+            if self.current_tok in PREDICT_SET["<call_tailopt>"]:
+                self.parse_token("(")
+                self.flavor()
+                self.parse_token(")")
+            if self.current_tok in PREDICT_SET["<call_tailopt_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return        
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<call_tailopt>"])))
         log.info("Exit: " + self.current_tok)
         
     def accessor_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<accessor_tail>"]:
-            self.array_accessor()
-        if self.current_tok in PREDICT_SET["<accessor_tail_1>"]:
-            self.table_accessor()
-        if self.current_tok in PREDICT_SET["<accessor_tail_2>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<accessor_tail>"]:
+            if self.current_tok in PREDICT_SET["<accessor_tail>"]:
+                self.array_accessor()
+            if self.current_tok in PREDICT_SET["<accessor_tail_1>"]:
+                self.table_accessor()
+            if self.current_tok in PREDICT_SET["<accessor_tail_2>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<accessor_tail>"])))
         log.info("Exit: " + self.current_tok)
         
     def array_accessor(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<array_accessor>"]:
+        if self.current_tok in PREDICT_SET_ERR["<array_accessor>"]:
             if self.current_tok in PREDICT_SET["<array_accessor>"]:
                 self.parse_token("[")
                 self.expr()
                 self.parse_token("]")
                 self.accessor_tail()
-        else: self.error_handler("UnexpectedTok_err", "'['")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_accessor>"])))
         log.info("Exit: " + self.current_tok)
 
     def table_accessor(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<table_accessor>"]:
+        if self.current_tok in PREDICT_SET_ERR["<table_accessor>"]:
             if self.current_tok in PREDICT_SET["<table_accessor>"]:
                 self.parse_token(":")
                 self.parse_token("id")
                 self.accessor_tail()
-        else: self.error_handler("UnexpectedTok_err", "':'")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<table_accessor>"])))
         log.info("Exit: " + self.current_tok)
 
     def flavor(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<flavor>"]:
-            self.value()
-            self.flavor_tail()
-        if self.current_tok in PREDICT_SET["<flavor_1>"]:    
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<flavor>"]:
+            if self.current_tok in PREDICT_SET["<flavor>"]:
+                self.value()
+                self.flavor_tail()
+            if self.current_tok in PREDICT_SET["<flavor_1>"]:    
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<flavor>"])))
         log.info("Exit: " + self.current_tok)
 
     def value(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<value>"]:
+        if self.current_tok in PREDICT_SET_ERR["<value>"]:
             if self.current_tok in PREDICT_SET["<value>"]:
                 self.expr()
                 return
@@ -462,25 +461,27 @@ class Parser:
                 self.notation_val()
                 self.parse_token("]")
                 self.accessor_tail()
-        else: self.error_handler("Invalid_err", "value")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<value>"])))
         log.info("Exit: " + self.current_tok)
 
     def notation_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<notation_val>"]:
-            self.array_element()
-            return
-        if self.current_tok in PREDICT_SET["<notation_val_1>"]:
-            self.parse_token("id")
-            self.array_or_table()
-        if self.current_tok in PREDICT_SET["<notation_val_2>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<notation_val>"]:
+            if self.current_tok in PREDICT_SET["<notation_val>"]:
+                self.array_element()
+                return
+            if self.current_tok in PREDICT_SET["<notation_val_1>"]:
+                self.parse_token("id")
+                self.array_or_table()
+            if self.current_tok in PREDICT_SET["<notation_val_2>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<notation_val>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_element(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<array_element>"]:
+        if self.current_tok in PREDICT_SET_ERR["<array_element>"]:
             if self.current_tok in PREDICT_SET["<array_element>"]:
                 self.parse_token("piece_lit")
                 self.element_value_tail()
@@ -498,81 +499,89 @@ class Parser:
                 self.notation_val()
                 self.parse_token("]")
                 self.element_value_tail()
-        else: self.error_handler("Invalid_err", "notation value")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_element>"])))
         log.info("Exit: " + self.current_tok)
 
     def element_value_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<element_value_tail>"]:
-            self.parse_token(",")
-            self.array_element_id()
-        if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<element_value_tail>"]:
+            if self.current_tok in PREDICT_SET["<element_value_tail>"]:
+                self.parse_token(",")
+                self.array_element_id()
+            if self.current_tok in PREDICT_SET["<element_value_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<element_value_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_element_id(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<array_element_id>"]:
+        if self.current_tok in PREDICT_SET_ERR["<array_element_id>"]:
             if self.current_tok in PREDICT_SET["<array_element_id>"]:
                 self.parse_token("id")
                 self.element_value_tail()
             if self.current_tok in PREDICT_SET["<array_element_id_1>"]:
                 self.array_element()
-        else: self.error_handler("Invalid_err", "array element")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_element_id>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_or_table(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<array_or_table>"]:
-            self.parse_token(",")
-            self.array_element_id()
-        if self.current_tok in PREDICT_SET["<array_or_table_1>"]:
-            self.parse_token("=")
-            self.value()
-            self.parse_token(";")
-            self.field_assignments()
-        if self.current_tok in PREDICT_SET["<array_or_table_2>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<array_or_table>"]:
+            if self.current_tok in PREDICT_SET["<array_or_table>"]:
+                self.parse_token(",")
+                self.array_element_id()
+            if self.current_tok in PREDICT_SET["<array_or_table_1>"]:
+                self.parse_token("=")
+                self.value()
+                self.parse_token(";")
+                self.field_assignments()
+            if self.current_tok in PREDICT_SET["<array_or_table_2>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_or_table>"])))
         log.info("Exit: " + self.current_tok)
 
     def field_assignments(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<field_assignments>"]:
-            self.parse_token("id")
-            self.parse_token("=")
-            self.value()
-            self.parse_token(";")
-            self.field_assignments()
-        if self.current_tok in PREDICT_SET["<field_assignments_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<field_assignments>"]:
+            if self.current_tok in PREDICT_SET["<field_assignments>"]:
+                self.parse_token("id")
+                self.parse_token("=")
+                self.value()
+                self.parse_token(";")
+                self.field_assignments()
+            if self.current_tok in PREDICT_SET["<field_assignments_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<field_assignments>"])))
         log.info("Exit: " + self.current_tok)
 
     def flavor_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<flavor_tail>"]:
-            self.parse_token(",")
-            self.value()
-            self.flavor_tail()
-        if self.current_tok in PREDICT_SET["<flavor_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<flavor_tail>"]:
+            if self.current_tok in PREDICT_SET["<flavor_tail>"]:
+                self.parse_token(",")
+                self.value()
+                self.flavor_tail()
+            if self.current_tok in PREDICT_SET["<flavor_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<flavor_tail>"])))
         log.info("Exit: " + self.current_tok)
         
     def built_in_rec_call(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<built-in_rec_call>"]:
+        if self.current_tok in PREDICT_SET_ERR["<built-in_rec_call>"]:
             if self.current_tok in PREDICT_SET["<built-in_rec_call>"]:
                 self.built_in_rec()
                 self.tail1()
-        else: self.error_handler("Missing", "built-in recipe")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<built-in_rec_call>"])))
         log.info("Exit: " + self.current_tok)
 
     def built_in_rec(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<built-in_rec>"]:
+        if self.current_tok in PREDICT_SET_ERR["<built-in_rec>"]:
             if self.current_tok in PREDICT_SET["<built-in_rec>"]:
                 self.parse_token("append")
                 return
@@ -627,80 +636,86 @@ class Parser:
             if self.current_tok in PREDICT_SET["<built-in_rec_17>"]:
                 self.parse_token("tosip")
                 return
-        else: self.error_handler("Invalid_err", "built-in recipe")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<built-in_rec>"])))
         log.info("Exit: " + self.current_tok)
 
     def tail1(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<tail1>"]:
+        if self.current_tok in PREDICT_SET_ERR["<tail1>"]:
             if self.current_tok in PREDICT_SET["<tail1>"]:
                 self.call_tail()
                 self.accessor_tail()
-        else: self.error_handler("UnexpectedTok_err", "'('")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<tail1>"])))
         log.info("Exit: " + self.current_tok)
 
     def call_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<call_tail>"]:
+        if self.current_tok in PREDICT_SET_ERR["<call_tail>"]:
             if self.current_tok in PREDICT_SET["<call_tail>"]:
                 self.parse_token("(")
                 self.flavor()
                 self.parse_token(")")
-        else: self.error_handler("UnexpectedTok_err", "'('")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<call_tail>"])))
         log.info("Exit: " + self.current_tok)
         
     def dimensions(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<dimensions>"]:
+        if self.current_tok in PREDICT_SET_ERR["<dimensions>"]:
             if self.current_tok in PREDICT_SET["<dimensions>"]:
                 self.parse_token("[")
                 self.parse_token("]")
                 self.dimensions_tail()
-        else: self.error_handler("UnexpectedTok_err", "'['")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<dimensions>"])))
         log.info("Exit: " + self.current_tok)
 
     def dimensions_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<dimensions_tail>"]:
-            self.dimensions()
-        if self.current_tok in PREDICT_SET["<dimensions_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<dimensions_tail>"]:
+            if self.current_tok in PREDICT_SET["<dimensions_tail>"]:
+                self.dimensions()
+            if self.current_tok in PREDICT_SET["<dimensions_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<dimensions_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_declare(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<array_declare>"]:
+        if self.current_tok in PREDICT_SET_ERR["<array_declare>"]:
             if self.current_tok in PREDICT_SET["<array_declare>"]:
                 self.parse_token("id")
                 self.array_table_init()
                 self.array_declare_tail()
-        else: self.error_handler("UnexpectedTok_err", "'id'")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_declare>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_table_init(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<array_table_init>"]:
-            self.parse_token("=")
-            self.value()
-        if self.current_tok in PREDICT_SET["<array_table_init_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<array_table_init>"]:
+            if self.current_tok in PREDICT_SET["<array_table_init>"]:
+                self.parse_token("=")
+                self.value()
+            if self.current_tok in PREDICT_SET["<array_table_init_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_table_init>"])))
         log.info("Exit: " + self.current_tok)
 
     def array_declare_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<array_declare_tail>"]:
-            self.parse_token(",")
-            self.array_declare()
-        if self.current_tok in PREDICT_SET["<array_declare_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<array_declare_tail>"]:
+            if self.current_tok in PREDICT_SET["<array_declare_tail>"]:
+                self.parse_token(",")
+                self.array_declare()
+            if self.current_tok in PREDICT_SET["<array_declare_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_declare_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def table_prototype(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<table_prototype>"]:
+        if self.current_tok in PREDICT_SET_ERR["<table_prototype>"]:
             if self.current_tok in PREDICT_SET["<table_prototype>"]:
                 self.parse_token("table")
                 self.parse_token("of")
@@ -710,32 +725,32 @@ class Parser:
                 self.required_decl()
                 self.parse_token("]")
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", "'table'")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<table_prototype>"])))
         log.info("Exit: " + self.current_tok)
 
     def required_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<required_decl>"]:
+        if self.current_tok in PREDICT_SET_ERR["<required_decl>"]:
             if self.current_tok in PREDICT_SET["<required_decl>"]:
                 self.decl_head()
                 self.parse_token(";")
                 self.required_decl_tail()
-        else: self.error_handler("Invalid_err", "declaration")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<required_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def decl_head(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<decl_head>"]:
+        if self.current_tok in PREDICT_SET_ERR["<decl_head>"]:
             if self.current_tok in PREDICT_SET["<decl_head>"]:
                 self.primitive_types_dims()
                 self.parse_token("of")
                 self.parse_token("id")
-        else: self.error_handler("Invalid_err", "declaration head")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<decl_head>"])))
         log.info("Exit: " + self.current_tok)
 
     def primitive_types_dims(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<primitive_types_dims>"]:
+        if self.current_tok in PREDICT_SET_ERR["<primitive_types_dims>"]:
             if self.current_tok in PREDICT_SET["<primitive_types_dims>"]:
                 self.parse_token("piece")
                 self.dimensions_tail()
@@ -751,144 +766,156 @@ class Parser:
             if self.current_tok in PREDICT_SET["<primitive_types_dims_4>"]:
                 self.parse_token("id")
                 self.dimensions_tail()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<primitive_types_dims>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<primitive_types_dims>"])))
         log.info("Exit: " + self.current_tok)
         
     def required_decl_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<required_decl_tail>"]:
-            self.required_decl()
-        if self.current_tok in PREDICT_SET["<required_decl_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<required_decl_tail>"]:
+            if self.current_tok in PREDICT_SET["<required_decl_tail>"]:
+                self.required_decl()
+            if self.current_tok in PREDICT_SET["<required_decl_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<required_decl_tail>"])))
         log.info("Exit: " + self.current_tok)
         
     def table_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<table_decl>"]:
+        if self.current_tok in PREDICT_SET_ERR["<table_decl>"]:
             if self.current_tok in PREDICT_SET["<table_decl>"]:
                 self.dimensions_tail()
                 self.parse_token("of")
                 self.table_declare()
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<table_decl>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<table_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def table_declare(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<table_declare>"]:
+        if self.current_tok in PREDICT_SET_ERR["<table_declare>"]:
             if self.current_tok in PREDICT_SET["<table_declare>"]:
                 self.parse_token("id")
                 self.array_table_init()
                 self.table_declare_tail()
-        else: self.error_handler("UnexpectedTok_err", "id")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<table_declare>"])))
         log.info("Exit: " + self.current_tok)
 
     def table_declare_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<table_declare_tail>"]:
-            self.parse_token(",")
-            self.table_declare()
-        if self.current_tok in PREDICT_SET["<table_declare_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<table_declare_tail>"]:
+            if self.current_tok in PREDICT_SET["<table_declare_tail>"]:
+                self.parse_token(",")
+                self.table_declare()
+            if self.current_tok in PREDICT_SET["<table_declare_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<table_declare_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def recipe_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<recipe_decl>"]:
-            self.parse_token("prepare")
-            self.serve_type()
-            # if self.current_tok in PREDICT_SET["<decl_head>"]: self.decl_head()
-            # else: self.error_handler("Invalid_err", "declaration head")
-            self.parse_token("(")
-            self.spice()
-            self.parse_token(")")
-            self.platter()
-            self.recipe_decl()
-        if self.current_tok in PREDICT_SET["<recipe_decl_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<recipe_decl>"]:
+            if self.current_tok in PREDICT_SET["<recipe_decl>"]:
+                self.parse_token("prepare")
+                self.serve_type()
+                self.parse_token("(")
+                self.spice()
+                self.parse_token(")")
+                self.platter()
+                self.recipe_decl()
+            if self.current_tok in PREDICT_SET["<recipe_decl_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<recipe_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def serve_type(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<serve_type>"]:
+        if self.current_tok in PREDICT_SET_ERR["<serve_type>"]:
             if self.current_tok in PREDICT_SET["<serve_type>"]:
                 self.decl_head()
-        else: self.error_handler("Invalid_err", "serve type")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<serve_type>"])))
         log.info("Exit: " + self.current_tok)
 
     def spice(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<spice>"]:
-            self.decl_head()
-            self.spice_tail()
-        if self.current_tok in PREDICT_SET["<spice_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<spice>"]:
+            if self.current_tok in PREDICT_SET["<spice>"]:
+                self.decl_head()
+                self.spice_tail()
+            if self.current_tok in PREDICT_SET["<spice_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<spice>"])))
         log.info("Exit: " + self.current_tok)
     
     def spice_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<spice_tail>"]:
-            self.parse_token(",")
-            self.decl_head()
-            self.spice_tail()
-        if self.current_tok in PREDICT_SET["<spice_tail_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<spice_tail>"]:
+            if self.current_tok in PREDICT_SET["<spice_tail>"]:
+                self.parse_token(",")
+                self.decl_head()
+                self.spice_tail()
+            if self.current_tok in PREDICT_SET["<spice_tail_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<spice_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def platter(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<platter>"]:
+        if self.current_tok in PREDICT_SET_ERR["<platter>"]:
             self.parse_token("{")
             self.local_decl()
             self.statements()
             self.parse_token("}")
-        else: self.error_handler("Invalid_err", "platter block")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<platter>"])))
         log.info("Exit: " + self.current_tok)
 
     def local_decl(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<local_decl>"]:
-            self.decl_data_type()
-            self.local_decl()
-        if self.current_tok in PREDICT_SET["<local_decl_1>"]:
-            self.parse_token("id")
-            self.local_id_tail()
-        if self.current_tok in PREDICT_SET["<local_decl_2>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<local_decl>"]:
+            if self.current_tok in PREDICT_SET["<local_decl>"]:
+                self.decl_data_type()
+                self.local_decl()
+            if self.current_tok in PREDICT_SET["<local_decl_1>"]:
+                self.parse_token("id")
+                self.local_id_tail()
+            if self.current_tok in PREDICT_SET["<local_decl_2>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<local_decl>"])))
         log.info("Exit: " + self.current_tok)
 
     def statements(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<statements>"]:
-            self.id_statements()
-            self.statements()
-        if self.current_tok in PREDICT_SET["<statements_1>"]:
-            self.built_in_rec_call()
-            self.parse_token(";")
-            self.statements()
-        if self.current_tok in PREDICT_SET["<statements_2>"]:
-            self.conditional_st()
-            self.statements()
-        if self.current_tok in PREDICT_SET["<statements_3>"]:
-            self.looping_st()
-            self.statements()
-        if self.current_tok in PREDICT_SET["<statements_4>"]:
-            self.jump_st()
-            self.statements()
-        if self.current_tok in PREDICT_SET["<statements_5>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<statements>"]:
+            if self.current_tok in PREDICT_SET["<statements>"]:
+                self.id_statements()
+                self.statements()
+            if self.current_tok in PREDICT_SET["<statements_1>"]:
+                self.built_in_rec_call()
+                self.parse_token(";")
+                self.statements()
+            if self.current_tok in PREDICT_SET["<statements_2>"]:
+                self.conditional_st()
+                self.statements()
+            if self.current_tok in PREDICT_SET["<statements_3>"]:
+                self.looping_st()
+                self.statements()
+            if self.current_tok in PREDICT_SET["<statements_4>"]:
+                self.jump_st()
+                self.statements()
+            if self.current_tok in PREDICT_SET["<statements_5>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<statements>"])))
         log.info("Exit: " + self.current_tok)
 
     def local_id_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<local_id_tail>"]:
+        if self.current_tok in PREDICT_SET_ERR["<local_id_tail>"]:
             if self.current_tok in PREDICT_SET["<local_id_tail>"]:
                 self.parse_token("of")
                 self.table_declare()
@@ -912,12 +939,12 @@ class Parser:
                 self.tail1()
                 self.parse_token(";")
                 self.statements()
-        else: self.error_handler("UnexpectedTok_err", (", ".join(f"'{tok}'" for tok in FIRST_SET["<local_id_tail>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<local_id_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def endb_tail(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<]_tail>"]:
+        if self.current_tok in PREDICT_SET_ERR["<]_tail>"]:
             if self.current_tok in PREDICT_SET["<]_tail>"]:
                 self.parse_token("]")
                 self.dimensions_tail()
@@ -933,44 +960,44 @@ class Parser:
                 self.value()
                 self.parse_token(";")
                 self.statements()
-        else: self.error_handler("UnexpectedTok_err", "']' or value")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<]_tail>"])))
         log.info("Exit: " + self.current_tok)
 
     def id_statements(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<id_statements>"]:
+        if self.current_tok in PREDICT_SET_ERR["<id_statements>"]:
             if self.current_tok in PREDICT_SET["<id_statements>"]:
                 self.parse_token("id")
                 self.id_statements_ext()
                 self.statements()
-        else: self.error_handler("UnexpectedTok_err", "id")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<id_statements>"])))
         log.info("Exit: " + self.current_tok)
 
     def id_statements_ext(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<id_statements_ext>"]:
+        if self.current_tok in PREDICT_SET_ERR["<id_statements_ext>"]:
             if self.current_tok in PREDICT_SET["<id_statements_ext>"]:
                 self.tail1()
                 self.parse_token(";")
             if self.current_tok in PREDICT_SET["<id_statements_ext_1>"]:
                 self.assignment_st()
-        else: self.error_handler("Invalid_err", "id statement", (", ".join(f"'{tok}'" for tok in FIRST_SET["<id_statements_ext>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<id_statements_ext>"])))
         log.info("Exit: " + self.current_tok)
 
     def assignment_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<assignment_st>"]:
+        if self.current_tok in PREDICT_SET_ERR["<assignment_st>"]:
             if self.current_tok in PREDICT_SET["<assignment_st>"]:
                 self.accessor_tail()
                 self.assignment_op()
                 self.value()
                 self.parse_token(";")
-        else: self.error_handler("Custom_err", "Invalid assignment statement")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<assignment_st>"])))
         log.info("Exit: " + self.current_tok)
 
     def assignment_op(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<assignment_op>"]:
+        if self.current_tok in PREDICT_SET_ERR["<assignment_op>"]:
             if self.current_tok in PREDICT_SET["<assignment_op>"]:
                 self.parse_token("=")
             if self.current_tok in PREDICT_SET["<assignment_op_1>"]:
@@ -983,22 +1010,22 @@ class Parser:
                 self.parse_token("/=")
             if self.current_tok in PREDICT_SET["<assignment_op_5>"]:
                 self.parse_token("%=")
-        else: self.error_handler("Invalid_err", "assignment operator")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<assignment_op>"])))
         log.info("Exit: " + self.current_tok)
     
     def conditional_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<conditional_st>"]:
+        if self.current_tok in PREDICT_SET_ERR["<conditional_st>"]:
             if self.current_tok in PREDICT_SET["<conditional_st>"]:
                 self.cond_check()
             if self.current_tok in PREDICT_SET["<conditional_st_1>"]:
                 self.cond_menu()
-        else: self.error_handler("Invalid_err", "conditional statement", (", ".join(f"'{tok}'" for tok in FIRST_SET["<and_expr>"])))
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<conditional_st>"])))
         log.info("Exit: " + self.current_tok)
 
     def cond_check(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<cond_check>"]:
+        if self.current_tok in PREDICT_SET_ERR["<cond_check>"]:
             if self.current_tok in PREDICT_SET["<cond_check>"]:
                 self.parse_token("check")
                 self.parse_token("(")
@@ -1007,108 +1034,114 @@ class Parser:
                 self.platter()
                 self.alt_clause()
                 self.instead_clause()
-        else: self.error_handler("UnexpectedTok_err", "check")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<cond_check>"])))
         log.info("Exit: " + self.current_tok)
 
     def alt_clause(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<alt_clause>"]:
-            self.parse_token("alt")
-            self.parse_token("(")
-            self.expr()
-            self.parse_token(")")
-            self.platter()
-            self.alt_clause()
-        if self.current_tok in PREDICT_SET["<alt_clause_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<alt_clause>"]:
+            if self.current_tok in PREDICT_SET["<alt_clause>"]:
+                self.parse_token("alt")
+                self.parse_token("(")
+                self.expr()
+                self.parse_token(")")
+                self.platter()
+                self.alt_clause()
+            if self.current_tok in PREDICT_SET["<alt_clause_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<alt_clause>"])))
         log.info("Exit: " + self.current_tok)        
 
     def instead_clause(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<instead_clause>"]:
-            self.parse_token("instead")
-            self.platter()
-        if self.current_tok in PREDICT_SET["<instead_clause_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<instead_clause>"]:
+            if self.current_tok in PREDICT_SET["<instead_clause>"]:
+                self.parse_token("instead")
+                self.platter()
+            if self.current_tok in PREDICT_SET["<instead_clause_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<instead_clause>"])))
         log.info("Exit: " + self.current_tok)
 
     def cond_menu(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<cond_menu>"]:
+        if self.current_tok in PREDICT_SET_ERR["<cond_menu>"]:
             if self.current_tok in PREDICT_SET["<cond_menu>"]:
                 self.parse_token("menu")
                 self.parse_token("(")
                 self.expr()
                 self.parse_token(")")
                 self.menu_platter()
-        else: self.error_handler("UnexpectedTok_err", "menu")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<cond_menu>"])))
         log.info("Exit: " + self.current_tok)
 
     def menu_platter(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<menu_platter>"]:
+        if self.current_tok in PREDICT_SET_ERR["<menu_platter>"]:
             if self.current_tok in PREDICT_SET["<menu_platter>"]:
                 self.parse_token("{")
                 self.choice_clause()
                 self.usual_clause()
                 self.parse_token("}")
-        else: self.error_handler("Invalid_err", "platter block")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<menu_platter>"])))
         log.info("Exit: " + self.current_tok)
 
     def choice_clause(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<choice_clause>"]:
-            self.parse_token("choice")
-            self.choice_val()
-            # if self.current_tok == "piece_lit" or self.current_tok == "char_lit": self.parse_token(self.current_tok)
-            # else: self.error_handler("UnexpectedTok_err", "piece_lit or char_lit")
-            self.parse_token(":")
-            self.statements()
-            self.choice_clause()
-        if self.current_tok in PREDICT_SET["<choice_clause_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<choice_clause>"]:
+            if self.current_tok in PREDICT_SET_ERR["<choice_clause>"]:
+                self.parse_token("choice")
+                self.choice_val()
+                self.parse_token(":")
+                self.statements()
+                self.choice_clause()
+            if self.current_tok in PREDICT_SET["<choice_clause_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<choice_clause>"])))
         log.info("Exit: " + self.current_tok)
 
     def choice_val(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<choice_val>"]:
+        if self.current_tok in PREDICT_SET_ERR["<choice_val>"]:
             if self.current_tok in PREDICT_SET["<choice_val>"]:
                 self.parse_token("piece_lit")
             if self.current_tok in PREDICT_SET["<choice_val_1>"]:
                 self.parse_token("chars_lit")
-        else: self.error_handler("Invalid_err", "choice value")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<choice_val>"])))
         log.info("Exit: " + self.current_tok)
 
 
     def usual_clause(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in PREDICT_SET["<usual_clause>"]:
-            self.parse_token("usual")
-            self.parse_token(":")
-            self.statements()
-        if self.current_tok in PREDICT_SET["<usual_clause_1>"]:
-            log.info("Exit: " + self.current_tok)
-            return
+        if self.current_tok in PREDICT_SET_ERR["<usual_clause>"]:
+            if self.current_tok in PREDICT_SET["<usual_clause>"]:
+                self.parse_token("usual")
+                self.parse_token(":")
+                self.statements()
+            if self.current_tok in PREDICT_SET["<usual_clause_1>"]:
+                log.info("Exit: " + self.current_tok)
+                return
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<usual_clause>"])))
         log.info("Exit: " + self.current_tok)
 
     def looping_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<looping_st>"]:
+        if self.current_tok in PREDICT_SET_ERR["<looping_st>"]:
             if self.current_tok in PREDICT_SET["<looping_st>"]:
                 self.loop_pass()
             if self.current_tok in PREDICT_SET["<looping_st_1>"]:
                 self.loop_repeat()
             if self.current_tok in PREDICT_SET["<looping_st_2>"]:
                 self.loop_order()
-        else: self.error_handler("Custom_err", "Invalid looping statement")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<looping_st>"])))
         log.info("Exit: " + self.current_tok)
 
     def loop_pass(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<loop_pass>"]:
+        if self.current_tok in PREDICT_SET_ERR["<loop_pass>"]:
             if self.current_tok in PREDICT_SET["<loop_pass>"]:
                 self.parse_token("pass")
                 self.parse_token("(")
@@ -1117,43 +1150,43 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("Invalid_err", "pass")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<loop_pass>"])))
         log.info("Exit: " + self.current_tok)
 
     def initialization(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<initialization>"]:
+        if self.current_tok in PREDICT_SET_ERR["<initialization>"]:
             if self.current_tok in PREDICT_SET["<initialization>"]:
                 self.parse_token("id")
                 self.ingredient_init()
                 self.parse_token(";")
-        else: self.error_handler("Invalid_err", "initialization")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<initialization>"])))
         log.info("Exit: " + self.current_tok)
 
     def update(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<update>"]:
+        if self.current_tok in PREDICT_SET_ERR["<update>"]:
             if self.current_tok in PREDICT_SET["<update>"]:
                 self.parse_token("id")
                 self.assignment_st()
-        else: self.error_handler("Invalid_err", "update")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<update>"])))
         log.info("Exit: " + self.current_tok)
 
     def loop_repeat(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<loop_repeat>"]:
+        if self.current_tok in PREDICT_SET_ERR["<loop_repeat>"]:
             if self.current_tok in PREDICT_SET["<loop_repeat>"]:
                 self.parse_token("repeat")
                 self.parse_token("(")
                 self.expr()
                 self.parse_token(")")
                 self.platter()
-        else: self.error_handler("Invalid_err", "repeat")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<loop_repeat>"])))
         log.info("Exit: " + self.current_tok)
 
     def loop_order(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<loop_order>"]:
+        if self.current_tok in PREDICT_SET_ERR["<loop_order>"]:
             if self.current_tok in PREDICT_SET["<loop_order>"]:
                 self.parse_token("order")
                 self.platter()
@@ -1162,46 +1195,47 @@ class Parser:
                 self.expr()
                 self.parse_token(")")
                 self.parse_token(";")
-        else: self.error_handler("Invalid_err", "order")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<loop_order>"])))
+        log.info("Exit: " + self.current_tok)
 
     def jump_st(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<jump_st>"]:
+        if self.current_tok in PREDICT_SET_ERR["<jump_st>"]:
             if self.current_tok in PREDICT_SET["<jump_st>"]:
                 self.jump_next()
             if self.current_tok in PREDICT_SET["<jump_st_1>"]:
                 self.jump_stop()
             if self.current_tok in PREDICT_SET["<jump_st_2>"]:
                 self.jump_serve()
-        else: self.error_handler("Custom_err", "Invalid jump statement")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<jump_st>"])))
         log.info("Exit: " + self.current_tok)
 
     def jump_next(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<jump_next>"]:
+        if self.current_tok in PREDICT_SET_ERR["<jump_next>"]:
             if self.current_tok in PREDICT_SET["<jump_next>"]:
                 self.parse_token("next")
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", "next")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<jump_next>"])))
         log.info("Exit: " + self.current_tok)
 
     def jump_stop(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<jump_stop>"]:
+        if self.current_tok in PREDICT_SET_ERR["<jump_stop>"]:
             if self.current_tok in PREDICT_SET["<jump_stop>"]:
                 self.parse_token("stop")
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", "stop")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<jump_stop>"])))
         log.info("Exit: " + self.current_tok)
 
     def jump_serve(self):
         log.info("Enter: " + self.current_tok)
-        if self.current_tok in FIRST_SET["<jump_serve>"]:
+        if self.current_tok in PREDICT_SET_ERR["<jump_serve>"]:
             if self.current_tok in PREDICT_SET["<jump_serve>"]:
                 self.parse_token("serve")
                 self.value()
                 self.parse_token(";")
-        else: self.error_handler("UnexpectedTok_err", "serve")
+        else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<jump_serve>"])))
         log.info("Exit: " + self.current_tok)
 
 

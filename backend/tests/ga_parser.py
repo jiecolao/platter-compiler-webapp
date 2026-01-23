@@ -20,7 +20,7 @@ class TestParser(unittest.TestCase):
             except SyntaxError as e:
                 self.assertEqual(
                     str(e),
-                    "Syntax Error",
+                    expected_output,
                     msg=f"Failed for CODE #{script['number']}\nCODE:\n{script['code']}"
                 )
 

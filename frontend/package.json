@@ -18,7 +18,7 @@
 		"stop:dev": "node ../server-manager.js stop",
 		"restart:dev": "node ../server-manager.js restart",
 		"setup:venv": "node ../server-manager.js venv",
-		"start-all": "npx concurrently \"cd %cd%\\..\\backend && python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000\" \"cd %cd% && npm run dev -- --host\""
+		"start-all": "npx concurrently \"cd %cd%\\..\\backend && .venv\\Scripts\\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000\" \"cd %cd% && npm run dev -- --host\""
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

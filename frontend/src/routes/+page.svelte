@@ -62,6 +62,11 @@ start() {
 	let tokens: Token[] = [];
 	let isAnalyzing = false;
 
+	// Pyodide integration
+	let pyodide: any = null;
+	let pyodideLoading = false;
+	let pyodideReady = false;
+
 	// CodeMirror integration
 	let textareaEl: HTMLTextAreaElement | null = null;
 	let cmInstance: any = null;
@@ -111,6 +116,70 @@ start() {
 		}
 	}
 
+	async function initPyodide() {
+		if (pyodide || pyodideLoading) return;
+		pyodideLoading = true;
+
+		try {
+			// Load Pyodide from CDN
+			await loadScript('https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js');
+			pyodide = await (window as any).loadPyodide({
+				indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/'
+			});
+
+			// Load Python files from static directory
+			const pythonFiles = [
+				'/python/app/__init__.py',
+				'/python/app/lexer/__init__.py',
+				'/python/app/lexer/token.py',
+				'/python/app/lexer/protocol.py',
+				'/python/app/lexer/base.py',
+				'/python/app/lexer/keywords.py',
+				'/python/app/lexer/identifiers.py',
+				'/python/app/lexer/numericals.py',
+				'/python/app/lexer/operators.py',
+				'/python/app/lexer/char_com.py',
+				'/python/app/lexer/lexer.py',
+				'/python/app/parser/token_map.py',
+				'/python/app/parser/first_set.py',
+				'/python/app/parser/follow_set.py',
+				'/python/app/parser/predict_set.py',
+				'/python/app/parser/predict_set_err.py',
+				'/python/app/parser/parser.py'
+			];
+
+			// Fetch and write Python files to Pyodide's virtual filesystem
+			for (const file of pythonFiles) {
+				const response = await fetch(file);
+				const content = await response.text();
+				const path = file.replace('/python/', '');
+				
+				// Create directory structure
+				const dirs = path.split('/').slice(0, -1);
+				let currentPath = '';
+				for (const dir of dirs) {
+					currentPath += (currentPath ? '/' : '') + dir;
+					try {
+						pyodide.FS.mkdir(currentPath);
+					} catch (e) {
+						// Directory might already exist
+					}
+				}
+				
+				// Write file
+				pyodide.FS.writeFile(path, content);
+			}
+
+			pyodideReady = true;
+			console.log('Pyodide initialized successfully');
+		} catch (err) {
+			console.error('Failed to initialize Pyodide:', err);
+			setTerminalError('Failed to initialize Python runtime');
+		} finally {
+			pyodideLoading = false;
+		}
+	}
+
 	onMount(async () => {
 		try {
 			// load CodeMirror assets from CDN (lightweight integration)
@@ -132,6 +201,9 @@ start() {
 					codeInput = cmInstance.getValue();
 				});
 			}
+
+			// Initialize Pyodide
+			await initPyodide();
 		} catch (err) {
 			console.warn('Failed to load CodeMirror from CDN:', err);
 		}
@@ -194,34 +266,6 @@ start() {
 	async function analyzeSemantic() {
 		activeTab = 'semantic';
 		setTerminalError('Semantics not yet implemented');
-
-		try {
-			const res = await fetch('http://localhost:8000/analyzeSemantic', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ code: codeInput })
-			});
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const data = await res.json();
-
-			if (data.success) {
-				clearErrorMarkers();
-				setTerminalOk(data.message || 'Semantic analysis completed successfully');
-			} else {
-				// Handle syntax errors with line/col information
-				if (data.error && data.error.line && data.error.col) {
-				// Create a token-like object for the error marker
-				const errorToken = {
-				type: 'Syntax Error',
-				value: 'error',
-				line: data.error.line,
-				col: data.error.col
-				};
-				addErrorMarkers([errorToken]);
-				}
-				setTerminalError(data.message || 'Semantic analysis failed');
-			}
-		} catch (err) {}
 	}
 
 	async function analyzeSyntax() {
@@ -230,14 +274,47 @@ start() {
 		if (termMessages.length === 1 && termMessages[0].text.startsWith('Lexical OK')) {
 			clearTerminal();
 
+			if (!pyodideReady) {
+				setTerminalError('Python runtime not ready');
+				return;
+			}
+
 			try {
-				const res = await fetch('http://localhost:8000/analyzeSyntax', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ code: codeInput })
-				});
-				if (!res.ok) throw new Error(`HTTP ${res.status}`);
-				const data = await res.json();
+				// Set the code input in Python
+				pyodide.globals.set('code_input', codeInput);
+
+				// Run syntax analysis
+				const result = await pyodide.runPythonAsync(`
+import sys
+import re
+from app.lexer.lexer import Lexer
+from app.parser.parser import Parser
+
+result = None
+try:
+    lexer = Lexer(code_input)
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    parser.parse()
+    
+    result = {"success": True, "message": "No Syntax Error"}
+except SyntaxError as e:
+    error_msg = str(e)
+    # Try to extract line and col from error message
+    match = re.search(r'line (\\d+), col (\\d+)', error_msg)
+    if match:
+        line = int(match.group(1))
+        col = int(match.group(2))
+        result = {"success": False, "message": error_msg, "error": {"line": line, "col": col, "message": error_msg}}
+    else:
+        result = {"success": False, "message": error_msg}
+except Exception as e:
+    result = {"success": False, "message": f"Syntax analysis failed: {str(e)}"}
+
+result
+				`);
+
+				const data = result.toJs({ dict_converter: Object.fromEntries });
 
 				if (data.success) {
 					clearErrorMarkers();
@@ -278,17 +355,40 @@ start() {
 			setTerminalError('Editor is empty');
 			return;
 		}
+
+		if (!pyodideReady) {
+			setTerminalError('Python runtime not ready. Please wait...');
+			return;
+		}
+
 		isAnalyzing = true;
 		try {
-			const res = await fetch('http://localhost:8000/analyzeLexical', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ code: codeInput })
-			});
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const data = (await res.json()) as { success: boolean; tokens: Token[] };
-			// receive tokens and separate unknown/error tokens into the terminal
-			const received = data.tokens ?? [];
+			// Set the code input in Python
+			pyodide.globals.set('code_input', codeInput);
+
+			// Run lexical analysis
+			const tokensProxy = await pyodide.runPythonAsync(`
+from app.lexer.lexer import Lexer
+
+lexer = Lexer(code_input)
+tokenize = lexer.tokenize()
+tokens = []
+
+for token in tokenize:
+    if token is None:
+        break
+    tokens.append({
+        "type": token.type,
+        "value": token.value or '\\\\0',
+        "line": token.line,
+        "col": token.col
+    })
+
+tokens
+			`);
+
+			// Convert Python list to JavaScript array
+			const received = tokensProxy.toJs({ dict_converter: Object.fromEntries });
 			// treat tokens with type starting with 'invalid' or 'exceeds' (case-insensitive) as lexical errors
 			const invalidTokens = received.filter(
 				(t) =>

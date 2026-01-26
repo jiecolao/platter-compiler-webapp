@@ -1,44 +1,52 @@
 # Quick Start - Platter Compiler Webapp
 
-## 🚀 One-Click Server Management
+## 🚀 Running the Application
 
-### Start Everything
-**Option 1:** Double-click → `start-servers.bat`  
-**Option 2:** Run in terminal → `node server-manager.js start`  
-**Option 3:** From frontend dir → `npm run start:dev`
+The Platter IDE now runs entirely in your browser using Pyodide (Python in WebAssembly). No backend server needed!
 
-### Stop Everything  
-**Option 1:** Double-click → `stop-servers.bat`  
-**Option 2:** Run in terminal → `node server-manager.js stop`  
-**Option 3:** From frontend dir → `npm run stop:dev`
+### Start Development Server
 
-## 📍 URLs (after starting)
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open: **http://localhost:5173**
+
+That's it! 🎉
+
+## 📍 What Changed?
+
+✅ **No Backend Server**: Python runs directly in the browser via Pyodide  
+✅ **Static Hosting**: Can be deployed to GitHub Pages, Netlify, Vercel, etc.  
+✅ **Offline Capable**: Works offline once loaded  
+✅ **Same Features**: All lexical and syntax analysis works the same
 
 ## 🛠️ First Time Setup
 
-**Automatic Setup (Recommended):**
-```bash
-# The server manager handles everything automatically!
-node server-manager.js start
-```
-
-**Manual Setup (if needed):**
 ```bash
 # Install frontend dependencies  
 cd frontend
 npm install
-
-# Python virtual environment is created automatically
-# Or create manually: python -m venv backend/.venv
 ```
 
-## ✨ Features
-- **Auto Virtual Environment**: Creates and manages Python venv automatically
-- **Dependency Management**: Installs requirements.txt automatically
-- **Port Management**: Checks and handles port conflicts
-- **Single Terminal**: No multiple windows, everything in one place
-- **Graceful Shutdown**: Ctrl+C stops everything cleanly
+## 🏗️ Building for Production
 
-That's it! The server manager handles all the complexity. 🎉
+```bash
+cd frontend
+npm run build
+npm run preview
+```
+
+The built files in `frontend/build/` can be deployed to any static hosting service.
+
+## 📚 More Information
+
+- See `MIGRATION_TO_PYODIDE.md` for technical details about the migration
+- The original Python code in `backend/app/` is still used, but copied to `frontend/static/python/app/`
+- Pyodide downloads ~6-10MB on first load (cached afterwards)
+
+## ⚠️ Note
+
+The first time you click "Lexical" or "Syntax", there will be a brief delay while Pyodide initializes. This is normal and only happens once per session.

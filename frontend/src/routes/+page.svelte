@@ -127,26 +127,27 @@ start() {
 				indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/'
 			});
 
-			// Load Python files from static directory
-			const pythonFiles = [
-				'/python/app/__init__.py',
-				'/python/app/lexer/__init__.py',
-				'/python/app/lexer/token.py',
-				'/python/app/lexer/protocol.py',
-				'/python/app/lexer/base.py',
-				'/python/app/lexer/keywords.py',
-				'/python/app/lexer/identifiers.py',
-				'/python/app/lexer/numericals.py',
-				'/python/app/lexer/operators.py',
-				'/python/app/lexer/char_com.py',
-				'/python/app/lexer/lexer.py',
-				'/python/app/parser/token_map.py',
-				'/python/app/parser/first_set.py',
-				'/python/app/parser/follow_set.py',
-				'/python/app/parser/predict_set.py',
-				'/python/app/parser/predict_set_err.py',
-				'/python/app/parser/parser.py'
-			];
+		// Load Python files from static directory
+		const pythonFiles = [
+			'/python/app/__init__.py',
+			'/python/app/lexer/__init__.py',
+			'/python/app/lexer/token.py',
+			'/python/app/lexer/protocol.py',
+			'/python/app/lexer/base.py',
+			'/python/app/lexer/keywords.py',
+			'/python/app/lexer/identifiers.py',
+			'/python/app/lexer/numericals.py',
+			'/python/app/lexer/operators.py',
+			'/python/app/lexer/char_com.py',
+			'/python/app/lexer/lexer.py',
+			'/python/app/parser/__init__.py',
+			'/python/app/parser/token_map.py',
+			'/python/app/parser/first_set.py',
+			'/python/app/parser/follow_set.py',
+			'/python/app/parser/predict_set.py',
+			'/python/app/parser/predict_set_err.py',
+			'/python/app/parser/parser.py'
+		];
 
 			// Fetch and write Python files to Pyodide's virtual filesystem
 			for (const file of pythonFiles) {

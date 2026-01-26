@@ -39,6 +39,8 @@
 		copyToClipboard
 	} from '$lib/utils/browser';
 
+	export let data;
+
 	let theme: 'dark' | 'light' = 'dark';
 	let activeTab: 'lexical' | 'syntax' | 'semantic' = 'lexical';
 
@@ -149,11 +151,11 @@ start() {
 			'/python/app/parser/parser.py'
 		];
 
-			// Fetch and write Python files to Pyodide's virtual filesystem
-			for (const file of pythonFiles) {
-				const response = await fetch(file);
-				const content = await response.text();
-				const path = file.replace('/python/', '');
+		// Fetch and write Python files to Pyodide's virtual filesystem
+		for (const file of pythonFiles) {
+			const response = await fetch(`${data.basePath}${file}`);
+			const content = await response.text();
+			const path = file.replace('/python/', '');
 				
 				// Create directory structure
 				const dirs = path.split('/').slice(0, -1);

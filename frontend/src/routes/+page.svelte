@@ -387,29 +387,29 @@ for token in tokenize:
 tokens
 			`);
 
-			// Convert Python list to JavaScript array
-			const received = tokensProxy.toJs({ dict_converter: Object.fromEntries });
-			// treat tokens with type starting with 'invalid' or 'exceeds' (case-insensitive) as lexical errors
-			const invalidTokens = received.filter(
-				(t) =>
+		// Convert Python list to JavaScript array
+		const received = tokensProxy.toJs({ dict_converter: Object.fromEntries });
+		// treat tokens with type starting with 'invalid' or 'exceeds' (case-insensitive) as lexical errors
+		const invalidTokens = received.filter(
+			(t: Token) =>
+				typeof t.type === 'string' &&
+				(t.type.toLowerCase().startsWith('invalid') || t.type.toLowerCase().startsWith('exceeds'))
+		);
+		// tokens to show in the lexer table (exclude invalids and exceeds)
+		tokens = received.filter(
+			(t: Token) =>
+				!(
 					typeof t.type === 'string' &&
-					(t.type.toLowerCase().startsWith('invalid') || t.type.toLowerCase().startsWith('exceeds'))
-			);
-			// tokens to show in the lexer table (exclude invalids and exceeds)
-			tokens = received.filter(
-				(t) =>
-					!(
-						typeof t.type === 'string' &&
-						(t.type.toLowerCase().startsWith('invalid') ||
-							t.type.toLowerCase().startsWith('exceeds'))
-					)
-			);
+					(t.type.toLowerCase().startsWith('invalid') ||
+						t.type.toLowerCase().startsWith('exceeds'))
+				)
+		);
 
-			// update right table
-			lexerRows.length = 0;
-			// Group consecutive spaces, newlines, and tabs (but reset count when invalid tokens appear)
-			// We need to track position in original received array to detect when errors interrupt whitespace
-			const invalidPositions = new Set(invalidTokens.map((t) => `${t.line}:${t.col}:${t.value}`));
+		// update right table
+		lexerRows.length = 0;
+		// Group consecutive spaces, newlines, and tabs (but reset count when invalid tokens appear)
+		// We need to track position in original received array to detect when errors interrupt whitespace
+		const invalidPositions = new Set(invalidTokens.map((t: Token) => `${t.line}:${t.col}:${t.value}`));
 
 			let i = 0;
 			let receivedIdx = 0;

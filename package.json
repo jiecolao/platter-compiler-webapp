@@ -1,0 +1,25 @@
+{
+	"name": "platter",
+	"version": "1.0.0",
+	"description": "Platter Programming Language IDE",
+	"type": "module",
+	"scripts": {
+		"sync-python": "node sync-python.js",
+		"dev": "cd frontend && npm run dev",
+		"build": "cd frontend && npm run build",
+		"preview": "cd frontend && npm run preview"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yourusername/Platter.git"
+	},
+	"keywords": [
+		"platter",
+		"compiler",
+		"lexer",
+		"parser",
+		"ide"
+	],
+	"author": "",
+	"license": "MIT"
+}

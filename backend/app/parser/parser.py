@@ -551,7 +551,7 @@ class Parser:
                 arguments.append(first_arg)
                 more_args = self.flavor_tail()
                 arguments.extend(more_args)
-            if self.current_tok in PREDICT_SET["<flavor_1>"]:
+            elif self.current_tok in PREDICT_SET["<flavor_1>"]:
                 log.info("Exit: " + self.current_tok)
                 return []
         else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<flavor>"])))
@@ -789,15 +789,15 @@ class Parser:
 
     def tail1(self):
         log.info("Enter: " + self.current_tok)
+        arguments = []
         if self.current_tok in PREDICT_SET_ERR["<tail1>"]:
             if self.current_tok in PREDICT_SET["<tail1>"]:
                 arguments = self.call_tail()
                 # accessor_tail would be for if built-in returns array/table, but ignore for now
                 self.accessor_tail()
-                return arguments
         else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<tail1>"])))
         log.info("Exit: " + self.current_tok)
-        return []
+        return arguments
 
     def call_tail(self):
         log.info("Enter: " + self.current_tok)

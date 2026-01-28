@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.lexer.lexer import Lexer
 from app.parser.parser import Parser
+from app.semantic_analyzer.ast_reader import ast_to_dict, pretty_print_ast
 
 app = FastAPI()
 
@@ -80,15 +81,40 @@ async def analyze_syntax(input_data: CodeInput):
 
 @app.post("/analyzeSemantic")
 async def analyze_semantic(input_data: CodeInput):
-    """Analyze Sementics of Platter code"""
+    """Analyze Semantics of Platter code and return AST"""
     try:
-        # lexer = Lexer(input_data.code)
-        # tokens = lexer.tokenize()
-        # parser = Parser(tokens)
-        # parser.parse()
+        lexer = Lexer(input_data.code)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast_root = parser.parse()
         
-        return {"message": "Semantic Analysis not yet implemented", "success": False}
+        # Convert AST to dictionary for JSON response
+        ast_dict = ast_to_dict(ast_root)
+        ast_string = pretty_print_ast(ast_root)
+        
+        return {
+            "message": "No Semantic Error", 
+            "success": True,
+            "ast": ast_dict,
+            "ast_string": ast_string
+        }
     except SyntaxError as e:
-        return {"message": str(e), "success": False}
+        error_msg = str(e)
+        # Try to extract line and col from error message
+        import re
+        match = re.search(r'line (\d+), col (\d+)', error_msg)
+        if match:
+            line = int(match.group(1))
+            col = int(match.group(2))
+            return {
+                "message": error_msg,
+                "success": False,
+                "error": {
+                    "line": line,
+                    "col": col,
+                    "message": error_msg
+                }
+            }
+        return {"message": error_msg, "success": False}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Semantic analysis failed: {str(e)}")

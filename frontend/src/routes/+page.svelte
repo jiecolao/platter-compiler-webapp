@@ -193,7 +193,13 @@ start() {
 
 	async function analyzeSemantic() {
 		activeTab = 'semantic';
-		setTerminalError('Semantics not yet implemented');
+		if (!codeInput) {
+			setTerminalError('No code to analyze');
+			return;
+		}
+		isAnalyzing = true;
+		clearErrorMarkers();
+		clearTerminal();
 
 		try {
 			const res = await fetch('http://localhost:8000/analyzeSemantic', {
@@ -206,22 +212,35 @@ start() {
 
 			if (data.success) {
 				clearErrorMarkers();
-				setTerminalOk(data.message || 'Semantic analysis completed successfully');
+				// Log AST structure to console
+				if (data.ast_string) {
+					console.log('=== Abstract Syntax Tree ===');
+					console.log(data.ast_string);
+					console.log('=== AST Dictionary ===');
+					console.log(data.ast);
+				}
+				// Show success message in terminal
+				setTerminalOk(data.message || 'No Semantic Error');
 			} else {
-				// Handle syntax errors with line/col information
+				// Handle semantic errors with line/col information
 				if (data.error && data.error.line && data.error.col) {
-				// Create a token-like object for the error marker
-				const errorToken = {
-				type: 'Syntax Error',
-				value: 'error',
-				line: data.error.line,
-				col: data.error.col
-				};
-				addErrorMarkers([errorToken]);
+					// Create a token-like object for the error marker
+					const errorToken = {
+						type: 'Semantic Error',
+						value: 'error',
+						line: data.error.line,
+						col: data.error.col
+					};
+					addErrorMarkers([errorToken]);
 				}
 				setTerminalError(data.message || 'Semantic analysis failed');
 			}
-		} catch (err) {}
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : 'Unknown error';
+			setTerminalError(`Semantic analysis failed: ${msg}`);
+		} finally {
+			isAnalyzing = false;
+		}
 	}
 
 	async function analyzeSyntax() {

@@ -648,7 +648,10 @@ class Parser:
                 self.element_value_tail(array_node)
             if self.current_tok in PREDICT_SET["<array_element_id_1>"]:
                 nested_array = self.array_element()
-                array_node.add_element(nested_array)
+                # Add each element from the nested array instead of the array itself
+                if nested_array and hasattr(nested_array, 'elements'):
+                    for elem in nested_array.elements:
+                        array_node.add_element(elem)
         else: self.error_handler("Unexpected_err", (", ".join(f"'{tok}'" for tok in PREDICT_SET_ERR["<array_element_id>"])))
         log.info("Exit: " + self.current_tok)
 

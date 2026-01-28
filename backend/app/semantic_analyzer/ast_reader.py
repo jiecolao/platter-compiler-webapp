@@ -58,7 +58,7 @@ class ASTReader:
             self.indent_level -= 1
         
         elif isinstance(node, Platter):
-            result.append(f"{prefix}Platter Block:\n")
+            result.append(f"{prefix}Platter:\n")
             self.indent_level += 1
             
             if node.local_decl:
@@ -112,10 +112,7 @@ class ASTReader:
                     result.append(self._visit(spice, self.indent_str * self.indent_level))
                 self.indent_level -= 1
             if node.platter:
-                result.append(f"{self.indent_str * self.indent_level}Body:\n")
-                self.indent_level += 1
                 result.append(self._visit(node.platter, self.indent_str * self.indent_level))
-                self.indent_level -= 1
             self.indent_level -= 1
         
         elif isinstance(node, Spice):

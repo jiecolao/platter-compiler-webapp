@@ -437,11 +437,11 @@ class ServerManager {
       await this.startFrontend();
       await sleep(2000); // Wait for frontend to start
       
-      console.log('\n🎉 Servers started successfully!');
-      console.log('\n📍 URLs:');
+      console.log('\nServers started successfully!');
+      console.log('\nURLs:');
       console.log(`   Backend API:  http://127.0.0.1:${CONFIG.BACKEND_PORT}`);
       console.log(`   Frontend UI:  http://localhost:${CONFIG.FRONTEND_PORT}`);
-      console.log('\n💡 Press Ctrl+C to stop all servers');
+      console.log('\nPress Ctrl+C to stop all servers');
       
       // Open browser automatically
       await this.openBrowser(`http://localhost:${CONFIG.FRONTEND_PORT}`);

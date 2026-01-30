@@ -1,13 +1,17 @@
 {
 	"name": "platter",
 	"version": "1.0.0",
-	"description": "Platter Programming Language IDE",
+	"description": "Platter Programming Language IDE (Frontend-First, Pyodide-powered)",
 	"type": "module",
 	"scripts": {
+		"start": "cd platter-compiler-sveltejs && npm run dev",
+		"dev": "cd platter-compiler-sveltejs && npm run dev",
+		"build": "npm run sync-python && cd platter-compiler-sveltejs && npm run build",
+		"preview": "cd platter-compiler-sveltejs && npm run preview",
 		"sync-python": "node sync-python.js",
-		"dev": "cd frontend && npm run dev",
-		"build": "cd frontend && npm run build",
-		"preview": "cd frontend && npm run preview"
+		"install-all": "cd platter-compiler-sveltejs && npm install",
+		"test": "python run_tests.py",
+		"test:frontend": "cd platter-compiler-sveltejs && npm run test"
 	},
 	"repository": {
 		"type": "git",
@@ -18,7 +22,9 @@
 		"compiler",
 		"lexer",
 		"parser",
-		"ide"
+		"ide",
+		"pyodide",
+		"webassembly"
 	],
 	"author": "",
 	"license": "MIT"

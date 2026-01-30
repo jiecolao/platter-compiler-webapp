@@ -1,11 +1,12 @@
 import json
 import unittest
 import os
+from pathlib import Path
 from pprint import pformat
 from app.lexer.lexer import Lexer
 from app.lexer.token import Token
 
-SAMPLES_DIR = "./tests/lexer_programs/"
+SAMPLES_DIR = Path(__file__).parent / "lexer_programs"
 
 
 class TestPlatterLexerStrings(unittest.TestCase):

@@ -36,7 +36,7 @@ jobs:
           python-version: "3.11"
 
       - name: Run Python tests
-        working-directory: backend
+        working-directory: platter-compiler-sveltejs/python-dev
         run: |
           python -m unittest discover -s tests -p "ga_*.py" -v
 
@@ -56,18 +56,18 @@ jobs:
           node-version: '20'
 
       - name: Clean install dependencies
-        working-directory: frontend
+        working-directory: platter-compiler-sveltejs
         run: |
           rm -rf node_modules package-lock.json
           npm install
           npm install
 
       - name: Run type check
-        working-directory: frontend
+        working-directory: platter-compiler-sveltejs
         run: npm run check
 
       - name: Build SvelteKit app
-        working-directory: frontend
+        working-directory: platter-compiler-sveltejs
         env:
           BASE_PATH: /Platter
         run: npm run build
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: frontend/build/
+          path: platter-compiler-sveltejs/build/
           retention-days: 1
 
   # Deploy to GitHub Pages

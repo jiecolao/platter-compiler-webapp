@@ -36,8 +36,9 @@ jobs:
           python-version: "3.11"
 
       - name: Run Python tests
-        working-directory: platter-compiler-sveltejs/python-dev
         run: |
+          export PYTHONPATH="${GITHUB_WORKSPACE}/platter-compiler-sveltejs/static/python:${GITHUB_WORKSPACE}/platter-compiler-sveltejs/python-dev"
+          cd platter-compiler-sveltejs/python-dev
           python -m unittest discover -s tests -p "ga_*.py" -v
 
   # Build and test frontend

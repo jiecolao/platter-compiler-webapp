@@ -143,13 +143,14 @@ start() {
 			'/python/app/lexer/char_com.py',
 			'/python/app/lexer/lexer.py',
 			'/python/app/parser/__init__.py',
+			'/python/app/parser/ast_nodes.py',
+			'/python/app/parser/ast_reader.py',
 			'/python/app/parser/error_handler.py',
-			'/python/app/parser/token_map.py',
 			'/python/app/parser/first_set.py',
 			'/python/app/parser/follow_set.py',
 			'/python/app/parser/predict_set.py',
 			'/python/app/parser/predict_set_err.py',
-			'/python/app/parser/parser.py'
+			'/python/app/parser/parser_program.py'
 		];
 
 		// Fetch and write Python files to Pyodide's virtual filesystem
@@ -292,14 +293,14 @@ start() {
 import sys
 import re
 from app.lexer.lexer import Lexer
-from app.parser.parser import Parser
+from app.parser.parser_program import Parser
 
 result = None
 try:
     lexer = Lexer(code_input)
     tokens = lexer.tokenize()
     parser = Parser(tokens)
-    parser.parse()
+    parser.parse_program()
     
     result = {"success": True, "message": "No Syntax Error"}
 except SyntaxError as e:

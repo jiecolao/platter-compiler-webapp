@@ -143,6 +143,7 @@ start() {
 			'/python/app/lexer/char_com.py',
 			'/python/app/lexer/lexer.py',
 			'/python/app/parser/__init__.py',
+			'/python/app/parser/error_handler.py',
 			'/python/app/parser/token_map.py',
 			'/python/app/parser/first_set.py',
 			'/python/app/parser/follow_set.py',

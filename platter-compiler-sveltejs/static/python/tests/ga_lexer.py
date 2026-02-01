@@ -2,7 +2,6 @@ import json
 import unittest
 import os
 from pathlib import Path
-from pprint import pformat
 from app.lexer.lexer import Lexer
 from app.lexer.token import Token
 
@@ -1316,14 +1315,14 @@ o\"""",
                     f"ACTUAL:   {json.dumps(actual_types)}\n"
                     f"==============\n"
                 )
-                print("'" + " ".join(f'"{x}"' for x in actual_types) )
+                # print("'" + " ".join(f'"{x}"' for x in actual_types) )
 
-                self.addCleanup(print, msg)
+                # self.addCleanup(print, msg)
 
                 self.assertEqual(
                     actual_types,
                     case["expected_types"],
-                    msg=msg
+                    msg=None if actual_types == case["expected_types"] else msg
                 )
 
     def test_all_files(self):

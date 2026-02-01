@@ -2,7 +2,6 @@ import json
 import unittest
 import os
 from pathlib import Path
-from pprint import pformat
 from app.lexer.lexer import Lexer
 from app.lexer.token import Token
 

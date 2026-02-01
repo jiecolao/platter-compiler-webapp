@@ -7,7 +7,7 @@
 """
 
 PREDICT_SET = {
-    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "prepare", "start"], # ["piece", "sip", "flag", "chars", "table", "id", "λ"]
+    "<program>": ["piece", "sip", "flag", "chars", "table", "id", "prepare", "start"],
 
     "<global_decl>": ["piece", "sip", "flag", "chars"],
     "<global_decl_1>": ["table"],

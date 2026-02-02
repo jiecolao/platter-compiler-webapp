@@ -1,19 +1,13 @@
-name: Python Tests
+name: Run Tests
 
 on:
-  push:
-    branches:
-      - '**'
-  pull_request:
-    branches:
-      - main
-      - master
+  workflow_call:
 
 jobs:
-  test:
+  test-python:
     runs-on: ubuntu-latest
     name: Python Unit Tests
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

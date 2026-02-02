@@ -1,11 +1,11 @@
 """
 Predict Set Generator
 
-Reads a CSV where:
+Reads a TSV where:
 - Column A: non-terminals (dict keys), e.g. <program>
 - Column B: predict set text, e.g. { piece, sip, flag, chars }
 
-Generates a predict_set.py in the same folder as the CSV.
+Generates a predict_set.py in the same folder as the TSV.
 
 Parsing rules implemented:
 - Outer { } defines the set.
@@ -29,12 +29,12 @@ from typing import Dict, List, Tuple, Optional
 # CONFIG (edit these)
 # =========================
 
-SEARCH_ROOT = r"."              # Folder to traverse for the CSV (recursive)
-CSV_NAME = "predict_set.csv"    # CSV filename to find
+SEARCH_ROOT = r"."              # Folder to traverse for the TSV (recursive)
+TSV_NAME = "predict_set.tsv"    # TSV filename to find
 MERGE_NONTERMINALS = False       # True => merge duplicates, False => suffix _1, _2, ...
-OUTPUT_PY_NAME = "predict_set_nonmerged.py"
+OUTPUT_PY_NAME = "predict_set_test.py"
 
-HAS_HEADER = False              # Set True if your CSV has a header row
+HAS_HEADER = False              # Set True if your TSV has a header row
 ENCODING = "utf-8-sig"          # utf-8-sig handles Excel BOM nicely
 
 # =========================
@@ -54,18 +54,18 @@ class RowItem:
     raw_set: str
 
 
-def find_csv(root: Path, filename: str) -> Path:
-    """Traverse root recursively and return the first matching CSV path."""
+def find_tsv(root: Path, filename: str) -> Path:
+    """Traverse root recursively and return the first matching TSV path."""
     for p in root.rglob(filename):
         if p.is_file():
             return p
     raise FileNotFoundError(f"Could not find '{filename}' under '{root.resolve()}'.")
 
 
-def read_csv_rows(csv_path: Path, has_header: bool) -> List[RowItem]:
+def read_tsv_rows(tsv_path: Path, has_header: bool) -> List[RowItem]:
     rows: List[RowItem] = []
-    with csv_path.open("r", encoding=ENCODING, newline="") as f:
-        reader = csv.reader(f)
+    with tsv_path.open("r", encoding=ENCODING, newline="") as f:
+        reader = csv.reader(f, delimiter="\t")
         if has_header:
             next(reader, None)
 
@@ -133,7 +133,8 @@ def parse_set_elements(raw_set: str) -> List[str]:
         # Comma handling (separator vs literal element)
         if ch == ",":
             if expecting_element:
-                elements.append(",")
+                if not elements or elements[-1] != ",":
+                    elements.append(",")
             # comma always also acts like a separator boundary
             expecting_element = True
             i += 1
@@ -253,24 +254,24 @@ def format_py_dict(d: "OrderedDict[str, List[str]]") -> str:
     return "".join(lines)
 
 
-def write_predict_set_py(csv_path: Path, predict_set: "OrderedDict[str, List[str]]") -> Path:
-    out_path = csv_path.parent / OUTPUT_PY_NAME
+def write_predict_set_py(tsv_path: Path, predict_set: "OrderedDict[str, List[str]]") -> Path:
+    out_path = tsv_path.parent / OUTPUT_PY_NAME
     out_path.write_text(format_py_dict(predict_set), encoding="utf-8")
     return out_path
 
 
 def main() -> None:
     root = Path(SEARCH_ROOT).expanduser().resolve()
-    csv_path = find_csv(root, CSV_NAME)
+    tsv_path = find_tsv(root, TSV_NAME)
 
-    rows = read_csv_rows(csv_path, HAS_HEADER)
+    rows = read_tsv_rows(tsv_path, HAS_HEADER)
     if not rows:
-        raise RuntimeError(f"No usable rows found in CSV: {csv_path}")
+        raise RuntimeError(f"No usable rows found in TSV: {tsv_path}")
 
     predict_set = build_predict_set(rows, MERGE_NONTERMINALS)
-    out_path = write_predict_set_py(csv_path, predict_set)
+    out_path = write_predict_set_py(tsv_path, predict_set)
 
-    print(f"Found CSV: {csv_path}")
+    print(f"Found TSV: {tsv_path}")
     print(f"MERGE_NONTERMINALS={MERGE_NONTERMINALS}")
     print(f"Wrote: {out_path}")
 

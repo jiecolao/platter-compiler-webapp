@@ -149,6 +149,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<strict_piece_expr>"]:
             self.strict_piece_term()
             self.strict_piece_add_tail()
+        else: self.parse_token(PREDICT_SET["<strict_piece_expr>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -159,6 +160,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<strict_piece_term>"]:
             self.strict_piece_factor()
             self.strict_piece_mult_tail()
+        else: self.parse_token(PREDICT_SET["<strict_piece_term>"])
         
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1949,19 +1951,19 @@ class Parser():
         """ 262 <strict_piece_mult_tail>	=>	*	<strict_piece_factor>	<strict_piece_mult_tail> """
         if self.tokens[self.pos].type in PREDICT_SET["<strict_piece_mult_tail>"]:
             self.parse_token("*")
-            self.piece_factor()
+            self.strict_piece_factor()
             self.strict_piece_mult_tail()
             
             """ 263 <strict_piece_mult_tail>	=>	/	<strict_piece_factor>	<strict_piece_mult_tail> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_piece_mult_tail>_1"]:
             self.parse_token("/")
-            self.piece_factor()
+            self.strict_piece_factor()
             self.strict_piece_mult_tail()
             
             """ 264 <strict_piece_mult_tail>	=>	%	<strict_piece_factor>	<strict_piece_mult_tail> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_piece_mult_tail>_2"]:
             self.parse_token("%")
-            self.piece_factor()
+            self.strict_piece_factor()
             self.strict_piece_mult_tail()
             
             """ 265 <strict_piece_mult_tail>	=>	λ """

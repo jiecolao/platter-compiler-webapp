@@ -11,7 +11,10 @@
 		"sync-python": "node sync-python.js",
 		"install-all": "cd platter-compiler-sveltejs && npm install",
 		"test": "cd platter-compiler-sveltejs/static/python && python -m unittest discover -s tests -p \"ga_*.py\" -v",
-		"test:frontend": "cd platter-compiler-sveltejs && npm run test"
+		"test:frontend": "cd platter-compiler-sveltejs && npm run test",
+		"parse": "cd ./platter-compiler-sveltejs/static/python && python -m app.parser.parser_program", 
+		"p_test": "cd ./platter-compiler-sveltejs/static/python && python -m tests.test_parser",
+		"g_predict": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.PredictSetGenerator"
 	},
 	"repository": {
 		"type": "git",

@@ -1969,6 +1969,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_piece_mult_tail>_3"]:
             pass
 
+        else: self.parse_token(PREDICT_SET["<strict_piece_mult_tail>_3"])
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def strict_piece_add_tail(self):

@@ -1,4 +1,5 @@
 from app.lexer.lexer import Lexer
+from app.lexer.token import Token
 from app.parser.error_handler import ErrorHandler
 from app.parser.predict_set import PREDICT_SET
 from app.utils.FileHandler import run_file
@@ -13,6 +14,10 @@ class Parser():
         self.tokens = [t for t in tokens if t.type not in ("space", "tab", "newline", "comment_single", "comment_multi")] # filter out ws and comments
         if not self.tokens: 
             raise ErrorHandler("EOF", None, PREDICT_SET["<program>"])
+        
+        # Add EOF token at the end to prevent index out of range errors
+        last_token = self.tokens[-1]
+        self.tokens.append(Token("EOF", "EOF", last_token.line, last_token.col))
         
         self.pos = 0
     
@@ -48,8 +53,8 @@ class Parser():
         self.parse_token(")")
         self.platter()
         
-        # Ensure we've consumed all tokens
-        if self.pos < len(self.tokens):
+        # Ensure we've consumed all tokens (should be at EOF token now)
+        if self.pos < len(self.tokens) and self.tokens[self.pos].type != "EOF":
             raise ErrorHandler("ExpectedEOF_err", self.tokens[self.pos], None)
     
     def global_decl(self):
@@ -104,6 +109,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<piece_decl>"]:
             self.parse_token("of")
             self.piece_id()
+            self.parse_token(";")
         
             """ 10 <piece_decl>	=>	<decl_type>	"""
         elif self.tokens[self.pos].type in PREDICT_SET["<piece_decl>_1"]:
@@ -2139,6 +2145,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<sip_decl>"]:
             self.parse_token("of")
             self.sip_id()
+            self.parse_token(";")
             
             """ 288 <sip_decl>  =>  decl_type   """
         elif self.tokens[self.pos].type in PREDICT_SET["<sip_decl>_1"]:

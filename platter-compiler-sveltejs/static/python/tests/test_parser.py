@@ -1,5 +1,5 @@
 from app.lexer.lexer import Lexer
-from app.parser.parser import Parser
+from app.parser.parser_program import Parser
 from tests.syntax_tscripts import SYNTAX_TSCRIPTS
 
 class TestParser():

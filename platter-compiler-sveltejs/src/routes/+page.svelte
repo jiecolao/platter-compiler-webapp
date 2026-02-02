@@ -146,11 +146,9 @@ start() {
 			'/python/app/parser/ast_nodes.py',
 			'/python/app/parser/ast_reader.py',
 			'/python/app/parser/error_handler.py',
-			'/python/app/parser/first_set.py',
-			'/python/app/parser/follow_set.py',
 			'/python/app/parser/predict_set.py',
-			'/python/app/parser/predict_set_err.py',
-			'/python/app/parser/parser_program.py'
+			'/python/app/parser/parser_program.py',
+			'/python/app/utils/FileHandler.py'
 		];
 
 		// Fetch and write Python files to Pyodide's virtual filesystem

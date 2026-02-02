@@ -37,11 +37,11 @@ class Parser():
     def parse_program(self):
         """ 1 <program> -> <global_decl> <recipe_decl> start() <platter>"""
         # Parse global declarations
-        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<global_decl>"]:
+        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<_global_decl>"]:
             self.global_decl()
         
         # Parse recipe declarations (prepare functions)
-        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<recipe_decl>"]:
+        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<_recipe_decl>"]:
             self.recipe_decl()
 
         # Parse start() platter

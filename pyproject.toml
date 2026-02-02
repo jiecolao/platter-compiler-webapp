@@ -1,4 +1,4 @@
 [tool.taskipy.tasks]
-p = { cmd = "python -m app.parser.parser", cwd = "backend" }
-p_test = { cmd = "python -m tests.test_parser", cwd = "backend"}
+p = { cmd = "python -m app.parser.parser_program", cwd = "platter-compiler-sveltejs/static/python" }
+p_test = { cmd = "python -m tests.test_parser", cwd = "platter-compiler-sveltejs/static/python"}
 r = "Platter-Start.bat"

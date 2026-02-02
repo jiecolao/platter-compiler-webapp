@@ -86,7 +86,6 @@ class Parser():
 
             """ 6 <global_decl>	=>	<table_prototype>	<global_decl> """
         elif self.tokens[self.pos].type in PREDICT_SET["<global_decl>_4"]:
-            self.parse_token("table")
             self.table_prototype()
             self.global_decl()
 
@@ -2091,6 +2090,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<chars_decl>"]:
             self.parse_token("of")
             self.chars_id()
+            self.parse_token(";")
             
             """ 281 <chars_decl>    =>  <decl_type>"""
         elif self.tokens[self.pos].type in PREDICT_SET["<chars_decl>_1"]:

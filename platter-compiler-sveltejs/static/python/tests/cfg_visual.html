@@ -232,6 +232,10 @@
         const log = document.getElementById('logPanel');
         log.innerHTML = '';
         
+        // Save to localStorage
+        localStorage.setItem('cfg_input', document.getElementById('cfgInput').value);
+        localStorage.setItem('test_input', document.getElementById('testInput').value);
+        
         try {
             parseGrammar();
             buildLL1Table();
@@ -401,6 +405,31 @@
         return res;
     }
 
+    // Compute valid lookahead based on current stack context
+    function getValidLookahead(stack, fromIndex) {
+        // Look at what comes BEFORE the current position in the stack (stack is LIFO)
+        // So we examine stack[fromIndex-1], stack[fromIndex-2], etc.
+        const continuation = [];
+        for (let i = fromIndex - 1; i >= 0; i--) {
+            continuation.push(stack[i]);
+        }
+        
+        if (continuation.length === 0) {
+            return new Set(); // Nothing follows
+        }
+        
+        const firstOfContinuation = getFirstSeq(continuation);
+        const result = new Set();
+        
+        firstOfContinuation.forEach(t => {
+            if (t !== 'λ') {
+                result.add(t);
+            }
+        });
+        
+        return result;
+    }
+
     // --- 3. PARSE TRACE & TOKENIZER ---
     function runTrace(inputRaw) {
         const log = document.getElementById('logPanel');
@@ -418,6 +447,9 @@
         // Build parse tree
         parseTree = { symbol: startSymbol, children: [] };
         let treeStack = [parseTree];
+        
+        // Track expected terminals at current position
+        let expectedAtPosition = new Set();
 
         appendLog("STACK", "INPUT", "ACTION", false, false, true);
         appendInfo(`Grammar: ${nonTerminals.size} nonterminals, ${terminals.size} terminals`);
@@ -434,16 +466,24 @@
             const iView = tokens.slice(cursor).join(' ');
 
             if (top === '$') {
+              console.log(`Adding '$' to expected at position`);
+              expectedAtPosition.add('$');
               if (curr === '$') {
                 appendInfo(`Parsing completed successfully in ${steps} steps`);
                 appendLog(sView, "", "✓ ACCEPTED", true);
               } else {
-                appendLog(sView, iView, `Error: unexpected '${curr}', expected ['$']`, false, true);
+                const expectedArray = Array.from(expectedAtPosition).sort();
+                const expectedMsg = expectedArray.length > 0 
+                  ? `expected [${expectedArray.map(e => `'${e}'`).join(', ')}]`
+                  : 'expected end of input';
+                appendLog(sView, iView, `Error: unexpected '${curr}', ${expectedMsg}`, false, true);
               }
               break;
             }
 
             if (top === curr) {
+              console.log(`Adding terminal '${top}' to expected (matched)`);
+              expectedAtPosition.add(top);
               stack.pop();
               const treeNode = treeStack.pop();
               if (treeNode) {
@@ -452,47 +492,43 @@
               }
               cursor++;
               appendLog(sView, iView, `<span class="match-highlight">✓ Match terminal '${curr}'</span>`);
+              // Reset expected list after successful match
+              console.log(`Resetting expected after match`);
+              expectedAtPosition = new Set();
             }
             else if (nonTerminals.has(top)) {
+              // Compute valid lookahead based on current stack context
+              const contextLookahead = getValidLookahead(stack, stack.length - 1);
+              contextLookahead.forEach(terminal => {
+                console.log(`Adding terminal '${terminal}' from stack context`);
+                expectedAtPosition.add(terminal);
+              });
+              
+              // Also add terminals that can start productions for this non-terminal
+              console.warn("top", top)
+              console.warn("table", JSON.stringify(parseTable[top], null, 4))
+              if (parseTable[top]) {
+                Object.keys(parseTable[top]).forEach(terminal => {
+                  if (!parseTable[top][terminal]) return;
+                  const production = parseTable[top][terminal];
+                  // Only add if not epsilon-only
+                  const isEpsilon = production.length === 0 || 
+                                   (production.length === 1 && production[0] === 'λ');
+                  if (!isEpsilon) {
+                    console.log(`Adding terminal '${terminal}' from parse table for <${top}>`);
+                    expectedAtPosition.add(terminal);
+                  }
+                });
+              }
+              
               const rule = parseTable[top]?.[curr];
               if (!rule) {
-                // Compute expected tokens by looking at what can follow in the stack
-                const expected = new Set();
-                
-                // Look ahead in the stack to find valid next terminals
-                for (let i = stack.length - 2; i >= 0; i--) {
-                  const sym = stack[i];
-                  
-                  if (!nonTerminals.has(sym)) {
-                    // It's a terminal - this is a valid expected token
-                    expected.add(sym);
-                    break;
-                  } else {
-                    // It's a non-terminal - check its FIRST set
-                    const firstSet = firstSets[sym];
-                    let canBeNull = false;
-                    
-                    firstSet.forEach(t => {
-                      if (t === 'λ') {
-                        canBeNull = true;
-                      } else {
-                        expected.add(t);
-                      }
-                    });
-                    
-                    // If this non-terminal can't be null, stop here
-                    if (!canBeNull) {
-                      break;
-                    }
-                    // Otherwise continue to next symbol in stack
-                  }
-                }
-                
-                const expectedArray = Array.from(expected).filter(t => terminals.has(t) || t === '$');
+                const expectedArray = Array.from(expectedAtPosition).sort();
                 const expectedMsg = expectedArray.length > 0 
                   ? `expected [${expectedArray.map(e => `'${e}'`).join(', ')}]`
                   : 'no valid tokens in current context';
                 
+                console.log(`ERROR: No rule for ${top} with '${curr}'. Expected: ${expectedArray.join(', ')}`);
                 appendLog(sView, iView, `Error at ${top}: unexpected '${curr}', ${expectedMsg}`, false, true);
                 // Keep partial parse tree for visualization
                 break;
@@ -518,7 +554,16 @@
               appendLog(sView, iView, ruleStr);
             }
             else {
-              appendLog(sView, iView, `Error: unexpected '${curr}', expected ['${top}']`, false, true);
+              // Track the terminal that was expected
+              console.log(`Adding terminal '${top}' to expected (from stack)`);
+            //   expectedAtPosition.add(top);
+              
+              const expectedArray = Array.from(expectedAtPosition).sort();
+              const expectedMsg = expectedArray.length > 0 
+                ? `expected [${expectedArray.map(e => `'${e}'`).join(', ')}]`
+                : `expected ['${top}']`;
+              console.log(`ERROR: Terminal mismatch. Expected: ${expectedArray.join(', ')}, got '${curr}'`);
+              appendLog(sView, iView, `Error: unexpected '${curr}', ${expectedMsg}`, false, true);
               break;
             }
         }
@@ -712,7 +757,20 @@
     function resetZoom() { scale=1; px=0; py=0; st.style.transform=`translate(-50%, 0) scale(1)`; }
 
     // Init
-    window.onload = runParser;
+    window.onload = function() {
+        // Restore from localStorage
+        const savedCfg = localStorage.getItem('cfg_input');
+        const savedTest = localStorage.getItem('test_input');
+        
+        if (savedCfg) {
+            document.getElementById('cfgInput').value = savedCfg;
+        }
+        if (savedTest) {
+            document.getElementById('testInput').value = savedTest;
+        }
+        
+        runParser();
+    };
 
 </script>
 </body>

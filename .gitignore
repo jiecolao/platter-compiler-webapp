@@ -27,7 +27,7 @@ frontend/.svelte-kit/
 
 # IDE
 .vscode/settings.json
-launch.json
+# launch.json
 .idea/
 *.swp
 *.swo

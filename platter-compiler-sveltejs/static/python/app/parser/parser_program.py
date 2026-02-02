@@ -104,6 +104,7 @@ class Parser():
         if self.tokens[self.pos].type in PREDICT_SET["<piece_decl>"]:
             self.parse_token("of")
             self.piece_id()
+            self.parse_token(";")
         
             """ 10 <piece_decl>	=>	<decl_type>	"""
         elif self.tokens[self.pos].type in PREDICT_SET["<piece_decl>_1"]:

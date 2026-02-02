@@ -113,7 +113,7 @@ class Parser():
         
             """ 10 <piece_decl>	=>	<decl_type>	"""
         elif self.tokens[self.pos].type in PREDICT_SET["<piece_decl>_1"]:
-            self.decl_type
+            self.decl_type()
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1976,13 +1976,13 @@ class Parser():
         """ 266 <strict_piece_add_tail>	=>	+	<strict_piece_term>	<strict_piece_add_tail> """
         if self.tokens[self.pos].type in PREDICT_SET["<strict_piece_add_tail>"]:
             self.parse_token("+")
-            self.strict_piece_mult_tail()
+            self.strict_piece_term()
             self.strict_piece_add_tail()
             
             """ 267 <strict_piece_add_tail>	=>	-	<strict_piece_term>	<strict_piece_add_tail> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_piece_add_tail>_1"]:
             self.parse_token("-")
-            self.strict_piece_mult_tail()
+            self.strict_piece_term()
             self.strict_piece_add_tail()
             
             """ 268 <strict_piece_add_tail>	=>	λ """
@@ -2141,7 +2141,7 @@ class Parser():
     def sip_decl(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 287 <sip_decl>  =>  of  <sip_id> """
+        """ 287 <sip_decl>  =>  of  <sip_id> ; """
         if self.tokens[self.pos].type in PREDICT_SET["<sip_decl>"]:
             self.parse_token("of")
             self.sip_id()

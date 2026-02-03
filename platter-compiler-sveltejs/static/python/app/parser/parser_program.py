@@ -596,13 +596,13 @@ class Parser():
             self.strict_array_expr()
             self.parse_token(")")
             
-            """ 73 <ret_array>	=>	remove	(	<strict_array_expr>	,	<value>	) """
+            """ 73 <ret_array>	=>	remove	(	<strict_array_expr>	,	<strict_piece_expr>	) """
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_array>_3"]:
             self.parse_token("remove")
             self.parse_token("(")
             self.strict_array_expr()
             self.parse_token(",")
-            self.value()
+            self.strict_piece_expr()
             self.parse_token(")")
         else: self.parse_token(PREDICT_SET_M["<ret_array>"])
 
@@ -656,11 +656,11 @@ class Parser():
             self.strict_piece_expr()
             self.parse_token(")")
             
-            """ 80 <ret_chars>	=>	cut	(	<strict_piece_expr>	,	<strict_sip_expr>	) """
+            """ 80 <ret_chars>	=>	cut	(	<strict_sip_expr>	,	<strict_sip_expr>	) """
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_chars>_3"]:
             self.parse_token("cut")
             self.parse_token("(")
-            self.strict_piece_expr()
+            self.strict_sip_expr()
             self.parse_token(",")
             self.strict_sip_expr()
             self.parse_token(")")
@@ -3473,11 +3473,11 @@ class Parser():
             self.strict_piece_expr()
             self.parse_token(")")
             
-            """ 446 <built_in_rec>	=>	cut	(	<strict_piece_expr>	,	<strict_sip_expr>	) """
+            """ 446 <built_in_rec>	=>	cut	(	<strict_sip_expr>	,	<strict_sip_expr>	) """
         elif self.tokens[self.pos].type in PREDICT_SET["<built-in_rec>_3"]:
             self.parse_token("cut")
             self.parse_token("(")
-            self.strict_piece_expr()
+            self.strict_sip_expr()
             self.parse_token(",")
             self.strict_sip_expr()
             self.parse_token(")")
@@ -3513,13 +3513,13 @@ class Parser():
             self.parse_token("(")
             self.parse_token(")")
             
-            """ 451 <built_in_rec>	=>	remove	(	<strict_array_expr>	,	<value>	) """
+            """ 451 <built_in_rec>	=>	remove	(	<strict_array_expr>	,	<strict_piece_expr>	) """
         elif self.tokens[self.pos].type in PREDICT_SET["<built-in_rec>_8"]:
             self.parse_token("remove")
             self.parse_token("(")
             self.strict_array_expr()
             self.parse_token(",")
-            self.value()
+            self.strict_piece_expr()
             self.parse_token(")")
             
             """ 452 <built_in_rec>	=>	reverse	(	<strict_array_expr>	) """

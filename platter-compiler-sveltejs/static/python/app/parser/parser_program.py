@@ -3435,10 +3435,9 @@ class Parser():
     def built_in_rec_call(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 442 <built_in_rec_call>	=>	<built_in_rec>	<accessor_tail> """
+        """ 442 <built_in_rec_call>	=>	<built_in_rec> """
         if self.tokens[self.pos].type in PREDICT_SET["<built-in_rec_call>"]:
             self.built_in_rec()
-            self.accessor_tail()
         else: self.parse_token(PREDICT_SET_M["<built-in_rec_call>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J

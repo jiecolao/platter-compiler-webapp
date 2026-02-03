@@ -3104,7 +3104,7 @@ class Parser():
             
             """ 400 <strict_table_expr>	=>	<id> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_table_expr>_1"]:
-            self.parse_token("id")
+            self.id_()
 
         else: self.parse_token(PREDICT_SET_M["<strict_table_expr>"])
 
@@ -4361,7 +4361,7 @@ class Parser():
             self.parse_token("usual")
             self.parse_token(":")
             self.statements_menu()
-            
+                
             """ 548 <usual_clause>	=>	λ """
         elif self.tokens[self.pos].type in PREDICT_SET["<usual_clause>_1"]:
             pass

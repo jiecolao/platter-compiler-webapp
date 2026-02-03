@@ -3,12 +3,11 @@
 tsv_to_testscript.py
 
 TSV Format:
-Column A is where the number is, 
+Column A is where the number is,
 Column B is where the code is,
 Column C is the expected output,
 Column D is the actual output and
 Column E is the test result
-
 """
 
 from __future__ import annotations
@@ -24,20 +23,29 @@ from typing import Any, Dict, List, Optional
 # Config (edit these)
 # =========================
 
-# relative to path provided in npm script
-ROOT_DIR = r"."                     # Folder to traverse
+# ---- Bulletproof project-root anchoring (ignores `cd`) ----
+# This file is expected to live at:
+#   <project_root>/static/python/app/utils/tsv_to_testscript.py
+# So:
+#   parents[0] = .../app/utils
+#   parents[1] = .../app
+#   parents[2] = .../python
+#   parents[3] = .../static
+#   parents[4] = <project_root>
+PROJECT_ROOT = Path(__file__).resolve().parents[4]
+
+# Where to traverse for the TSV (set to the folder that contains testscripts.tsv)
+ROOT_DIR = PROJECT_ROOT / "static/python/app/utils/sources"
+
 TSV_FILENAME = "testscripts.tsv"    # TSV to search for
-OUTPUT_FILENAME = "testscript.py"   # Name of generated file
+OUTPUT_FILENAME = "syntax_tscripts.py"   # Name of generated file
 LIST_NAME = "SYNTAX_TSCRIPTS"
 
-OUTPUT_DIR = r"./app/parser"
-
-# Examples:
-# OUTPUT_DIR = r"./generated_tests"
-# OUTPUT_DIR = r"/absolute/path/to/output"
-# OUTPUT_DIR = None   -> generate beside TSV
+# Where to generate the output file (your parser package folder)
+OUTPUT_DIR = PROJECT_ROOT / "static/python/tests"
 
 TSV_DELIMITER = "\t"
+ENCODING = "utf-8-sig"              # safer for TSV exported from Excel
 
 
 # =========================
@@ -51,6 +59,7 @@ def parse_bool(value: str) -> bool:
 def format_code(raw: str) -> str:
     s = (raw or "").replace("\r\n", "\n").replace("\r", "\n")
 
+    # If it's a single line and indentation is encoded as long spaces, convert.
     if "\n" not in s:
         def repl(m: re.Match) -> str:
             spaces = len(m.group(0))
@@ -79,6 +88,7 @@ def row_to_testdict(row: List[str]) -> Optional[Dict[str, Any]]:
 
     num_str, code, expected, actual, result = row[:5]
 
+    # Skip header-like rows
     if (num_str or "").strip().lower() in {"number", "no", "#"}:
         return None
 
@@ -105,7 +115,7 @@ def write_testscript_py(
     if OUTPUT_DIR is None:
         out_dir = tsv_path.parent
     else:
-        out_dir = Path(OUTPUT_DIR).expanduser().resolve()
+        out_dir = Path(OUTPUT_DIR)  # OUTPUT_DIR may already be a Path
         out_dir.mkdir(parents=True, exist_ok=True)
 
     out_path = out_dir / OUTPUT_FILENAME
@@ -142,9 +152,10 @@ def find_tsv_files(root_dir: Path, tsv_filename: str) -> List[Path]:
 # Main
 # =========================
 def main() -> int:
-    root = Path(ROOT_DIR).expanduser().resolve()
+    root = Path(ROOT_DIR)
     if not root.exists():
         print(f"[ERROR] ROOT_DIR does not exist: {root}")
+        print(f"[DEBUG] PROJECT_ROOT resolved as: {PROJECT_ROOT}")
         return 2
 
     tsv_paths = find_tsv_files(root, TSV_FILENAME)
@@ -154,7 +165,7 @@ def main() -> int:
 
     for tsv_path in tsv_paths:
         tests: List[Dict[str, Any]] = []
-        with tsv_path.open("r", encoding="utf-8", newline="") as f:
+        with tsv_path.open("r", encoding=ENCODING, newline="") as f:
             reader = csv.reader(f, delimiter=TSV_DELIMITER)
             next(reader, None)  # skip header
 
@@ -164,7 +175,7 @@ def main() -> int:
                     tests.append(td)
 
         out_path = write_testscript_py(tsv_path, LIST_NAME, tests)
-        print(f"[OK] Wrote {len(tests)} tests -> {out_path}")
+        print(f"[OK] Read {tsv_path} -> wrote {len(tests)} tests -> {out_path}")
 
     return 0
 

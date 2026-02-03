@@ -13,7 +13,7 @@
 		"test": "cd platter-compiler-sveltejs/static/python && python -m unittest discover -s tests -p \"ga_*.py\" -v",
 		"test:frontend": "cd platter-compiler-sveltejs && npm run test",
 		"parser": "cd ./platter-compiler-sveltejs/static/python && python -m app.parser.parser_program", 
-		"p_test": "cd ./platter-compiler-sveltejs/static/python && python -m tests.test_parser",
+		"p_test": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.ScriptTransformer && python -m app.utils.TestScriptTester",
 		"t_predict": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.PredictSetTransformer",
 		"t_script": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.ScriptTransformer"
 	},

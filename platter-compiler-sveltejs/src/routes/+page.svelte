@@ -146,6 +146,7 @@ start() {
 			'/python/app/parser/ast_nodes.py',
 			'/python/app/parser/ast_reader.py',
 			'/python/app/parser/error_handler.py',
+			'/python/app/parser/predict_set_m.py',
 			'/python/app/parser/predict_set.py',
 			'/python/app/parser/parser_program.py',
 			'/python/app/utils/FileHandler.py'
@@ -546,7 +547,7 @@ tokens
 	<header class="titlebar">
 		<div class="brand">
 			<img class="logo" src={logo} alt="Platter logo" />
-			<span class="name">Platter IDE</span>
+			<a href="/python/tests/cfg_visual.html" target="_blank" class="name" title="View CFG Visualization">Platter IDE</a>
 		</div>
 		<div class="win-controls">
 			<span class="dot" title="minimize"></span>

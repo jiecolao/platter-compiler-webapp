@@ -36,3 +36,4 @@ frontend/.svelte-kit/
 # OS
 .DS_Store
 Thumbs.db
+platter-compiler-sveltejs/static/python/app/utils/parser.platter

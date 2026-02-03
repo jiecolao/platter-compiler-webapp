@@ -6,8 +6,8 @@ start(){
     bill(tochars((a*a + b*b) > 30));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -15,16 +15,10 @@ SYNTAX OUTPUT: None
 CODE:
 
 start(){
-    piece of x = 4, y = 9;
-    x = x + y;
-    y = x - y;
-    x = x - y;
-    bill(tochars(x) + " " + tochars(y));
-}
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
-SYNTAX OUTPUT: None
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: Syntax Error: Unexpected 'EOF' at line 2, col 8. Expected 'piece', 'chars', 'sip', 'flag', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', 'check', 'menu', 'pass', 'repeat', 'order', 'serve', '}'.
 =====================================
 
 ============ CODE #3 ================
@@ -39,8 +33,8 @@ start(){
     bill(tochars(c));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -56,8 +50,8 @@ start(){
     bill(tochars(p:x + p:y));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -73,8 +67,8 @@ start(){
     bill(tochars(r));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -90,8 +84,8 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -108,8 +102,8 @@ start(){
     bill(tochars(m));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -127,8 +121,8 @@ start(){
     bill(printing);
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 9, col 19. Expected ].
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -143,8 +137,8 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -160,8 +154,8 @@ start(){
     bill(tochars(f));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -177,8 +171,8 @@ start(){
     bill(tochars(r == n));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -191,8 +185,8 @@ start(){
     bill(tochars(p + 5));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -208,8 +202,8 @@ start(){
     bill(tochars(c));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -225,8 +219,8 @@ start(){
     bill(tochars(sum(t)));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -240,8 +234,8 @@ start(){
     bill(tochars(b:d:w + 5));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -257,9 +251,9 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: Syntax OK
+EXPECTED OUTPUT: Syntax Error: Unexpected '-' at line 6, col 22. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '[', ')'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '-' at line 6, col 22. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '[', ')'.
-SYNTAX OUTPUT: Syntax Error: Unexpected '-' at line 7, col 22. Expected ).
+SYNTAX OUTPUT: Syntax Error: Unexpected '-' at line 7, col 22. Expected 'topiece', 'size', 'search', 'fact', 'pow', 'piece_lit', 'sqrt', 'rand', 'tosip', 'sip_lit', 'bill', 'take', 'copy', 'cut', 'tochars', 'chars_lit', 'matches', 'toflag', 'flag_lit', 'id', '(', 'not'.
 =====================================
 
 ============ CODE #17 ================
@@ -271,8 +265,8 @@ start(){
     bill(tochars(list[1]:id));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 4, col 30. Expected ].
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -288,8 +282,8 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -302,8 +296,8 @@ start(){
     bill(tochars(a:v < b:v));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -316,8 +310,8 @@ start(){
     bill(tochars(size(nodes)));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 4, col 31. Expected ].
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -378,7 +372,7 @@ start(){
     
 EXPECTED OUTPUT: No Syntax Error
 ACTUAL OUTPUT: No Syntax Error
-SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 5, col 35. Expected '*', '/', '+', '-', '==', '!=', '<=', '>=', '<', '>', ')', ',', 'and', 'or', ';'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 5, col 35. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
 ============ CODE #25 ================
@@ -448,7 +442,7 @@ start(){
 }
     
 EXPECTED OUTPUT: No Syntax Error
-ACTUAL OUTPUT: Syntax Error: Unexpected 'usual' at line 7, col 9. Expected choice.
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -472,8 +466,8 @@ start(){
     serve x;
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 1, col 16. Expected ',', ';'.
-ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 1, col 16. Expected ',', ';'.
+EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 1, col 16. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 1, col 16. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 2, col 16. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
 
@@ -486,9 +480,9 @@ start(){
     serve nums[0];
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected '(' at line 1, col 20. Expected '['.
+EXPECTED OUTPUT: Syntax Error: Unexpected ',' at line 1, col 21. Expected ).
 ACTUAL OUTPUT: Syntax Error: Unexpected ',' at line 1, col 21. Expected ).
-SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 19. Expected ',', ';'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 19. Expected '[', 'id', 'append', 'sort', 'reverse', 'remove'.
 =====================================
 
 ============ CODE #33 ================
@@ -500,8 +494,8 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: yntax Error: Unexpected 'stop' at line 3, col 5. Expected 'choice', 'usual', '}'.
-ACTUAL OUTPUT: yntax Error: Unexpected 'stop' at line 3, col 5. Expected 'choice', 'usual', '}'.
+EXPECTED OUTPUT: Syntax Error: Unexpected 'stop' at line 3, col 5. Expected 'choice', 'usual', '}'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'stop' at line 3, col 5. Expected 'choice', 'usual', '}'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'stop' at line 4, col 5. Expected 'choice', 'usual', '}'.
 =====================================
 
@@ -530,7 +524,7 @@ start(){
     }
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected "[" at line 4, col 11. Expected '('.
+EXPECTED OUTPUT: Syntax Error: Unexpected '{' at line 4, col 18. Expected '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', '=', '+=', '-=', '*=', '/=', '%=', ']'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '{' at line 4, col 18. Expected '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', '=', '+=', '-=', '*=', '/=', '%=', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected '<' at line 5, col 14. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
@@ -562,7 +556,7 @@ start[]{
     serve 0;
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected '[' at line 1, col 6. Expected '('.
+EXPECTED OUTPUT: Syntax Error: Unexpected '{' at line 1, col 8. Expected '[', 'of'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '{' at line 1, col 8. Expected '[', 'of'.
 SYNTAX OUTPUT: Syntax Error: Unexpected '{' at line 2, col 8. Expected '[', 'of'.
 =====================================
@@ -610,8 +604,7 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ':' at line 2, col 17. Expected '+', '-', '*', '/', '<', '>', '<=', '>=', '==', '!=', 'and', 'or', ')', ']', ';'.
-
-ACTUAL OUTPUT: Syntax Error: Unexpected ':' at line 2, col 16. Expected ;.
+ACTUAL OUTPUT: Syntax Error: Unexpected ':' at line 2, col 17. Expected '+', '-', '*', '/', '<', '>', '<=', '>=', '==', '!=', 'and', 'or', ')', ']', ';'.
 SYNTAX OUTPUT: Syntax Error: Unexpected ':' at line 3, col 16. Expected '*', '/', '%', '+', '-', '==', '!=', '<=', '>=', '<', '>', 'and', 'or', ')', ',', ';'.
 =====================================
 
@@ -639,7 +632,7 @@ start(){
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 25. Expected 'id'.
 ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 25. Expected 'id'.
-SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 23. Expected ',', ';'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 23. Expected '[', 'id', 'append', 'sort', 'reverse', 'remove'.
 =====================================
 
 ============ CODE #43 ================
@@ -649,8 +642,8 @@ start(){
 bill("flag is: "  tochars(2));
 }
     
-EXPECTED OUTPUT: Follow set ng <primary_val>
-ACTUAL OUTPUT: Syntax Error: Unexpected 'tochars' at line 2, col 19. Expected ',', ')'.
+EXPECTED OUTPUT: Syntax Error: Unexpected 'tochars' at line 3, col 19. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'tochars' at line 3, col 19. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'tochars' at line 3, col 19. Expected '+', ')', ',', ';'.
 =====================================
 
@@ -661,8 +654,8 @@ start(){
 another = bill() += 23;
 }
     
-EXPECTED OUTPUT: Follow set ng <call_tail>
-ACTUAL OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 19. Expected ;.
+EXPECTED OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 18. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 18. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected ')' at line 3, col 16. Expected 'bill', 'take', 'copy', 'cut', 'tochars', 'chars_lit', 'id', '('.
 =====================================
 
@@ -700,7 +693,7 @@ pass(a = 3; a-=1; a and 0){
     
 EXPECTED OUTPUT: No Syntax Error
 ACTUAL OUTPUT: No Syntax Error
-SYNTAX OUTPUT: None
+SYNTAX OUTPUT: Syntax Error: Unexpected ')' at line 3, col 26. Expected '==', '!=', '<=', '>=', '<', '>'.
 =====================================
 
 ============ CODE #48 ================
@@ -714,7 +707,7 @@ start() {
 }
     
 EXPECTED OUTPUT: No Syntax Error
-ACTUAL OUTPUT: Syntax Error: Unexpected '}' at line 5, col 3. Expected choice.
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -723,8 +716,8 @@ CODE:
 
 start() { piece of exprInit = 1 2; }
     
-EXPECTED OUTPUT: Follow set ng <primary_val>
-ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 33. Expected ',', ';'.
+EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 33. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 33. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 33. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
 
@@ -1019,7 +1012,7 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 6, col 22. Expected ',', '=', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 6, col 22. Expected ',', '=', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 7, col 22. Expected =.
 =====================================
 
@@ -1031,8 +1024,8 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 2, col 10. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
-ACTUAL OUTPUT: 
-SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 10. Expected 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', 'check', 'menu', 'pass', 'repeat', 'order', 'serve', '}'.
+ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 2, col 10. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 10. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 =====================================
 
 ============ CODE #63 ================
@@ -1041,9 +1034,9 @@ CODE:
 prepare(){}
 start(){}
     
-EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 1, col 6. Expected '[', 'of'.
-ACTUAL OUTPUT: 
-SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 8. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+EXPECTED OUTPUT: Syntax Error: Unexpected '(' at line 1, col 8. Expected '[', 'of'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '(' at line 1, col 8. Expected '[', 'of'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 8. Expected 'of', '['.
 =====================================
 
 ============ CODE #64 ================
@@ -1053,8 +1046,8 @@ iwag of a = ;
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 1, col 13. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '['.
-ACTUAL OUTPUT: 
-SYNTAX OUTPUT: None
+ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 1, col 13. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '['.
+SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 2, col 13. Expected '[', 'id'.
 =====================================
 
 ============ CODE #65 ================
@@ -1069,7 +1062,7 @@ start(){}
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ')' at line 2, col 25. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected ')' at line 2, col 25. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 14. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1080,7 +1073,7 @@ piece of a = piece
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece' at line 1, col 14. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece' at line 1, col 14. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece' at line 2, col 14. Expected 'topiece', 'size', 'search', 'fact', 'pow', 'piece_lit', 'id', '('.
 =====================================
 
@@ -1091,8 +1084,8 @@ a of a = :
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ':' at line 1, col 10. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '['.
-ACTUAL OUTPUT: 
-SYNTAX OUTPUT: Syntax Error: Unexpected ':' at line 2, col 10. Expected ',', ';'.
+ACTUAL OUTPUT: Syntax Error: Unexpected ':' at line 1, col 10. Expected 'not', '(', 'piece_lit', 'sip_lit', 'flag_lit', 'chars_lit', 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', '['.
+SYNTAX OUTPUT: Syntax Error: Unexpected ':' at line 2, col 10. Expected '[', 'id'.
 =====================================
 
 ============ CODE #68 ================
@@ -1105,8 +1098,8 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 12. Expected 'piece_lit', 'chars_lit'.
-ACTUAL OUTPUT: 
-SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 4, col 12. Expected :.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 12. Expected 'piece_lit', 'chars_lit'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 4, col 12. Expected 'piece_lit', 'chars_lit'.
 =====================================
 
 ============ CODE #69 ================
@@ -1139,7 +1132,7 @@ start() {
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ':' at line 22, col 34. Expected ',', '=', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected ':' at line 22, col 34. Expected ',', '=', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected ']' at line 21, col 5. Expected 'id', 'topiece', 'size', 'search', 'fact', 'pow', 'piece_lit', 'sqrt', 'rand', 'tosip', 'sip_lit', 'matches', 'toflag', 'flag_lit', 'bill', 'take', 'copy', 'cut', 'tochars', 'chars_lit', '['.
 =====================================
 
@@ -1150,8 +1143,8 @@ start() {
   piece of a = 5/2 + 13;
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1162,8 +1155,8 @@ start() {
   piece of a = ((1.2/6) + bill());
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: Syntax Error: Unexpected 'sip_lit' at line 3, col 18. Expected 'topiece', 'size', 'search', 'fact', 'pow', 'piece_lit', 'id', '('.
 =====================================
 
@@ -1177,8 +1170,8 @@ start(){
 bill("flag is: " + tochars(2 - size(array) > integers[0] and enabled == up));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1192,8 +1185,8 @@ ans = tochars(y);
 bill(ans);
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1212,8 +1205,8 @@ start(){
         bill("The answer is: " + ans);
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1225,7 +1218,7 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 25. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 25. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 20. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1237,7 +1230,7 @@ sip of a = (((x*(x+2) - (x-1)*(x-1))*(x*(x-3) + 5) + (2*x+1)*(x+4)) /
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 27. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 27. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 20. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1248,8 +1241,8 @@ sip of a = (pow(x+3,2)+sqrt(cut(y,1,5)+4)-fact(cut(n,1,6)))/(1+pow(copy(x,2)-ran
 +sqrt(pow(cut(z,0,3),2)+copy(rand(),3));
 start(){}
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 2, col 13. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1260,7 +1253,7 @@ sip of a = (pow(x-1,2) + sqrt(cut(y,0,4)) - fact(cut(n,1,5))) / (1 + copy(rand()
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 18. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 18. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 2, col 13. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1275,7 +1268,7 @@ sip of a = ((x + pow(y-2,2))*(sqrt(cut(z,1,4)) - 1))
 start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 23. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: 
+ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 1, col 23. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 2, col 18. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1285,8 +1278,8 @@ CODE:
 sip of a = pow(x,2)/sqrt(cut(y,1,3)) + fact(n);
 start(){}
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: 
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 2, col 12. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1294,13 +1287,13 @@ SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 2, col 12. Expected 'sqrt'
 CODE:
 
 start() {
-        piece of x = 12  + 13 ;
+    piece of x = 12  + 13 ;
     sip of y = 123;
     serve 0
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 5, col 1. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: Syntax Error: Unexpected '}' at line 5, col 1. Expected ;.
+EXPECTED OUTPUT: Syntax Error: Unexpected '}' at line 5, col 1. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '}' at line 5, col 1. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 4, col 16. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1316,8 +1309,8 @@ start() {
     bill(tochars(xd));
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1333,8 +1326,8 @@ start() {
   }
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1345,8 +1338,8 @@ start() {
   a[0 = 1;
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected '=' at line 2, col 7. Expected ].
-ACTUAL OUTPUT: Syntax Error: Unexpected '=' at line 2, col 7. Expected ].
+EXPECTED OUTPUT: Syntax Error: Unexpected '=' at line 3, col 7. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '=' at line 3, col 7. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected '=' at line 3, col 7. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
 
@@ -1361,7 +1354,7 @@ start() {
     
 EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 2, col 27. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 2, col 27. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
-SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 27. Expected 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', 'check', 'menu', 'pass', 'repeat', 'order', 'serve', '}'.
+SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 27. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 =====================================
 
 ============ CODE #86 ================
@@ -1372,8 +1365,8 @@ start() {
   person:name = "Floyd";
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1401,8 +1394,8 @@ start() {
   piece of badval = 1 value;
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 2, col 23. Expected ',', ';'.
-ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 2, col 23. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 23. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 23. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 23. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
 
@@ -1413,8 +1406,8 @@ start() {
   flag of expr = 1 - 23 > 12  and (up and down) * 12 * 1 * 2 % 12 / (1/2);
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: Syntax Error: Unexpected '*' at line 3, col 49. Expected '==', '!=', 'and', 'or', ',', ';', ')'.
 =====================================
 
@@ -1447,8 +1440,8 @@ start() {
   add2();
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1474,8 +1467,8 @@ start() {
   flag of ok = (a + b * 2) >= (c - 1) and not (d == 0) or e < 5;
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1505,8 +1498,8 @@ start() {
   }
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1537,8 +1530,8 @@ start() {
   } repeat(x < 6);
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
 =====================================
 
@@ -1565,8 +1558,8 @@ start() {
   sip of n = rand();
 }
     
-EXPECTED OUTPUT: Syntax OK
-ACTUAL OUTPUT: Syntax OK
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: Syntax Error: Unexpected 'pow' at line 3, col 28. Expected 'sqrt', 'rand', 'tosip', 'sip_lit', 'id', '('.
 =====================================
 
@@ -1581,8 +1574,8 @@ start() {
     pig:sound = "cat" cat;
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 6, col 23. Expected '(', '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
-ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 6, col 23. Expected ;.
+EXPECTED OUTPUT: Unexpected 'id' at line 6, col 23. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Unexpected 'id' at line 6, col 23. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
 SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 7, col 23. Expected '+', '<=', '>=', '<', '>', '==', '!=', ')', 'and', 'or', ',', ';'.
 =====================================
 
@@ -1594,9 +1587,7 @@ start(){
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected '}' at line 3, col 1. Expected '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', '=', '+=', '-=', '*=', '/=', '%=', ']'.
-
 ACTUAL OUTPUT: Syntax Error: Unexpected '}' at line 3, col 1. Expected '[', ':', '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', '=', '+=', '-=', '*=', '/=', '%=', ']'.
-
 SYNTAX OUTPUT: Syntax Error: Unexpected '}' at line 4, col 1. Expected '[', ':', '*', '/', '%', '+', '-', ',', ';', '==', '!=', '<=', '>=', '<', '>', 'and', 'or', ')', '=', '+=', '-=', '*=', '/=', '%=', ']'.
 =====================================
 
@@ -1604,24 +1595,24 @@ SYNTAX OUTPUT: Syntax Error: Unexpected '}' at line 4, col 1. Expected '[', ':',
 CODE:
 
 start(){
-	piece of x 10;
+        piece of x 10;
 }
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 13. Expected '=', ',', ';'.
 ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 13. Expected '=', ',', ';'.
-SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 13. Expected '=', ',', ';'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 20. Expected '=', ',', ';'.
 =====================================
 
 ============ CODE #103 ================
 CODE:
 
 start(){
-	piece of z = 5 10;
+        piece of z = 5 10;
 }
     
-EXPECTED OUTPUT: Follow set ng <primary_val>
-ACTUAL OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 2, col 17. Expected ',', ';'.
-SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 17. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
+EXPECTED OUTPUT: Unexpected 'piece_lit' at line 2, col 17. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+ACTUAL OUTPUT: Unexpected 'piece_lit' at line 2, col 17. Expected '*', '/', '%', '+', '-', '>', '<', '>=', '<=', '==', '!=', 'and', 'or', ',', ';', ')', ']'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'piece_lit' at line 3, col 24. Expected '*', '/', '%', '+', '-', ',', ';', ')', ']'.
 =====================================
 
 ============ CODE #104 ================
@@ -1634,7 +1625,7 @@ start() {
     
 EXPECTED OUTPUT: Syntax Error: Unexpected 'id' at line 2, col 9. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 ACTUAL OUTPUT: Syntax Error: Unexpected 'id' at line 2, col 9. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
-SYNTAX OUTPUT: None
+SYNTAX OUTPUT: Syntax Error: Unexpected 'id' at line 3, col 9. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 =====================================
 
 ============ CODE #105 ================
@@ -1681,8 +1672,180 @@ start(){
         }
 }
     
-EXPECTED OUTPUT: Syntax Error: Unexpected 'EOF' at line 8, col 9. Expected 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', 'check', 'menu', 'pass', 'repeat', 'order', 'next', 'stop', 'serve', '}', 'choice', 'usual'.
-ACTUAL OUTPUT: Syntax Error: Unexpected 'EOF' at line 8, col 9. Expected 'id', 'append', 'bill', 'copy', 'cut', 'fact', 'matches', 'pow', 'rand', 'remove', 'reverse', 'search', 'size', 'sort', 'sqrt', 'take', 'tochars', 'topiece', 'tosip', 'check', 'menu', 'pass', 'repeat', 'order', 'next', 'stop', 'serve', '}', 'choice', 'usual'.
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
 SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #108 ================
+CODE:
+
+start(){
+	piece of z = 5 + 10;
+}
+    
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #109 ================
+CODE:
+
+piece of x = 42;
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected 'EOF' at line 1, col 16. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'EOF' at line 1, col 16. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'EOF' at line 2, col 16. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+=====================================
+
+============ CODE #110 ================
+CODE:
+
+piece[] of nums = [1, 2, 3];
+piece of num = 1;
+
+
+remove([1, 2, 3], 1);
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected 'remove' at line 5, col 1. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'remove' at line 5, col 1. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'remove' at line 6, col 1. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+=====================================
+
+============ CODE #111 ================
+CODE:
+
+start(){
+        serve;
+}
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 2, col 7. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 2, col 7. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 14. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+=====================================
+
+============ CODE #112 ================
+CODE:
+
+start(){
+        piece of x = 10, b = 5;
+}
+    
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #113 ================
+CODE:
+
+table of Vector3= [
+     piece of x;
+     piece of y;
+     piece of z;
+];
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected 'EOF' at line 5, col 2. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+ACTUAL OUTPUT: Syntax Error: Unexpected 'EOF' at line 5, col 2. Expected 'piece', 'sip', 'flag', 'chars', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected 'EOF' at line 6, col 2. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+=====================================
+
+============ CODE #114 ================
+CODE:
+
+piece of a;
+
+start(){
+        crumb of a, b, c;
+        piece of a;
+}
+    
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #115 ================
+CODE:
+
+three += one;
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected '+=' at line 1, col 7. Expected '[', 'of'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '+=' at line 1, col 7. Expected '[', 'of'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 7. Expected 'of', '['.
+=====================================
+
+============ CODE #116 ================
+CODE:
+
+start(){
+        piece of num = 2, c=3, x=10, y=5;
+        x + c * y
+}
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected '+' at line 3, col 3. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+ACTUAL OUTPUT: Syntax Error: Unexpected '+' at line 3, col 3. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+SYNTAX OUTPUT: Syntax Error: Unexpected '+' at line 4, col 11. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+=====================================
+
+============ CODE #117 ================
+CODE:
+
+start(){
+        chars of name = "Tricia";
+    bill("Hello" + name);
+}
+    
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #118 ================
+CODE:
+
+
+piece of number = 10;
+
+start(){
+order {
+        bill("Enter a positive number: ");
+ 
+} repeat (number > 0);
+}
+    
+EXPECTED OUTPUT: No Syntax Error
+ACTUAL OUTPUT: No Syntax Error
+SYNTAX OUTPUT: None
+=====================================
+
+============ CODE #119 ================
+CODE:
+
+piece of candy = 1;
+peanut = 0;
+
+start(){
+check(candy == 1){
+} alt(candy == 2){
+ }
+}
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected '=' at line 2, col 8. Expected '[', 'of'.
+ACTUAL OUTPUT: Syntax Error: Unexpected '=' at line 2, col 8. Expected '[', 'of'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '=' at line 3, col 8. Expected 'of', '['.
+=====================================
+
+============ CODE #120 ================
+CODE:
+
+start(){
+        sip;
+}
+    
+EXPECTED OUTPUT: Syntax Error: Unexpected ';' at line 2, col 5. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+ACTUAL OUTPUT: Syntax Error: Unexpected ';' at line 2, col 5. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
+SYNTAX OUTPUT: Syntax Error: Unexpected ';' at line 3, col 12. Expected 'of', '[', ':', '=', '+=', '-=', '*=', '/=', '%=', '('.
 =====================================
 

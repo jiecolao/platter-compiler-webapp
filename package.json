@@ -14,7 +14,8 @@
 		"test:frontend": "cd platter-compiler-sveltejs && npm run test",
 		"parser": "cd ./platter-compiler-sveltejs/static/python && python -m app.parser.parser_program", 
 		"p_test": "cd ./platter-compiler-sveltejs/static/python && python -m tests.test_parser",
-		"g_predict": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.PredictSetGenerator"
+		"t_predict": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.PredictSetTransformer",
+		"t_script": "cd ./platter-compiler-sveltejs/static/python && python -m app.utils.ScriptTransformer"
 	},
 	"repository": {
 		"type": "git",

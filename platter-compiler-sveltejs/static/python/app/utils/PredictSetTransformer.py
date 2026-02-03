@@ -29,10 +29,13 @@ from typing import Dict, List, Tuple, Optional
 # CONFIG (edit these)
 # =========================
 
+# relative to path provided in npm script
 SEARCH_ROOT = r"."              # Folder to traverse for the TSV (recursive)
 TSV_NAME = "predict_set.tsv"    # TSV filename to find
 MERGE_NONTERMINALS = False       # True => merge duplicates, False => suffix _1, _2, ...
 OUTPUT_PY_NAME = "predict_set_test.py"
+OUTPUT_PY_PATH = r"./app/parser"
+# Optional explicit file path or directory for output
 
 HAS_HEADER = False              # Set True if your TSV has a header row
 ENCODING = "utf-8-sig"          # utf-8-sig handles Excel BOM nicely
@@ -255,7 +258,21 @@ def format_py_dict(d: "OrderedDict[str, List[str]]") -> str:
 
 
 def write_predict_set_py(tsv_path: Path, predict_set: "OrderedDict[str, List[str]]") -> Path:
-    out_path = tsv_path.parent / OUTPUT_PY_NAME
+    if OUTPUT_PY_PATH:
+        out_dir = Path(OUTPUT_PY_PATH).expanduser()
+
+        # If relative, resolve from current working directory (CWD), not from tsv_path.parent
+        if not out_dir.is_absolute():
+            out_dir = (Path.cwd() / out_dir).resolve()
+
+        # Ensure the directory exists
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        out_path = out_dir / OUTPUT_PY_NAME
+    else:
+        # Default: same folder as the TSV
+        out_path = tsv_path.parent / OUTPUT_PY_NAME
+
     out_path.write_text(format_py_dict(predict_set), encoding="utf-8")
     return out_path
 

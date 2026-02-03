@@ -279,6 +279,8 @@ class Parser():
             self.parse_token("not")
             self.must_be_flag()
 
+        else: self.parse_token(PREDICT_SET_M["<any_expr>"])
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def piece_mult_tail(self):
@@ -606,6 +608,8 @@ class Parser():
             """ 76 <strict_array_expr>	=>	<ret_array> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_array_expr>_2"]:
             self.ret_array()
+        
+        else: self.parse_token(PREDICT_SET_M["<strict_array_expr>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1179,6 +1183,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<sip_factor>_2"]:
             self.parse_token("(")
             self.sip_inner_dispatch()
+
+        else: self.parse_token(PREDICT_SET_M["<sip_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3046,6 +3052,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_table_expr>_1"]:
             self.parse_token("id")
 
+        else: self.parse_token(PREDICT_SET_M["<strict_table_expr>"])
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def table_declare_tail(self):
@@ -3211,6 +3219,8 @@ class Parser():
             self.tail1()
             self.parse_token(";")
             self.statements()
+        
+        else: self.parse_token(PREDICT_SET_M["<local_id_tail>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3643,6 +3653,8 @@ class Parser():
             """ 473 <choice_val>	=>	chars_lit """
         elif self.tokens[self.pos].type in PREDICT_SET["<choice_val>_1"]:
             self.parse_token("chars_lit")
+        
+        else: self.parse_token(PREDICT_SET_M["<choice_val>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 

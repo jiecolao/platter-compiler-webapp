@@ -146,6 +146,7 @@ start() {
 			'/python/app/parser/ast_nodes.py',
 			'/python/app/parser/ast_reader.py',
 			'/python/app/parser/error_handler.py',
+			'/python/app/parser/predict_set_m.py',
 			'/python/app/parser/predict_set.py',
 			'/python/app/parser/parser_program.py',
 			'/python/app/utils/FileHandler.py'

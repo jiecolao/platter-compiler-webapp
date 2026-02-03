@@ -860,8 +860,13 @@ tokens
 </div>
 
 <style>
+	:global(html) {
+		height: 100%;
+	}
+
 	:global(body) {
 		margin: 0;
+		min-height: 100%;
 	}
 
 	.ide {
@@ -873,12 +878,13 @@ tokens
 		--outline: #ffffff;
 		--panel: rgba(255, 255, 255, 0.03);
 		--shadow: 0 0 0 2px var(--outline) inset;
-		min-height: 100dvh;
+		min-height: 100vh;
+		min-width: 100vw;
 		/* Use Svelte-provided CSS var for image */
 		background-image: var(--bg-img);
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
+		background-size: auto;
+		background-position: top left;
+		background-repeat: repeat;
 		background-color: #26262a; /* fallback color */
 		color: var(--ink);
 		font-family: 'Inter', Roboto, sans-serif;
@@ -893,6 +899,7 @@ tokens
 		--accent: #111;
 		--outline: #111;
 		background-image: var(--bg-img);
+		background-color: #e8e8ed; /* fallback color for light theme */
 	}
 
 	.titlebar {
@@ -903,6 +910,8 @@ tokens
 		color: #fff;
 		padding: 8px 12px;
 		user-select: none;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.title {
@@ -940,8 +949,7 @@ tokens
 	.grid {
 		display: grid;
 		width: 100%;
-		/* Let the right column grow to take available space */
-		grid-template-columns: 1fr minmax(420px, 1fr);
+		grid-template-columns: minmax(60%, 1130px) minmax(420px, 1fr);
 		gap: 16px;
 		padding: 16px;
 	}
@@ -1001,7 +1009,8 @@ tokens
 	.left {
 		display: flex;
 		flex-direction: column;
-		width: 1130px;
+		max-width: 1130px;
+		width: 100%;
 	}
 	.panel {
 		/* background: var(--panel); */
@@ -1198,7 +1207,16 @@ tokens
 		padding: 12px;
 	}
 
-	@media (max-width: 1130px) {
+	@media (max-width: 1500px) {
+		.left {
+			zoom: 0.75;
+		}
+	}
+
+	@media (max-width: 1280px) {
+		.left {
+			zoom: 1;
+		}
 		.grid {
 			grid-template-columns: 1fr;
 		}

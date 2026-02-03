@@ -115,6 +115,8 @@ class Parser():
             """ 10 <piece_decl>	=>	<decl_type>	"""
         elif self.tokens[self.pos].type in PREDICT_SET["<piece_decl>_1"]:
             self.decl_type()
+            
+        else: self.parse_token(PREDICT_SET_M["<piece_decl>"]) 
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -183,6 +185,7 @@ class Parser():
             self.parse_token("(")
             self.strict_piece_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<strict_piece_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -231,6 +234,8 @@ class Parser():
             """ 24 <ret_piece>	=>	piece_lit """
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_piece>_5"]:
             self.parse_token("piece_lit")
+
+        else: self.parse_token(PREDICT_SET_M["<ret_piece>"]) 
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -327,6 +332,8 @@ class Parser():
             self.parse_token("(")
             self.piece_inner_dispatch()
 
+        else: self.parse_token(PREDICT_SET_M["<piece_factor>"]) 
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def id_(self):
@@ -398,6 +405,7 @@ class Parser():
             """ 47 <value>	=>	<ret_array> """
         elif self.tokens[self.pos].type in PREDICT_SET["<value>_2"]:
             self.ret_array()
+        else: self.parse_token(PREDICT_SET_M["<value>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -449,6 +457,8 @@ class Parser():
             self.notation_val()
             self.parse_token("]")
             self.element_value_tail()
+
+        else: self.parse_token(PREDICT_SET_M["<array_element>"]) 
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -509,6 +519,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_sip>_3"]:
             self.parse_token("sip_lit")
 
+        else: self.parse_token(PREDICT_SET_M["<ret_sip>"]) 
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def ret_flag(self):
@@ -534,6 +546,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_flag>_2"]:
             self.parse_token("flag_lit")
 
+        else: self.parse_token(PREDICT_SET_M["<ret_flag>"]) 
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def strict_datas_expr(self):
@@ -552,6 +566,7 @@ class Parser():
             """ 69 <strict_datas_expr>	=>	<ret_array> """
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_datas_expr>_2"]:
             self.ret_array()
+        else: self.parse_token(PREDICT_SET_M["<strict_datas_expr>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -589,6 +604,7 @@ class Parser():
             self.parse_token(",")
             self.value()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<ret_array>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -660,6 +676,8 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<ret_chars>_5"]:
             self.parse_token("chars_lit")
 
+        else: self.parse_token(PREDICT_SET_M["<ret_chars>"]) 
+
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def strict_chars_expr(self):
@@ -689,6 +707,7 @@ class Parser():
             self.parse_token("(")
             self.strict_chars_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<strict_chars_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -746,6 +765,7 @@ class Parser():
             self.parse_token("(")
             self.strict_sip_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<strict_sip_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -914,6 +934,7 @@ class Parser():
             self.parse_token("(")
             self.piece_inner_dispatch()
             self.piece_close_recurse()
+        else: self.parse_token(PREDICT_SET_M["<piece_inner_dispatch>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1102,6 +1123,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<must_be_flag>_6"]:
             self.parse_token("not")
             self.must_be_flag()
+        else: self.parse_token(PREDICT_SET_M["<must_be_flag>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1143,6 +1165,7 @@ class Parser():
             self.parse_token(">")
             self.piece_expr()
             self.flag_logic_tail()
+        else: self.parse_token(PREDICT_SET_M["<piece_trap_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1210,6 +1233,8 @@ class Parser():
             self.parse_token("(")
             self.sip_inner_dispatch()
             self.sip_close_recurse()
+
+        else: self.parse_token(PREDICT_SET_M["<sip_inner_dispatch>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1304,6 +1329,7 @@ class Parser():
             self.parse_token(">")
             self.sip_expr()
             self.flag_logic_tail()
+        else: self.parse_token(PREDICT_SET_M["<sip_trap_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1350,6 +1376,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<chars_factor>_2"]:
             self.parse_token("(")
             self.chars_inner_dispatch()
+        else: self.parse_token(PREDICT_SET_M["<chars_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1373,6 +1400,7 @@ class Parser():
             self.parse_token("(")
             self.chars_inner_dispatch()
             self.chars_close_recurse()
+        else: self.parse_token(PREDICT_SET_M["<chars_inner_dispatch>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1434,6 +1462,7 @@ class Parser():
             self.parse_token(">")
             self.chars_expr()
             self.flag_logic_tail()
+        else: self.parse_token(PREDICT_SET_M["<chars_trap_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1504,6 +1533,7 @@ class Parser():
             self.parse_token("(")
             self.any_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<univ_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1655,6 +1685,7 @@ class Parser():
             self.parse_token("not")
             self.must_be_flag()
             self.flag_closure()
+        else: self.parse_token(PREDICT_SET_M["<paren_dispatch>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1709,6 +1740,7 @@ class Parser():
             self.piece_expr()
             self.flag_logic_tail()
             self.flag_closure()
+        else: self.parse_token(PREDICT_SET_M["<piece_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1778,6 +1810,7 @@ class Parser():
             self.sip_expr()
             self.flag_logic_tail()
             self.flag_closure()
+        else: self.parse_token(PREDICT_SET_M["<sip_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1877,6 +1910,7 @@ class Parser():
             self.chars_expr()
             self.flag_logic_tail()
             self.flag_closure()
+        else: self.parse_token(PREDICT_SET_M["<chars_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -1978,6 +2012,7 @@ class Parser():
             self.univ_expr()
             self.flag_logic_tail()
             self.flag_closure()
+        else: self.parse_token(PREDICT_SET_M["<univ_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2166,6 +2201,7 @@ class Parser():
             """ 281 <chars_decl>    =>  <decl_type>"""
         elif self.tokens[self.pos].type in PREDICT_SET["<chars_decl>_1"]:
             self.decl_type()
+        else: self.parse_token(PREDICT_SET_M["<chars_decl>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2226,6 +2262,7 @@ class Parser():
             """ 288 <sip_decl>  =>  decl_type   """
         elif self.tokens[self.pos].type in PREDICT_SET["<sip_decl>_1"]:
             self.decl_type()
+        else: self.parse_token(PREDICT_SET_M["<sip_decl>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2237,6 +2274,7 @@ class Parser():
             self.parse_token("id")
             self.sip_ingredient_init()
             self.sip_id_tail()
+        else: self.parse_token(PREDICT_SET_M["<sip_id>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2284,6 +2322,7 @@ class Parser():
             """ 295 <flag_decl> =>  <decl_type> """
         elif self.tokens[self.pos].type in PREDICT_SET["<flag_decl>_1"]:
             self.decl_type()
+        else: self.parse_token(PREDICT_SET_M["<flag_decl>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
         
@@ -2390,6 +2429,8 @@ class Parser():
             self.ret_chars()
             self.chars_add_tail()
             self.strict_chars_gate()
+
+        else: self.parse_token(PREDICT_SET_M["<strict_flag_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2503,6 +2544,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_forced_gate>_5"]:
             self.parse_token(">")
             self.univ_expr()
+        else: self.parse_token(PREDICT_SET_M["<strict_forced_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2552,6 +2594,7 @@ class Parser():
             self.parse_token("(")
             self.any_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<comparable_factor>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2653,6 +2696,7 @@ class Parser():
             self.parse_token("(")
             self.strict_flag_paren_entry()
             self.strict_paren_univ_bridge()
+        else: self.parse_token(PREDICT_SET_M["<strict_flag_paren_entry>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2671,6 +2715,7 @@ class Parser():
             self.strict_piece_gate()
             self.flag_logic_tail()
             self.strict_paren_flag_bridge()
+        else: self.parse_token(PREDICT_SET_M["<strict_paren_piece_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2706,6 +2751,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_piece_gate>_5"]:
             self.parse_token(">")
             self.piece_expr()
+        else: self.parse_token(PREDICT_SET_M["<strict_piece_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2715,6 +2761,7 @@ class Parser():
         """ 356 <strict_paren_flag_bridge>	=>	) """
         if self.tokens[self.pos].type in PREDICT_SET["<strict_paren_flag_bridge>"]:
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<strict_paren_flag_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2733,6 +2780,7 @@ class Parser():
             self.strict_sip_gate()
             self.flag_logic_tail()
             self.strict_paren_flag_bridge()
+        else: self.parse_token(PREDICT_SET_M["<strict_paren_sip_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2768,6 +2816,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_sip_gate>_5"]:
             self.parse_token(">")
             self.sip_expr()
+        else: self.parse_token(PREDICT_SET_M["<strict_sip_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2785,6 +2834,7 @@ class Parser():
             self.strict_chars_gate()
             self.flag_logic_tail()
             self.strict_paren_flag_bridge()
+        else: self.parse_token(PREDICT_SET_M["<strict_paren_chars_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2820,6 +2870,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<strict_chars_gate>_5"]:
             self.parse_token("!=")
             self.chars_expr()
+        else: self.parse_token(PREDICT_SET_M["<strict_chars_gate>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2838,6 +2889,7 @@ class Parser():
             self.strict_forced_gate()
             self.flag_logic_tail()
             self.strict_paren_flag_bridge()
+        else: self.parse_token(PREDICT_SET_M["<strict_paren_univ_bridge>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -2978,6 +3030,7 @@ class Parser():
         elif self.tokens[self.pos].type in PREDICT_SET["<primitive_types_dims>_4"]:
             self.parse_token("id")
             self.dimensions_tail()
+        else: self.parse_token(PREDICT_SET_M["<primitive_types_dims>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3008,6 +3061,7 @@ class Parser():
             """ 395 <table_decl>	=>	<decl_type> """
         elif self.tokens[self.pos].type in PREDICT_SET["<table_decl>_1"]:
             self.decl_type()
+        else: self.parse_token(PREDICT_SET_M["<table_decl>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3245,6 +3299,7 @@ class Parser():
             self.value()
             self.parse_token(";")
             self.statements()
+        else: self.parse_token(PREDICT_SET_M["<]_tail>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3274,6 +3329,7 @@ class Parser():
             """ 429 <assignment_op>	=>	%= """
         elif self.tokens[self.pos].type in PREDICT_SET["<assignment_op>_5"]:
             self.parse_token("%=")
+        else: self.parse_token(PREDICT_SET_M["<assignment_op>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3336,6 +3392,7 @@ class Parser():
             """ 438 <id_statements_ext>	=>	<assignment_st> """
         elif self.tokens[self.pos].type in PREDICT_SET["<id_statements_ext>_1"]:
             self.assignment_st()
+        else: self.parse_token(PREDICT_SET_M["<id_statements_ext>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3528,6 +3585,7 @@ class Parser():
             self.parse_token("(")
             self.any_expr()
             self.parse_token(")")
+        else: self.parse_token(PREDICT_SET_M["<built-in_rec>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3541,6 +3599,7 @@ class Parser():
             """ 462 <conditional_st>	=>	<cond_menu> """
         elif self.tokens[self.pos].type in PREDICT_SET["<conditional_st>_1"]:
             self.cond_menu()
+        else: self.parse_token(PREDICT_SET_M["<conditional_st>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3722,6 +3781,7 @@ class Parser():
             """ 483 <conditional_st_menu>	=>	<cond_menu> """
         elif self.tokens[self.pos].type in PREDICT_SET["<conditional_st_menu>_1"]:
             self.cond_menu()
+        else: self.parse_token(PREDICT_SET_M["<conditional_st_menu>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3829,6 +3889,7 @@ class Parser():
             self.tail1()
             self.parse_token(";")
             self.statements_menu()
+        else: self.parse_token(PREDICT_SET_M["<local_id_tail_menu>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3853,6 +3914,7 @@ class Parser():
             self.value()
             self.parse_token(";")
             self.statements_menu()
+        else: self.parse_token(PREDICT_SET_M["<]_tail_menu>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -3870,13 +3932,14 @@ class Parser():
             """ 501 <looping_st>	=>	<loop_order> """
         elif self.tokens[self.pos].type in PREDICT_SET["<looping_st>_2"]:
             self.loop_order()
+        else: self.parse_token(PREDICT_SET_M["<looping_st>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def loop_pass(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 502 <loop_pass>	=>	pass	(	<initialization>	<update>	<strict_flag_expr>	)	<endb_loop_platter> """
+        """ 502 <loop_pass>	=>	pass	(	<initialization>	<update>	<strict_flag_expr>	)	<loop_platter> """
         if self.tokens[self.pos].type in PREDICT_SET["<loop_pass>"]:
             self.parse_token("pass")
             self.parse_token("(")
@@ -3884,7 +3947,7 @@ class Parser():
             self.update()
             self.strict_flag_expr()
             self.parse_token(")")
-            self.endb_loop_platter()
+            self.loop_platter()
         else: self.parse_token(PREDICT_SET_M["<loop_pass>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
@@ -3913,10 +3976,10 @@ class Parser():
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
-    def endb_loop_platter(self):
+    def loop_platter(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 505 <endb_loop_platter>	=>	{	<local_decl_loop>	<statements_loop>	} """
+        """ 505 <loop_platter>	=>	{	<local_decl_loop>	<statements_loop>	} """
         if self.tokens[self.pos].type in PREDICT_SET["<loop_platter>"]:
             self.parse_token("{")
             self.local_decl_loop()
@@ -4001,6 +4064,7 @@ class Parser():
             self.tail1()
             self.parse_token(";")
             self.statements_loop()
+        else: self.parse_token(PREDICT_SET_M["<local_id_tail_loop>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -4025,6 +4089,7 @@ class Parser():
             self.value()
             self.parse_token(";")
             self.statements_loop()
+        else: self.parse_token(PREDICT_SET_M["<]_tail_loop>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -4087,19 +4152,20 @@ class Parser():
             """ 527 <conditional_st_loop>	=>	<cond_menu_loop> """
         elif self.tokens[self.pos].type in PREDICT_SET["<conditional_st_loop>_1"]:
             self.cond_menu_loop()
+        else: self.parse_token(PREDICT_SET_M["<conditional_st_loop>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
     def cond_check_loop(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 528 <cond_check_loop>	=>	check	(	<strict_flag_expr>	)	<endb_loop_platter>	<alt_clause_loop>	<instead_clause_loop> """
+        """ 528 <cond_check_loop>	=>	check	(	<strict_flag_expr>	)	<loop_platter>	<alt_clause_loop>	<instead_clause_loop> """
         if self.tokens[self.pos].type in PREDICT_SET["<cond_check_loop>"]:
             self.parse_token("check")
             self.parse_token("(")
             self.strict_flag_expr()
             self.parse_token(")")
-            self.endb_loop_platter()
+            self.loop_platter()
             self.alt_clause_loop()
             self.instead_clause_loop()
         else: self.parse_token(PREDICT_SET_M["<cond_check_loop>"])
@@ -4109,13 +4175,13 @@ class Parser():
     def alt_clause_loop(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 529 <alt_clause_loop>	=>	alt	(	<strict_flag_expr>	)	<endb_loop_platter>	<alt_clause_loop> """
+        """ 529 <alt_clause_loop>	=>	alt	(	<strict_flag_expr>	)	<loop_platter>	<alt_clause_loop> """
         if self.tokens[self.pos].type in PREDICT_SET["<alt_clause_loop>"]:
             self.parse_token("alt")
             self.parse_token("(")
             self.strict_flag_expr()
             self.parse_token(")")
-            self.endb_loop_platter()
+            self.loop_platter()
             self.alt_clause_loop()
             
             """ 530 <alt_clause_loop>	=>	λ """
@@ -4129,10 +4195,10 @@ class Parser():
     def instead_clause_loop(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 531 <instead_clause_loop>	=>	instead	<endb_loop_platter> """
+        """ 531 <instead_clause_loop>	=>	instead	<loop_platter> """
         if self.tokens[self.pos].type in PREDICT_SET["<instead_clause_loop>"]:
             self.parse_token("instead")
-            self.endb_loop_platter()
+            self.loop_platter()
             
             """ 532 <instead_clause_loop>	=>	λ """
         elif self.tokens[self.pos].type in PREDICT_SET["<instead_clause_loop>_1"]:
@@ -4219,6 +4285,7 @@ class Parser():
             """ 541 <jump_st>	=>	<jump_serve> """
         elif self.tokens[self.pos].type in PREDICT_SET["<jump_st>_2"]:
             self.jump_serve()
+        else: self.parse_token(PREDICT_SET_M["<jump_st>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 
@@ -4259,13 +4326,13 @@ class Parser():
     def loop_repeat(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 545 <loop_repeat>	=>	repeat	(	<strict_flag_expr>	)	<endb_loop_platter> """
+        """ 545 <loop_repeat>	=>	repeat	(	<strict_flag_expr>	)	<loop_platter> """
         if self.tokens[self.pos].type in PREDICT_SET["<loop_repeat>"]:
             self.parse_token("repeat")
             self.parse_token("(")
             self.strict_flag_expr()
             self.parse_token(")")
-            self.endb_loop_platter()
+            self.loop_platter()
         else: self.parse_token(PREDICT_SET_M["<loop_repeat>"])
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
@@ -4273,10 +4340,10 @@ class Parser():
     def loop_order(self):
         log.info("Enter: " + self.tokens[self.pos].type) # J
 
-        """ 546 <loop_order>	=>	order	<endb_loop_platter>	repeat	(	<strict_flag_expr>	)	; """
+        """ 546 <loop_order>	=>	order	<loop_platter>	repeat	(	<strict_flag_expr>	)	; """
         if self.tokens[self.pos].type in PREDICT_SET["<loop_order>"]:
             self.parse_token("order")
-            self.endb_loop_platter()
+            self.loop_platter()
             self.parse_token("repeat")
             self.parse_token("(")
             self.strict_flag_expr()

@@ -693,7 +693,7 @@ pass(a = 3; a-=1; a and 0){
     
 EXPECTED OUTPUT: No Syntax Error
 ACTUAL OUTPUT: No Syntax Error
-SYNTAX OUTPUT: None
+SYNTAX OUTPUT: Syntax Error: Unexpected ')' at line 3, col 26. Expected '==', '!=', '<=', '>=', '<', '>'.
 =====================================
 
 ============ CODE #48 ================
@@ -1036,7 +1036,7 @@ start(){}
     
 EXPECTED OUTPUT: Syntax Error: Unexpected '(' at line 1, col 8. Expected '[', 'of'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '(' at line 1, col 8. Expected '[', 'of'.
-SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 8. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '(' at line 2, col 8. Expected 'of', '['.
 =====================================
 
 ============ CODE #64 ================
@@ -1773,7 +1773,7 @@ three += one;
     
 EXPECTED OUTPUT: Syntax Error: Unexpected '+=' at line 1, col 7. Expected '[', 'of'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '+=' at line 1, col 7. Expected '[', 'of'.
-SYNTAX OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 7. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '+=' at line 2, col 7. Expected 'of', '['.
 =====================================
 
 ============ CODE #116 ================
@@ -1834,7 +1834,7 @@ check(candy == 1){
     
 EXPECTED OUTPUT: Syntax Error: Unexpected '=' at line 2, col 8. Expected '[', 'of'.
 ACTUAL OUTPUT: Syntax Error: Unexpected '=' at line 2, col 8. Expected '[', 'of'.
-SYNTAX OUTPUT: Syntax Error: Unexpected '=' at line 3, col 8. Expected 'piece', 'chars', 'sip', 'flag', 'table', 'id', 'prepare', 'start'.
+SYNTAX OUTPUT: Syntax Error: Unexpected '=' at line 3, col 8. Expected 'of', '['.
 =====================================
 
 ============ CODE #120 ================

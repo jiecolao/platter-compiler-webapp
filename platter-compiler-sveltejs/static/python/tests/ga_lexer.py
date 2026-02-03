@@ -370,7 +370,7 @@ class TestPlatterLexerStrings(unittest.TestCase):
             "expected_types": [
                 "id",
                 "/",
-                "id",
+                "flag_lit",
                 ",",
                 "id",
                 ",",

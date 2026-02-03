@@ -44,7 +44,7 @@ class LexerBase:
         self.curly_dlm = self.whitespace + ['{']
         self.dtype_dlm = self.whitespace + ['[']
         self.equal_dlm = self.whitespace + self.alphanumeric + ['(', '[', '-', '_', '"']
-        self.flag_dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '!', '"']
+        self.flag_dlm = self.whitespace + ['(', ')', '[', ']', ';', '=', '!', '"', ","]
         self.id_delim = self.whitespace + ['(', ')', '[', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':', '#']
         self.num_delim = self.whitespace + ['(', ')', ']', ';', '=', '+', '-', '*', '/', '%', '!', '<', '>', ',', ':']
         self.op1_dlm = self.whitespace + self.alphanumeric + ['(', '-', '_', '"']

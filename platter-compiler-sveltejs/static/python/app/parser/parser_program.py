@@ -38,11 +38,11 @@ class Parser():
     def parse_program(self):
         """ 1 <program> -> <global_decl> <recipe_decl> start() <platter>"""
         # Parse global declarations
-        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<_global_decl>"]:
+        while self.pos < len(self.tokens) and self.tokens[self.pos].type in ['piece', 'chars', 'sip', 'flag', 'table', 'id']:
             self.global_decl()
         
         # Parse recipe declarations (prepare functions)
-        while self.pos < len(self.tokens) and self.tokens[self.pos].type in PREDICT_SET["<_recipe_decl>"]:
+        while self.pos < len(self.tokens) and self.tokens[self.pos].type in ['prepare']:
             self.recipe_decl()
 
         # Parse start() platter
@@ -3957,10 +3957,26 @@ class Parser():
         """ 503 <initialization>	=>	id	=	<strict_piece_expr>	; """
         if self.tokens[self.pos].type in PREDICT_SET["<initialization>"]:
             self.parse_token("id")
-            self.parse_token("=")
-            self.strict_piece_expr()
+            self.loop_init()
             self.parse_token(";")
         else: self.parse_token(PREDICT_SET_M["<initialization>"])
+
+        log.info("Exit: " + self.tokens[self.pos].type) # J
+
+    def loop_init(self):
+        log.info("Enter: " + self.tokens[self.pos].type) # J
+
+        """ 505 <loop_init> =>  =   <strict_piece_expr>  """
+        if self.tokens[self.pos].type in PREDICT_SET["<loop_init>"]:
+            self.parse_token("=")
+            self.strict_piece_expr()
+
+            """ 506 <loop_init> =>  =   λ  """
+        elif self.tokens[self.pos].type in PREDICT_SET["<loop_init>_1"]:
+            pass 
+        
+        else: self.parse_token(PREDICT_SET_M["<loop_init>"])
+
 
         log.info("Exit: " + self.tokens[self.pos].type) # J
 

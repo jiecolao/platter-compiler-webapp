@@ -1,558 +1,558 @@
-1	First(<global_decl> <recipe_decl> start ( ) <platter>) =	First(<global_decl>) =	{ piece, chars, sip, flag, id, table, prepare, start }
-2	First(piece <piece_decl> <global_decl>) =		{ piece }
-3	First(chars <chars_decl> <global_decl>) =		{ chars }
-4	First(sip <sip_decl> <global_decl>) =		{ sip }
-5	First(flag <flag_decl> <global_decl>) =		{ flag }
-6	First(<table_prototype> <global_decl>) =	First(<table_prototype>) =	{ table }
-7	First(id <table_decl> <global_decl>) =		{ id }
-8	First(λ - λ) ∪ Follow(<global_decl>) =	Follow(<global_decl>) =	{ prepare, start }
-9	First(of <piece_id> ;) =		{ of }
-10	First(<decl_type>) =	First(<decl_type>) =	{ [ }
-11	First(id <piece_ingredient_init> <piece_id_tail>) =		{ id }
-12	First(= <strict_piece_expr>) =		{ = }
-13	First(λ - λ) ∪ Follow(<piece_ingredient_init>) =	Follow(<piece_ingredient_init>) =	{ ,, ; }
-14	First(<strict_piece_term> <strict_piece_add_tail>) =	First(<strict_piece_term>) =	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
-15	First(<strict_piece_factor> <strict_piece_mult_tail>) =	First(<strict_piece_factor>) =	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
-16	First(<ret_piece>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-17	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-18	First(( <strict_piece_expr> )) =		{ ( }
-19	First(topiece ( <any_expr> )) =		{ topiece }
-20	First(size ( <strict_array_expr> )) =		{ size }
-21	First(search ( <strict_array_expr> , <value> )) =		{ search }
-22	First(fact ( <strict_piece_expr> )) =		{ fact }
-23	First(pow ( <strict_piece_expr> , <strict_piece_expr> )) =		{ pow }
-24	First(piece_lit) =		{ piece_lit }
-25	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <piece_rel_gate>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-26	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <sip_rel_gate>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-27	First(<ret_chars> <chars_add_tail> <chars_rel_gate>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-28	First(<ret_flag> <flag_logic_tail>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-29	First(<id> <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-30	First(( <paren_dispatch>) =		{ ( }
-31	First(not <must_be_flag>) =		{ not }
-32	First(* <piece_factor> <piece_mult_tail>) =		{ * }
-33	First(/ <piece_factor> <piece_mult_tail>) =		{ / }
-34	First(% <piece_factor> <piece_mult_tail>) =		{ % }
-35	First(λ - λ) ∪ Follow(<piece_mult_tail>) =	Follow(<piece_mult_tail>) =	{ +, -, ==, !=, <=, >=, <, >, ), ,, ;, and, or }
-36	First(<ret_piece>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-37	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-38	First(( <piece_inner_dispatch>) =		{ ( }
-39	First(id <id_tail>) =		{ id }
-40	First(<ret_array> <array_accessor>) =	First(<ret_array>) =	{ append, sort, reverse, remove }
-41	First(<call_tailopt> <accessor_tail> - λ) ∪ Follow(<id_tail>) =	Follow(<id_tail>) =	{ (, [, :, *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), ] }
-42	First(( <flavor> )) =		{ ( }
-43	First(λ - λ) ∪ Follow(<call_tailopt>) =	Follow(<call_tailopt>) =	{ [, :, *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), ] }
-44	First(<value> <flavor_tail>) =	First(<value>) =	{ topiece, size, search, fact, pow, piece_lit, (, not, [, id, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, append, sort, reverse, remove }
-45	First(λ - λ) ∪ Follow(<flavor>) =	Follow(<flavor>) =	{ ) }
-46	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <piece_rel_gate>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-47	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <sip_rel_gate>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-48	First(<ret_chars> <chars_add_tail> <chars_rel_gate>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-49	First(<ret_flag> <flag_logic_tail>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-50	First(( <paren_dispatch>) =		{ ( }
-51	First(not <must_be_flag>) =		{ not }
-52	First([ <notation_val> ]) =		{ [ }
-53	First(<ret_array> <value_tail>) =	First(<ret_array>) =	{ append, sort, reverse, remove }
-54	First(id <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =		{ id }
-55	First(+ <piece_term> <piece_add_tail>) =		{ + }
-56	First(- <piece_term> <piece_add_tail>) =		{ - }
-57	First(λ - λ) ∪ Follow(<piece_add_tail>) =	Follow(<piece_add_tail>) =	{ ==, !=, <=, >=, <, >, ), ,, and, or, ; }
-58	First(<piece_factor> <piece_mult_tail>) =	First(<piece_factor>) =	{ topiece, size, search, fact, pow, piece_lit, (, id, append, sort, reverse, remove }
-59	First(== <piece_expr> <flag_logic_tail>) =		{ == }
-60	First(!= <piece_expr> <flag_logic_tail>) =		{ != }
-61	First(<= <piece_expr> <flag_logic_tail>) =		{ <= }
-62	First(>= <piece_expr> <flag_logic_tail>) =		{ >= }
-63	First(< <piece_expr> <flag_logic_tail>) =		{ < }
-64	First(> <piece_expr> <flag_logic_tail>) =		{ > }
-65	First(λ - λ) ∪ Follow(<piece_rel_gate>) =	Follow(<piece_rel_gate>) =	{ ), ,, ; }
-66	First(<piece_term> <piece_add_tail>) =	First(<piece_term>) =	{ topiece, size, search, fact, pow, piece_lit, (, id, append, sort, reverse, remove }
-67	First(and <must_be_flag>) =		{ and }
-68	First(or <must_be_flag>) =		{ or }
-69	First(== <must_be_flag>) =		{ == }
-70	First(!= <must_be_flag>) =		{ != }
-71	First(λ - λ) ∪ Follow(<flag_logic_tail>) =	Follow(<flag_logic_tail>) =	{ ), ,, ; }
-72	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <piece_trap_gate>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-73	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <sip_trap_gate>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-74	First(<ret_chars> <chars_add_tail> <chars_trap_gate>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-75	First(<ret_flag> <flag_logic_tail>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-76	First(<id> <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-77	First(( <paren_dispatch> <flag_after_paren>) =		{ ( }
-78	First(not <must_be_flag>) =		{ not }
-79	First(== <piece_expr> <flag_logic_tail>) =		{ == }
-80	First(!= <piece_expr> <flag_logic_tail>) =		{ != }
-81	First(<= <piece_expr> <flag_logic_tail>) =		{ <= }
-82	First(>= <piece_expr> <flag_logic_tail>) =		{ >= }
-83	First(< <piece_expr> <flag_logic_tail>) =		{ < }
-84	First(> <piece_expr> <flag_logic_tail>) =		{ > }
-85	First(sqrt ( <strict_piece_expr> )) =		{ sqrt }
-86	First(rand ( )) =		{ rand }
-87	First(tosip ( <any_expr> )) =		{ tosip }
-88	First(sip_lit) =		{ sip_lit }
-89	First(* <sip_factor> <sip_mult_tail>) =		{ * }
-90	First(/ <sip_factor> <sip_mult_tail>) =		{ / }
-91	First(λ - λ) ∪ Follow(<sip_mult_tail>) =	Follow(<sip_mult_tail>) =	{ +, -, ==, !=, <=, >=, <, >, ), ,, ;, and, or }
-92	First(<ret_sip>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-93	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-94	First(( <sip_inner_dispatch>) =		{ ( }
-95	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <sip_bridge_recurse>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-96	First(<id> <sip_mult_tail> <sip_add_tail> <sip_bridge_recurse>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-97	First(( <sip_inner_dispatch> <sip_close_recurse>) =		{ ( }
-98	First(+ <sip_term> <sip_add_tail>) =		{ + }
-99	First(- <sip_term> <sip_add_tail>) =		{ - }
-100	First(λ - λ) ∪ Follow(<sip_add_tail>) =	Follow(<sip_add_tail>) =	{ ==, !=, <=, >=, <, >, ), ,, and, or, ; }
-101	First(<sip_factor> <sip_mult_tail>) =	First(<sip_factor>) =	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
-102	First()) =		{ ) }
-103	First()) =		{ ) }
-104	First(== <sip_expr> <flag_logic_tail>) =		{ == }
-105	First(!= <sip_expr> <flag_logic_tail>) =		{ != }
-106	First(<= <sip_expr> <flag_logic_tail>) =		{ <= }
-107	First(>= <sip_expr> <flag_logic_tail>) =		{ >= }
-108	First(< <sip_expr> <flag_logic_tail>) =		{ < }
-109	First(> <sip_expr> <flag_logic_tail>) =		{ > }
-110	First(<sip_term> <sip_add_tail>) =	First(<sip_term>) =	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
-111	First(bill ( <strict_chars_expr> )) =		{ bill }
-112	First(take ( )) =		{ take }
-113	First(copy ( <strict_chars_expr> , <strict_piece_expr> , <strict_piece_expr> )) =		{ copy }
-114	First(cut ( <strict_sip_expr> , <strict_sip_expr> )) =		{ cut }
-115	First(tochars ( <any_expr> )) =		{ tochars }
-116	First(chars_lit) =		{ chars_lit }
-117	First(<strict_chars_factor> <strict_chars_add_tail>) =	First(<strict_chars_factor>) =	{ bill, take, copy, cut, tochars, chars_lit, id, (, append, sort, reverse, remove }
-118	First(<ret_chars>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-119	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-120	First(( <strict_chars_expr> )) =		{ ( }
-121	First(+ <strict_chars_factor> <strict_chars_add_tail>) =		{ + }
-122	First(λ - λ) ∪ Follow(<strict_chars_add_tail>) =	Follow(<strict_chars_add_tail>) =	{ ), ,, ; }
-123	First(<strict_sip_term> <strict_sip_add_tail>) =	First(<strict_sip_term>) =	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
-124	First(<strict_sip_factor> <strict_sip_mult_tail>) =	First(<strict_sip_factor>) =	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
-125	First(<ret_sip>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-126	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-127	First(( <strict_sip_expr> )) =		{ ( }
-128	First(* <strict_sip_factor> <strict_sip_mult_tail>) =		{ * }
-129	First(/ <strict_sip_factor> <strict_sip_mult_tail>) =		{ / }
-130	First(λ - λ) ∪ Follow(<strict_sip_mult_tail>) =	Follow(<strict_sip_mult_tail>) =	{ +, -, ,, ), ; }
-131	First(+ <strict_sip_term> <strict_sip_add_tail>) =		{ + }
-132	First(- <strict_sip_term> <strict_sip_add_tail>) =		{ - }
-133	First(λ - λ) ∪ Follow(<strict_sip_add_tail>) =	Follow(<strict_sip_add_tail>) =	{ ,, ), ; }
-134	First(+ <chars_factor> <chars_add_tail>) =		{ + }
-135	First(λ - λ) ∪ Follow(<chars_add_tail>) =	Follow(<chars_add_tail>) =	{ <=, >=, <, >, ==, !=, ), ,, and, or, ; }
-136	First(<ret_chars>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-137	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-138	First(( <chars_inner_dispatch>) =		{ ( }
-139	First(<ret_chars> <chars_add_tail> <chars_bridge_recurse>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-140	First(<id> <chars_add_tail> <chars_bridge_recurse>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-141	First(( <chars_inner_dispatch> <chars_close_recurse>) =		{ ( }
-142	First()) =		{ ) }
-143	First()) =		{ ) }
-144	First(== <chars_expr> <flag_logic_tail>) =		{ == }
-145	First(!= <chars_expr> <flag_logic_tail>) =		{ != }
-146	First(<= <chars_expr> <flag_logic_tail>) =		{ <= }
-147	First(>= <chars_expr> <flag_logic_tail>) =		{ >= }
-148	First(< <chars_expr> <flag_logic_tail>) =		{ < }
-149	First(> <chars_expr> <flag_logic_tail>) =		{ > }
-150	First(<chars_factor> <chars_add_tail>) =	First(<chars_factor>) =	{ bill, take, copy, cut, tochars, chars_lit, id, (, append, sort, reverse, remove }
-151	First(matches ( <strict_datas_expr> , <strict_datas_expr> )) =		{ matches }
-152	First(toflag ( <any_expr> )) =		{ toflag }
-153	First(flag_lit) =		{ flag_lit }
-154	First([ <notation_val> ]) =		{ [ }
-155	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-156	First(<array_element>) =	First(<array_element>) =	{ piece_lit, sip_lit, flag_lit, chars_lit, [ }
-157	First(id <array_or_table>) =		{ id }
-158	First(λ - λ) ∪ Follow(<notation_val>) =	Follow(<notation_val>) =	{ ] }
-159	First(piece_lit <element_value_tail>) =		{ piece_lit }
-160	First(sip_lit <element_value_tail>) =		{ sip_lit }
-161	First(flag_lit <element_value_tail>) =		{ flag_lit }
-162	First(chars_lit <element_value_tail>) =		{ chars_lit }
-163	First([ <notation_val> ] <element_value_tail>) =		{ [ }
-164	First(, <array_element_id>) =		{ , }
-165	First(λ - λ) ∪ Follow(<element_value_tail>) =	Follow(<element_value_tail>) =	{ ] }
-166	First(id <element_value_tail>) =		{ id }
-167	First(<array_element>) =	First(<array_element>) =	{ piece_lit, sip_lit, flag_lit, chars_lit, [ }
-168	First(λ - λ) ∪ Follow(<array_element_id>) =	Follow(<array_element_id>) =	{ ] }
-169	First(, <array_element_id>) =		{ , }
-170	First(= <value> ; <field_assignments>) =		{ = }
-171	First(λ - λ) ∪ Follow(<array_or_table>) =	Follow(<array_or_table>) =	{ ] }
-172	First(id = <value> ; <field_assignments>) =		{ id }
-173	First(λ - λ) ∪ Follow(<field_assignments>) =	Follow(<field_assignments>) =	{ ] }
-174	First(* <univ_factor> <univ_mult_tail>) =		{ * }
-175	First(/ <univ_factor> <univ_mult_tail>) =		{ / }
-176	First(% <univ_factor> <univ_mult_tail>) =		{ % }
-177	First(λ - λ) ∪ Follow(<univ_mult_tail>) =	Follow(<univ_mult_tail>) =	{ +, -, ==, !=, <=, >=, <, >, and, or, ), ,, ; }
-178	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-179	First(<ret_piece>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-180	First(<ret_sip>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-181	First(<ret_chars>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-182	First(<ret_flag>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-183	First(( <any_expr> )) =		{ ( }
-184	First(+ <univ_term> <univ_add_tail>) =		{ + }
-185	First(- <univ_term> <univ_add_tail>) =		{ - }
-186	First(λ - λ) ∪ Follow(<univ_add_tail>) =	Follow(<univ_add_tail>) =	{ ==, !=, <=, >=, <, >, and, or, ), ,, ; }
-187	First(<univ_factor> <univ_mult_tail>) =	First(<univ_factor>) =	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, (, append, sort, reverse, remove }
-188	First(== <univ_expr> <flag_logic_tail>) =		{ == }
-189	First(!= <univ_expr> <flag_logic_tail>) =		{ != }
-190	First(<= <univ_expr> <flag_logic_tail>) =		{ <= }
-191	First(>= <univ_expr> <flag_logic_tail>) =		{ >= }
-192	First(< <univ_expr> <flag_logic_tail>) =		{ < }
-193	First(> <univ_expr> <flag_logic_tail>) =		{ > }
-194	First(and <must_be_flag>) =		{ and }
-195	First(or <must_be_flag>) =		{ or }
-196	First(λ - λ) ∪ Follow(<univ_rel_gate>) =	Follow(<univ_rel_gate>) =	{ ), ,, ; }
-197	First(<univ_term> <univ_add_tail>) =	First(<univ_term>) =	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, (, append, sort, reverse, remove }
-198	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <piece_bridge>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-199	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <sip_bridge>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-200	First(<ret_chars> <chars_add_tail> <chars_bridge>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-201	First(<ret_flag> <flag_logic_tail> <flag_closure>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-202	First(<id> <univ_mult_tail> <univ_add_tail> <univ_bridge>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-203	First(( <paren_dispatch> <univ_closure>) =		{ ( }
-204	First(not <must_be_flag> <flag_closure>) =		{ not }
-205	First() <piece_mult_tail> <piece_add_tail> <piece_rel_gate>) =		{ ) }
-206	First(== <piece_expr> <flag_logic_tail> <flag_closure>) =		{ == }
-207	First(!= <piece_expr> <flag_logic_tail> <flag_closure>) =		{ != }
-208	First(<= <piece_expr> <flag_logic_tail> <flag_closure>) =		{ <= }
-209	First(>= <piece_expr> <flag_logic_tail> <flag_closure>) =		{ >= }
-210	First(< <piece_expr> <flag_logic_tail> <flag_closure>) =		{ < }
-211	First(> <piece_expr> <flag_logic_tail> <flag_closure>) =		{ > }
-212	First() <flag_logic_tail>) =		{ ) }
-213	First() <sip_mult_tail> <sip_add_tail> <sip_rel_gate>) =		{ ) }
-214	First(== <sip_expr> <flag_logic_tail> <flag_closure>) =		{ == }
-215	First(!= <sip_expr> <flag_logic_tail> <flag_closure>) =		{ != }
-216	First(<= <sip_expr> <flag_logic_tail> <flag_closure>) =		{ <= }
-217	First(>= <sip_expr> <flag_logic_tail> <flag_closure>) =		{ >= }
-218	First(< <sip_expr> <flag_logic_tail> <flag_closure>) =		{ < }
-219	First(> <sip_expr> <flag_logic_tail> <flag_closure>) =		{ > }
-220	First(== <sip_expr> <flag_logic_tail>) =		{ == }
-221	First(!= <sip_expr> <flag_logic_tail>) =		{ != }
-222	First(<= <sip_expr> <flag_logic_tail>) =		{ <= }
-223	First(>= <sip_expr> <flag_logic_tail>) =		{ >= }
-224	First(< <sip_expr> <flag_logic_tail>) =		{ < }
-225	First(> <sip_expr> <flag_logic_tail>) =		{ > }
-226	First(λ - λ) ∪ Follow(<sip_rel_gate>) =	Follow(<sip_rel_gate>) =	{ ), ,, ; }
-227	First() <chars_add_tail> <chars_rel_gate>) =		{ ) }
-228	First(== <chars_expr> <flag_logic_tail> <flag_closure>) =		{ == }
-229	First(<= <chars_expr> <flag_logic_tail> <flag_closure>) =		{ <= }
-230	First(>= <chars_expr> <flag_logic_tail> <flag_closure>) =		{ >= }
-231	First(< <chars_expr> <flag_logic_tail> <flag_closure>) =		{ < }
-232	First(> <chars_expr> <flag_logic_tail> <flag_closure>) =		{ > }
-233	First(!= <chars_expr> <flag_logic_tail> <flag_closure>) =		{ != }
-234	First(<= <chars_expr> <flag_logic_tail>) =		{ <= }
-235	First(>= <chars_expr> <flag_logic_tail>) =		{ >= }
-236	First(< <chars_expr> <flag_logic_tail>) =		{ < }
-237	First(> <chars_expr> <flag_logic_tail>) =		{ > }
-238	First(== <chars_expr> <flag_logic_tail>) =		{ == }
-239	First(!= <chars_expr> <flag_logic_tail>) =		{ != }
-240	First(λ - λ) ∪ Follow(<chars_rel_gate>) =	Follow(<chars_rel_gate>) =	{ ), ,, ; }
-241	First() <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =		{ ) }
-242	First(== <univ_expr> <flag_logic_tail> <flag_closure>) =		{ == }
-243	First(!= <univ_expr> <flag_logic_tail> <flag_closure>) =		{ != }
-244	First(<= <univ_expr> <flag_logic_tail> <flag_closure>) =		{ <= }
-245	First(>= <univ_expr> <flag_logic_tail> <flag_closure>) =		{ >= }
-246	First(< <univ_expr> <flag_logic_tail> <flag_closure>) =		{ < }
-247	First(> <univ_expr> <flag_logic_tail> <flag_closure>) =		{ > }
-248	First() <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =		{ ) }
-249	First(λ - λ) ∪ Follow(<flag_after_paren>) =	Follow(<flag_after_paren>) =	{ ), ,, ; }
-250	First(append ( <strict_array_expr> , <value> )) =		{ append }
-251	First(sort ( <strict_array_expr> )) =		{ sort }
-252	First(reverse ( <strict_array_expr> )) =		{ reverse }
-253	First(remove ( <strict_array_expr> , <strict_piece_expr> )) =		{ remove }
-254	First([ <array_element_id> ]) =		{ [ }
-255	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-256	First(<array_accessor> <univ_mult_tail> <univ_add_tail> <univ_rel_gate>) =	First(<array_accessor>) =	{ [ }
-257	First(λ - λ) ∪ Follow(<value_tail>) =	Follow(<value_tail>) =	{ ), ,, ; }
-258	First([ <strict_piece_expr> ] <accessor_tail>) =		{ [ }
-259	First(<array_accessor>) =	First(<array_accessor>) =	{ [ }
-260	First(<table_accessor>) =	First(<table_accessor>) =	{ : }
-261	First(λ - λ) ∪ Follow(<accessor_tail>) =	Follow(<accessor_tail>) =	{ *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), =, +=, -=, *=, /=, %=, ] }
-262	First(: id <accessor_tail>) =		{ : }
-263	First(, <value> <flavor_tail>) =		{ , }
-264	First(λ - λ) ∪ Follow(<flavor_tail>) =	Follow(<flavor_tail>) =	{ ) }
-265	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <piece_bridge_recurse>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-266	First(<id> <piece_mult_tail> <piece_add_tail> <piece_bridge_recurse>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-267	First(( <piece_inner_dispatch> <piece_close_recurse>) =		{ ( }
-268	First()) =		{ ) }
-269	First()) =		{ ) }
-270	First(* <strict_piece_factor> <strict_piece_mult_tail>) =		{ * }
-271	First(/ <strict_piece_factor> <strict_piece_mult_tail>) =		{ / }
-272	First(% <strict_piece_factor> <strict_piece_mult_tail>) =		{ % }
-273	First(λ - λ) ∪ Follow(<strict_piece_mult_tail>) =	Follow(<strict_piece_mult_tail>) =	{ +, -, ,, ;, ), ] }
-274	First(+ <strict_piece_term> <strict_piece_add_tail>) =		{ + }
-275	First(- <strict_piece_term> <strict_piece_add_tail>) =		{ - }
-276	First(λ - λ) ∪ Follow(<strict_piece_add_tail>) =	Follow(<strict_piece_add_tail>) =	{ ,, ;, ), ] }
-277	First(, id <piece_ingredient_init> <piece_id_tail>) =		{ , }
-278	First(λ - λ) ∪ Follow(<piece_id_tail>) =	Follow(<piece_id_tail>) =	{ ; }
-279	First(<dimensions> of <array_declare> ;) =	First(<dimensions>) =	{ [ }
-280	First([ ] <dimensions_tail>) =		{ [ }
-281	First(<dimensions>) =	First(<dimensions>) =	{ [ }
-282	First(λ - λ) ∪ Follow(<dimensions_tail>) =	Follow(<dimensions_tail>) =	{ of }
-283	First(id <array_init> <array_declare_tail>) =		{ id }
-284	First(= <strict_array_expr>) =		{ = }
-285	First(λ - λ) ∪ Follow(<array_init>) =	Follow(<array_init>) =	{ ,, ; }
-286	First(, <array_declare>) =		{ , }
-287	First(λ - λ) ∪ Follow(<array_declare_tail>) =	Follow(<array_declare_tail>) =	{ ; }
-288	First(of <chars_id> ;) =		{ of }
-289	First(<decl_type>) =	First(<decl_type>) =	{ [ }
-290	First(id <chars_ingredient_init> <chars_id_tail>) =		{ id }
-291	First(= <strict_chars_expr>) =		{ = }
-292	First(λ - λ) ∪ Follow(<chars_ingredient_init>) =	Follow(<chars_ingredient_init>) =	{ ,, ; }
-293	First(, id <chars_ingredient_init> <chars_id_tail>) =		{ , }
-294	First(λ - λ) ∪ Follow(<chars_id_tail>) =	Follow(<chars_id_tail>) =	{ ; }
-295	First(of <sip_id> ;) =		{ of }
-296	First(<decl_type>) =	First(<decl_type>) =	{ [ }
-297	First(id <sip_ingredient_init> <sip_id_tail>) =		{ id }
-298	First(= <strict_sip_expr>) =		{ = }
-299	First(λ - λ) ∪ Follow(<sip_ingredient_init>) =	Follow(<sip_ingredient_init>) =	{ ,, ; }
-300	First(, id <sip_ingredient_init> <sip_id_tail>) =		{ , }
-301	First(λ - λ) ∪ Follow(<sip_id_tail>) =	Follow(<sip_id_tail>) =	{ ; }
-302	First(of <flag_id> ;) =		{ of }
-303	First(<decl_type>) =	First(<decl_type>) =	{ [ }
-304	First(id <flag_ingredient_init> <flag_id_tail>) =		{ id }
-305	First(= <strict_flag_expr>) =		{ = }
-306	First(λ - λ) ∪ Follow(<flag_ingredient_init>) =	Follow(<flag_ingredient_init>) =	{ ,, ; }
-307	First(<strict_flag_term> <strict_flag_or_tail>) =	First(<strict_flag_term>) =	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
-308	First(<strict_flag_equality> <strict_flag_and_tail>) =	First(<strict_flag_equality>) =	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
-309	First(<strict_flag_factor> <strict_flag_eq_tail>) =	First(<strict_flag_factor>) =	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
-310	First(<ret_flag>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-311	First(not <strict_flag_factor>) =		{ not }
-312	First(<id> <strict_id_master_tail>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-313	First(( <strict_flag_paren_entry>) =		{ ( }
-314	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <strict_piece_gate>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-315	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <strict_sip_gate>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-316	First(<ret_chars> <chars_add_tail> <strict_chars_gate>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-317	First(* <univ_factor> <univ_mult_tail> <univ_add_tail> <strict_forced_gate>) =		{ * }
-318	First(/ <univ_factor> <univ_mult_tail> <univ_add_tail> <strict_forced_gate>) =		{ / }
-319	First(% <univ_factor> <univ_mult_tail> <univ_add_tail> <strict_forced_gate>) =		{ % }
-320	First(+ <univ_term> <univ_add_tail> <strict_forced_gate>) =		{ + }
-321	First(- <univ_term> <univ_add_tail> <strict_forced_gate>) =		{ - }
-322	First(== <univ_expr>) =		{ == }
-323	First(!= <univ_expr>) =		{ != }
-324	First(<= <comparable_expr>) =		{ <= }
-325	First(>= <comparable_expr>) =		{ >= }
-326	First(< <comparable_expr>) =		{ < }
-327	First(> <comparable_expr>) =		{ > }
-328	First(λ - λ) ∪ Follow(<strict_id_master_tail>) =	Follow(<strict_id_master_tail>) =	{ ==, !=, and, or, ,, ;, ) }
-329	First(== <univ_expr>) =		{ == }
-330	First(!= <univ_expr>) =		{ != }
-331	First(<= <univ_expr>) =		{ <= }
-332	First(>= <univ_expr>) =		{ >= }
-333	First(< <univ_expr>) =		{ < }
-334	First(> <univ_expr>) =		{ > }
-335	First(<comparable_term> <comparable_add_tail>) =	First(<comparable_term>) =	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, (, append, sort, reverse, remove }
-336	First(<comparable_factor> <comparable_mult_tail>) =	First(<comparable_factor>) =	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, (, append, sort, reverse, remove }
-337	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-338	First(<ret_piece>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-339	First(<ret_sip>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-340	First(<ret_chars>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-341	First(( <any_expr> )) =		{ ( }
-342	First(* <comparable_factor> <comparable_mult_tail>) =		{ * }
-343	First(/ <comparable_factor> <comparable_mult_tail>) =		{ / }
-344	First(% <comparable_factor> <comparable_mult_tail>) =		{ % }
-345	First(λ - λ) ∪ Follow(<comparable_mult_tail>) =	Follow(<comparable_mult_tail>) =	{ +, -, ==, !=, and, or, ,, ;, ) }
-346	First(+ <comparable_term> <comparable_add_tail>) =		{ + }
-347	First(- <comparable_term> <comparable_add_tail>) =		{ - }
-348	First(λ - λ) ∪ Follow(<comparable_add_tail>) =	Follow(<comparable_add_tail>) =	{ ==, !=, and, or, ,, ;, ) }
-349	First(<ret_piece> <piece_mult_tail> <piece_add_tail> <strict_paren_piece_bridge>) =	First(<ret_piece>) =	{ topiece, size, search, fact, pow, piece_lit }
-350	First(<ret_sip> <sip_mult_tail> <sip_add_tail> <strict_paren_sip_bridge>) =	First(<ret_sip>) =	{ sqrt, rand, tosip, sip_lit }
-351	First(<ret_chars> <chars_add_tail> <strict_paren_chars_bridge>) =	First(<ret_chars>) =	{ bill, take, copy, cut, tochars, chars_lit }
-352	First(<ret_flag> <flag_logic_tail> <strict_paren_flag_bridge>) =	First(<ret_flag>) =	{ matches, toflag, flag_lit }
-353	First(not <must_be_flag> <strict_paren_flag_bridge>) =		{ not }
-354	First(<id> <univ_mult_tail> <univ_add_tail> <strict_paren_univ_bridge>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-355	First(( <strict_flag_paren_entry> <strict_paren_univ_bridge>) =		{ ( }
-356	First() <piece_mult_tail> <piece_add_tail> <strict_piece_gate>) =		{ ) }
-357	First(<strict_piece_gate> <flag_logic_tail> <strict_paren_flag_bridge>) =	First(<strict_piece_gate>) =	{ ==, !=, <=, >=, <, > }
-358	First(== <piece_expr>) =		{ == }
-359	First(!= <piece_expr>) =		{ != }
-360	First(<= <piece_expr>) =		{ <= }
-361	First(>= <piece_expr>) =		{ >= }
-362	First(< <piece_expr>) =		{ < }
-363	First(> <piece_expr>) =		{ > }
-364	First()) =		{ ) }
-365	First() <sip_mult_tail> <sip_add_tail> <strict_sip_gate>) =		{ ) }
-366	First(<strict_sip_gate> <flag_logic_tail> <strict_paren_flag_bridge>) =	First(<strict_sip_gate>) =	{ ==, !=, <=, >=, <, > }
-367	First(== <sip_expr>) =		{ == }
-368	First(!= <sip_expr>) =		{ != }
-369	First(<= <sip_expr>) =		{ <= }
-370	First(>= <sip_expr>) =		{ >= }
-371	First(< <sip_expr>) =		{ < }
-372	First(> <sip_expr>) =		{ > }
-373	First() <chars_add_tail> <strict_chars_gate>) =		{ ) }
-374	First(<strict_chars_gate> <flag_logic_tail> <strict_paren_flag_bridge>) =	First(<strict_chars_gate>) =	{ <=, >=, <, >, ==, != }
-375	First(<= <chars_expr>) =		{ <= }
-376	First(>= <chars_expr>) =		{ >= }
-377	First(< <chars_expr>) =		{ < }
-378	First(> <chars_expr>) =		{ > }
-379	First(== <chars_expr>) =		{ == }
-380	First(!= <chars_expr>) =		{ != }
-381	First() <univ_mult_tail> <univ_add_tail> <strict_forced_gate>) =		{ ) }
-382	First(<strict_forced_gate> <flag_logic_tail> <strict_paren_flag_bridge>) =	First(<strict_forced_gate>) =	{ ==, !=, <=, >=, <, > }
-383	First(== <strict_flag_equality>) =		{ == }
-384	First(!= <strict_flag_equality>) =		{ != }
-385	First(λ - λ) ∪ Follow(<strict_flag_eq_tail>) =	Follow(<strict_flag_eq_tail>) =	{ and, or, ,, ;, ) }
-386	First(and <strict_flag_equality> <strict_flag_and_tail>) =		{ and }
-387	First(λ - λ) ∪ Follow(<strict_flag_and_tail>) =	Follow(<strict_flag_and_tail>) =	{ or, ,, ;, ) }
-388	First(or <strict_flag_term> <strict_flag_or_tail>) =		{ or }
-389	First(λ - λ) ∪ Follow(<strict_flag_or_tail>) =	Follow(<strict_flag_or_tail>) =	{ ,, ;, ) }
-390	First(, id <flag_ingredient_init> <flag_id_tail>) =		{ , }
-391	First(λ - λ) ∪ Follow(<flag_id_tail>) =	Follow(<flag_id_tail>) =	{ ; }
-392	First(table of id = [ <required_decl> ] ;) =		{ table }
-393	First(<decl_head> ; <required_decl_tail>) =	First(<decl_head>) =	{ piece, sip, flag, chars, id }
-394	First(<primitive_types_dims> of id) =	First(<primitive_types_dims>) =	{ piece, sip, flag, chars, id }
-395	First(piece <dimensions_tail>) =		{ piece }
-396	First(sip <dimensions_tail>) =		{ sip }
-397	First(flag <dimensions_tail>) =		{ flag }
-398	First(chars <dimensions_tail>) =		{ chars }
-399	First(id <dimensions_tail>) =		{ id }
-400	First(<required_decl>) =	First(<required_decl>) =	{ piece, sip, flag, chars, id }
-401	First(λ - λ) ∪ Follow(<required_decl_tail>) =	Follow(<required_decl_tail>) =	{ ] }
-402	First(of <table_declare> ;) =		{ of }
-403	First(<decl_type>) =	First(<decl_type>) =	{ [ }
-404	First(id <table_init> <table_declare_tail>) =		{ id }
-405	First(= <strict_table_expr>) =		{ = }
-406	First(λ - λ) ∪ Follow(<table_init>) =	Follow(<table_init>) =	{ ,, ; }
-407	First([ <field_assignments> ]) =		{ [ }
-408	First(<id>) =	First(<id>) =	{ id, append, sort, reverse, remove }
-409	First(, <table_declare>) =		{ , }
-410	First(λ - λ) ∪ Follow(<table_declare_tail>) =	Follow(<table_declare_tail>) =	{ ; }
-411	First(prepare <serve_type> ( <spice> ) <platter> <recipe_decl>) =		{ prepare }
-412	First(λ - λ) ∪ Follow(<recipe_decl>) =	Follow(<recipe_decl>) =	{ start }
-413	First(<decl_head>) =	First(<decl_head>) =	{ piece, sip, flag, chars, id }
-414	First(<decl_head> <spice_tail>) =	First(<decl_head>) =	{ piece, sip, flag, chars, id }
-415	First(λ - λ) ∪ Follow(<spice>) =	Follow(<spice>) =	{ ) }
-416	First(, <decl_head> <spice_tail>) =		{ , }
-417	First(λ - λ) ∪ Follow(<spice_tail>) =	Follow(<spice_tail>) =	{ ) }
-418	First({ <local_decl> <statements> }) =		{ { }
-419	First(piece <piece_decl> <local_decl>) =		{ piece }
-420	First(chars <chars_decl> <local_decl>) =		{ chars }
-421	First(sip <sip_decl> <local_decl>) =		{ sip }
-422	First(flag <flag_decl> <local_decl>) =		{ flag }
-423	First(id <local_id_tail>) =		{ id }
-424	First(λ - λ) ∪ Follow(<local_decl>) =	Follow(<local_decl>) =	{ id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, } }
-425	First(of <table_declare> ; <local_decl>) =		{ of }
-426	First([ <]_tail>) =		{ [ }
-427	First(<table_accessor> <assignment_op> <value> ; <statements>) =	First(<table_accessor>) =	{ : }
-428	First(<assignment_op> <value> ; <statements>) =	First(<assignment_op>) =	{ =, +=, -=, *=, /=, %= }
-429	First(<tail1> ; <statements>) =	First(<tail1>) =	{ ( }
-430	First(] <dimensions_tail> of <array_declare> ; <local_decl>) =		{ ] }
-431	First(<strict_piece_expr> ] <accessor_tail> <assignment_op> <value> ; <statements>) =	First(<strict_piece_expr>) =	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
-432	First(=) =		{ = }
-433	First(+=) =		{ += }
-434	First(-=) =		{ -= }
-435	First(*=) =		{ *= }
-436	First(/=) =		{ /= }
-437	First(%=) =		{ %= }
-438	First(<id_statements> <statements>) =	First(<id_statements>) =	{ id }
-439	First(<built-in_rec_call> ; <statements>) =	First(<built-in_rec_call>) =	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
-440	First(<conditional_st> <statements>) =	First(<conditional_st>) =	{ check, menu }
-441	First(<looping_st> <statements>) =	First(<looping_st>) =	{ pass, repeat, order }
-442	First(<jump_serve> <statements>) =	First(<jump_serve>) =	{ serve }
-443	First(λ - λ) ∪ Follow(<statements>) =	Follow(<statements>) =	{ }, id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order }
-444	First(id <id_statements_ext> <statements>) =		{ id }
-445	First(<tail1> ;) =	First(<tail1>) =	{ ( }
-446	First(<assignment_st>) =	First(<assignment_st>) =	{ [, =, +=, -=, *=, /=, %=, : }
-447	First(<call_tail> <accessor_tail>) =	First(<call_tail>) =	{ ( }
-448	First(( <flavor> )) =		{ ( }
-449	First(<accessor_tail> <assignment_op> <value> ;) =	First(<accessor_tail>) =	{ [, :, =, +=, -=, *=, /=, %= }
-450	First(<built-in_rec>) =	First(<built-in_rec>) =	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
-451	First(append ( <strict_array_expr> , <value> )) =		{ append }
-452	First(bill ( <strict_chars_expr> )) =		{ bill }
-453	First(copy ( <strict_chars_expr> , <strict_piece_expr> , <strict_piece_expr> )) =		{ copy }
-454	First(cut ( <strict_sip_expr> , <strict_sip_expr> )) =		{ cut }
-455	First(fact ( <strict_piece_expr> )) =		{ fact }
-456	First(matches ( <strict_datas_expr> , <strict_datas_expr> )) =		{ matches }
-457	First(pow ( <strict_piece_expr> , <strict_piece_expr> )) =		{ pow }
-458	First(rand ( )) =		{ rand }
-459	First(remove ( <strict_array_expr> , <strict_piece_expr> )) =		{ remove }
-460	First(reverse ( <strict_array_expr> )) =		{ reverse }
-461	First(search ( <strict_array_expr> , <value> )) =		{ search }
-462	First(size ( <strict_array_expr> )) =		{ size }
-463	First(sort ( <strict_array_expr> )) =		{ sort }
-464	First(sqrt ( <strict_piece_expr> )) =		{ sqrt }
-465	First(take ( )) =		{ take }
-466	First(tochars ( <any_expr> )) =		{ tochars }
-467	First(topiece ( <any_expr> )) =		{ topiece }
-468	First(tosip ( <any_expr> )) =		{ tosip }
-469	First(<cond_check>) =	First(<cond_check>) =	{ check }
-470	First(<cond_menu>) =	First(<cond_menu>) =	{ menu }
-471	First(check ( <strict_flag_expr> ) <platter> <alt_clause> <instead_clause>) =		{ check }
-472	First(alt ( <strict_flag_expr> ) <platter> <alt_clause>) =		{ alt }
-473	First(λ - λ) ∪ Follow(<alt_clause>) =	Follow(<alt_clause>) =	{ instead, id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, }, stop, choice, usual }
-474	First(instead <platter>) =		{ instead }
-475	First(λ - λ) ∪ Follow(<instead_clause>) =	Follow(<instead_clause>) =	{ id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, }, stop, choice, usual }
-476	First(menu ( <any_expr> ) <menu_platter>) =		{ menu }
-477	First({ <choice_clause> <usual_clause> }) =		{ { }
-478	First(choice <choice_val> : <statements_menu> <choice_clause>) =		{ choice }
-479	First(λ - λ) ∪ Follow(<choice_clause>) =	Follow(<choice_clause>) =	{ usual, } }
-480	First(piece_lit) =		{ piece_lit }
-481	First(chars_lit) =		{ chars_lit }
-482	First(<id_statements_menu> <statements_menu>) =	First(<id_statements_menu>) =	{ id }
-483	First(<built-in_rec_call> ; <statements_menu>) =	First(<built-in_rec_call>) =	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
-484	First(<conditional_st_menu> <statements_menu>) =	First(<conditional_st_menu>) =	{ menu, check }
-485	First(<looping_st> <statements_menu>) =	First(<looping_st>) =	{ pass, repeat, order }
-486	First(<jump_stop> <statements_menu>) =	First(<jump_stop>) =	{ stop }
-487	First(<jump_serve> <statements_menu>) =	First(<jump_serve>) =	{ serve }
-488	First(λ - λ) ∪ Follow(<statements_menu>) =	Follow(<statements_menu>) =	{ choice, usual, }, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, menu, stop, serve, check, pass, repeat, order }
-489	First(id <id_statements_ext> <statements_menu>) =		{ id }
-490	First(<cond_check_menu>) =	First(<cond_check_menu>) =	{ check }
-491	First(<cond_menu>) =	First(<cond_menu>) =	{ menu }
-492	First(check ( <strict_flag_expr> ) <menu_check_platter> <alt_clause> <instead_clause>) =		{ check }
-493	First({ <local_decl_menu> <statements_menu> }) =		{ { }
-494	First(piece <piece_decl> <local_decl_menu>) =		{ piece }
-495	First(chars <chars_decl> <local_decl_menu>) =		{ chars }
-496	First(sip <sip_decl> <local_decl_menu>) =		{ sip }
-497	First(flag <flag_decl> <local_decl_menu>) =		{ flag }
-498	First(id <local_id_tail_menu>) =		{ id }
-499	First(λ - λ) ∪ Follow(<local_decl_menu>) =	Follow(<local_decl_menu>) =	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, menu, stop, serve, check, pass, repeat, order, } }
-500	First(of <table_declare> ; <local_decl_menu>) =		{ of }
-501	First([ <]_tail_menu>) =		{ [ }
-502	First(<table_accessor> <assignment_op> <value> ; <statements_menu>) =	First(<table_accessor>) =	{ : }
-503	First(<assignment_op> <value> ; <statements_menu>) =	First(<assignment_op>) =	{ =, +=, -=, *=, /=, %= }
-504	First(<tail1> ; <statements_menu>) =	First(<tail1>) =	{ ( }
-505	First(] <dimensions_tail> of <table_declare> ; <local_decl_menu>) =		{ ] }
-506	First(<strict_piece_expr> ] <accessor_tail> <assignment_op> <value> ; <statements_menu>) =	First(<strict_piece_expr>) =	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
-507	First(<loop_pass>) =	First(<loop_pass>) =	{ pass }
-508	First(<loop_repeat>) =	First(<loop_repeat>) =	{ repeat }
-509	First(<loop_order>) =	First(<loop_order>) =	{ order }
-510	First(pass ( <initialization> <update> <strict_flag_expr> ) <loop_platter>) =		{ pass }
-511	First(id <loop_init> ;) =		{ id }
-512	First(= <strict_piece_expr>) =		{ = }
-513	First(λ - λ) ∪ Follow(<loop_init>) =	Follow(<loop_init>) =	{ ; }
-514	First(id <assignment_st>) =		{ id }
-515	First({ <local_decl_loop> <statements_loop> }) =		{ { }
-516	First(piece <piece_decl> <local_decl_loop>) =		{ piece }
-517	First(chars <chars_decl> <local_decl_loop>) =		{ chars }
-518	First(sip <sip_decl> <local_decl_loop>) =		{ sip }
-519	First(flag <flag_decl> <local_decl_loop>) =		{ flag }
-520	First(id <local_id_tail_loop>) =		{ id }
-521	First(λ - λ) ∪ Follow(<local_decl_loop>) =	Follow(<local_decl_loop>) =	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, } }
-522	First(of <table_declare> ; <local_decl_loop>) =		{ of }
-523	First([ <]_tail_loop>) =		{ [ }
-524	First(<table_accessor> <assignment_op> <value> ; <statements_loop>) =	First(<table_accessor>) =	{ : }
-525	First(<assignment_op> <value> ; <statements_loop>) =	First(<assignment_op>) =	{ =, +=, -=, *=, /=, %= }
-526	First(<tail1> ; <statements_loop>) =	First(<tail1>) =	{ ( }
-527	First(] <dimensions_tail> of <table_declare> ; <local_decl_loop>) =		{ ] }
-528	First(<strict_piece_expr> ] <accessor_tail> <assignment_op> <value> ; <statements_loop>) =	First(<strict_piece_expr>) =	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
-529	First(<id_statements_loop> <statements_loop>) =	First(<id_statements_loop>) =	{ id }
-530	First(<built-in_rec_call> ; <statements_loop>) =	First(<built-in_rec_call>) =	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
-531	First(<conditional_st_loop> <statements_loop>) =	First(<conditional_st_loop>) =	{ check, menu }
-532	First(<looping_st> <statements_loop>) =	First(<looping_st>) =	{ pass, repeat, order }
-533	First(<jump_st> <statements_loop>) =	First(<jump_st>) =	{ next, stop, serve }
-534	First(λ - λ) ∪ Follow(<statements_loop>) =	Follow(<statements_loop>) =	{ }, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, choice, usual }
-535	First(id <id_statements_ext> <statements_loop>) =		{ id }
-536	First(<cond_check_loop>) =	First(<cond_check_loop>) =	{ check }
-537	First(<cond_menu_loop>) =	First(<cond_menu_loop>) =	{ menu }
-538	First(check ( <strict_flag_expr> ) <loop_platter> <alt_clause_loop> <instead_clause_loop>) =		{ check }
-539	First(alt ( <strict_flag_expr> ) <loop_platter> <alt_clause_loop>) =		{ alt }
-540	First(λ - λ) ∪ Follow(<alt_clause_loop>) =	Follow(<alt_clause_loop>) =	{ instead, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, }, choice, usual }
-541	First(instead <loop_platter>) =		{ instead }
-542	First(λ - λ) ∪ Follow(<instead_clause_loop>) =	Follow(<instead_clause_loop>) =	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, }, choice, usual }
-543	First(menu ( <any_expr> ) <menu_loop_platter>) =		{ menu }
-544	First({ <choice_clause_loop> <usual_clause_loop> }) =		{ { }
-545	First(choice <choice_val> : <statements_loop> <choice_clause_loop>) =		{ choice }
-546	First(λ - λ) ∪ Follow(<choice_clause_loop>) =	Follow(<choice_clause_loop>) =	{ usual, } }
-547	First(usual : <statements_loop>) =		{ usual }
-548	First(λ - λ) ∪ Follow(<usual_clause_loop>) =	Follow(<usual_clause_loop>) =	{ } }
-549	First(<jump_next>) =	First(<jump_next>) =	{ next }
-550	First(<jump_stop>) =	First(<jump_stop>) =	{ stop }
-551	First(<jump_serve>) =	First(<jump_serve>) =	{ serve }
-552	First(next ;) =		{ next }
-553	First(stop ;) =		{ stop }
-554	First(serve <value> ;) =		{ serve }
-555	First(repeat ( <strict_flag_expr> ) <loop_platter>) =		{ repeat }
-556	First(order <loop_platter> repeat ( <strict_flag_expr> ) ;) =		{ order }
-557	First(usual : <statements_menu>) =		{ usual }
-558	First(λ - λ) ∪ Follow(<usual_clause>) =	Follow(<usual_clause>) =	{ } }
+<program>	{ piece, chars, sip, flag, id, table, prepare, start }
+<global_decl>	{ piece }
+<global_decl>	{ chars }
+<global_decl>	{ sip }
+<global_decl>	{ flag }
+<global_decl>	{ table }
+<global_decl>	{ id }
+<global_decl>	{ prepare, start }
+<piece_decl>	{ of }
+<piece_decl>	{ [ }
+<piece_id>	{ id }
+<piece_ingredient_init>	{ = }
+<piece_ingredient_init>	{ ,, ; }
+<strict_piece_expr>	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
+<strict_piece_term>	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
+<strict_piece_factor>	{ topiece, size, search, fact, pow, piece_lit }
+<strict_piece_factor>	{ id, append, sort, reverse, remove }
+<strict_piece_factor>	{ ( }
+<ret_piece>	{ topiece }
+<ret_piece>	{ size }
+<ret_piece>	{ search }
+<ret_piece>	{ fact }
+<ret_piece>	{ pow }
+<ret_piece>	{ piece_lit }
+<any_expr>	{ topiece, size, search, fact, pow, piece_lit }
+<any_expr>	{ sqrt, rand, tosip, sip_lit }
+<any_expr>	{ bill, take, copy, cut, tochars, chars_lit }
+<any_expr>	{ matches, toflag, flag_lit }
+<any_expr>	{ id, append, sort, reverse, remove }
+<any_expr>	{ ( }
+<any_expr>	{ not }
+<piece_mult_tail>	{ * }
+<piece_mult_tail>	{ / }
+<piece_mult_tail>	{ % }
+<piece_mult_tail>	{ +, -, ==, !=, <=, >=, <, >, ), ,, ;, and, or }
+<piece_factor>	{ topiece, size, search, fact, pow, piece_lit }
+<piece_factor>	{ id, append, sort, reverse, remove }
+<piece_factor>	{ ( }
+<id>	{ id }
+<id>	{ append, sort, reverse, remove }
+<id_tail>	{ (, [, :, *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), ] }
+<call_tailopt>	{ ( }
+<call_tailopt>	{ [, :, *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), ] }
+<flavor>	{ topiece, size, search, fact, pow, piece_lit, (, not, [, id, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, append, sort, reverse, remove }
+<flavor>	{ ) }
+<value>	{ topiece, size, search, fact, pow, piece_lit }
+<value>	{ sqrt, rand, tosip, sip_lit }
+<value>	{ bill, take, copy, cut, tochars, chars_lit }
+<value>	{ matches, toflag, flag_lit }
+<value>	{ ( }
+<value>	{ not }
+<value>	{ [ }
+<value>	{ append, sort, reverse, remove }
+<value>	{ id }
+<piece_add_tail>	{ + }
+<piece_add_tail>	{ - }
+<piece_add_tail>	{ ==, !=, <=, >=, <, >, ), ,, and, or, ; }
+<piece_term>	{ topiece, size, search, fact, pow, piece_lit, (, id, append, sort, reverse, remove }
+<piece_rel_gate>	{ == }
+<piece_rel_gate>	{ != }
+<piece_rel_gate>	{ <= }
+<piece_rel_gate>	{ >= }
+<piece_rel_gate>	{ < }
+<piece_rel_gate>	{ > }
+<piece_rel_gate>	{ ), ,, ; }
+<piece_expr>	{ topiece, size, search, fact, pow, piece_lit, (, id, append, sort, reverse, remove }
+<flag_logic_tail>	{ and }
+<flag_logic_tail>	{ or }
+<flag_logic_tail>	{ == }
+<flag_logic_tail>	{ != }
+<flag_logic_tail>	{ ), ,, ; }
+<must_be_flag>	{ topiece, size, search, fact, pow, piece_lit }
+<must_be_flag>	{ sqrt, rand, tosip, sip_lit }
+<must_be_flag>	{ bill, take, copy, cut, tochars, chars_lit }
+<must_be_flag>	{ matches, toflag, flag_lit }
+<must_be_flag>	{ id, append, sort, reverse, remove }
+<must_be_flag>	{ ( }
+<must_be_flag>	{ not }
+<piece_trap_gate>	{ == }
+<piece_trap_gate>	{ != }
+<piece_trap_gate>	{ <= }
+<piece_trap_gate>	{ >= }
+<piece_trap_gate>	{ < }
+<piece_trap_gate>	{ > }
+<ret_sip>	{ sqrt }
+<ret_sip>	{ rand }
+<ret_sip>	{ tosip }
+<ret_sip>	{ sip_lit }
+<sip_mult_tail>	{ * }
+<sip_mult_tail>	{ / }
+<sip_mult_tail>	{ +, -, ==, !=, <=, >=, <, >, ), ,, ;, and, or }
+<sip_factor>	{ sqrt, rand, tosip, sip_lit }
+<sip_factor>	{ id, append, sort, reverse, remove }
+<sip_factor>	{ ( }
+<sip_inner_dispatch>	{ sqrt, rand, tosip, sip_lit }
+<sip_inner_dispatch>	{ id, append, sort, reverse, remove }
+<sip_inner_dispatch>	{ ( }
+<sip_add_tail>	{ + }
+<sip_add_tail>	{ - }
+<sip_add_tail>	{ ==, !=, <=, >=, <, >, ), ,, and, or, ; }
+<sip_term>	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
+<sip_bridge_recurse>	{ ) }
+<sip_close_recurse>	{ ) }
+<sip_trap_gate>	{ == }
+<sip_trap_gate>	{ != }
+<sip_trap_gate>	{ <= }
+<sip_trap_gate>	{ >= }
+<sip_trap_gate>	{ < }
+<sip_trap_gate>	{ > }
+<sip_expr>	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
+<ret_chars>	{ bill }
+<ret_chars>	{ take }
+<ret_chars>	{ copy }
+<ret_chars>	{ cut }
+<ret_chars>	{ tochars }
+<ret_chars>	{ chars_lit }
+<strict_chars_expr>	{ bill, take, copy, cut, tochars, chars_lit, id, (, append, sort, reverse, remove }
+<strict_chars_factor>	{ bill, take, copy, cut, tochars, chars_lit }
+<strict_chars_factor>	{ id, append, sort, reverse, remove }
+<strict_chars_factor>	{ ( }
+<strict_chars_add_tail>	{ + }
+<strict_chars_add_tail>	{ ), ,, ; }
+<strict_sip_expr>	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
+<strict_sip_term>	{ sqrt, rand, tosip, sip_lit, id, (, append, sort, reverse, remove }
+<strict_sip_factor>	{ sqrt, rand, tosip, sip_lit }
+<strict_sip_factor>	{ id, append, sort, reverse, remove }
+<strict_sip_factor>	{ ( }
+<strict_sip_mult_tail>	{ * }
+<strict_sip_mult_tail>	{ / }
+<strict_sip_mult_tail>	{ +, -, ,, ), ; }
+<strict_sip_add_tail>	{ + }
+<strict_sip_add_tail>	{ - }
+<strict_sip_add_tail>	{ ,, ), ; }
+<chars_add_tail>	{ + }
+<chars_add_tail>	{ <=, >=, <, >, ==, !=, ), ,, and, or, ; }
+<chars_factor>	{ bill, take, copy, cut, tochars, chars_lit }
+<chars_factor>	{ id, append, sort, reverse, remove }
+<chars_factor>	{ ( }
+<chars_inner_dispatch>	{ bill, take, copy, cut, tochars, chars_lit }
+<chars_inner_dispatch>	{ id, append, sort, reverse, remove }
+<chars_inner_dispatch>	{ ( }
+<chars_bridge_recurse>	{ ) }
+<chars_close_recurse>	{ ) }
+<chars_trap_gate>	{ == }
+<chars_trap_gate>	{ != }
+<chars_trap_gate>	{ <= }
+<chars_trap_gate>	{ >= }
+<chars_trap_gate>	{ < }
+<chars_trap_gate>	{ > }
+<chars_expr>	{ bill, take, copy, cut, tochars, chars_lit, id, (, append, sort, reverse, remove }
+<ret_flag>	{ matches }
+<ret_flag>	{ toflag }
+<ret_flag>	{ flag_lit }
+<strict_datas_expr>	{ [ }
+<strict_datas_expr>	{ id, append, sort, reverse, remove }
+<notation_val>	{ piece_lit, sip_lit, flag_lit, chars_lit, [ }
+<notation_val>	{ id }
+<notation_val>	{ ] }
+<array_element>	{ piece_lit }
+<array_element>	{ sip_lit }
+<array_element>	{ flag_lit }
+<array_element>	{ chars_lit }
+<array_element>	{ [ }
+<element_value_tail>	{ , }
+<element_value_tail>	{ ] }
+<array_element_id>	{ id }
+<array_element_id>	{ piece_lit, sip_lit, flag_lit, chars_lit, [ }
+<array_element_id>	{ ] }
+<array_or_table>	{ , }
+<array_or_table>	{ = }
+<array_or_table>	{ ] }
+<field_assignments>	{ id }
+<field_assignments>	{ ] }
+<univ_mult_tail>	{ * }
+<univ_mult_tail>	{ / }
+<univ_mult_tail>	{ % }
+<univ_mult_tail>	{ +, -, ==, !=, <=, >=, <, >, and, or, ), ,, ; }
+<univ_factor>	{ id, append, sort, reverse, remove }
+<univ_factor>	{ topiece, size, search, fact, pow, piece_lit }
+<univ_factor>	{ sqrt, rand, tosip, sip_lit }
+<univ_factor>	{ bill, take, copy, cut, tochars, chars_lit }
+<univ_factor>	{ matches, toflag, flag_lit }
+<univ_factor>	{ ( }
+<univ_add_tail>	{ + }
+<univ_add_tail>	{ - }
+<univ_add_tail>	{ ==, !=, <=, >=, <, >, and, or, ), ,, ; }
+<univ_term>	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, (, append, sort, reverse, remove }
+<univ_rel_gate>	{ == }
+<univ_rel_gate>	{ != }
+<univ_rel_gate>	{ <= }
+<univ_rel_gate>	{ >= }
+<univ_rel_gate>	{ < }
+<univ_rel_gate>	{ > }
+<univ_rel_gate>	{ and }
+<univ_rel_gate>	{ or }
+<univ_rel_gate>	{ ), ,, ; }
+<univ_expr>	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, matches, toflag, flag_lit, (, append, sort, reverse, remove }
+<paren_dispatch>	{ topiece, size, search, fact, pow, piece_lit }
+<paren_dispatch>	{ sqrt, rand, tosip, sip_lit }
+<paren_dispatch>	{ bill, take, copy, cut, tochars, chars_lit }
+<paren_dispatch>	{ matches, toflag, flag_lit }
+<paren_dispatch>	{ id, append, sort, reverse, remove }
+<paren_dispatch>	{ ( }
+<paren_dispatch>	{ not }
+<piece_bridge>	{ ) }
+<piece_bridge>	{ == }
+<piece_bridge>	{ != }
+<piece_bridge>	{ <= }
+<piece_bridge>	{ >= }
+<piece_bridge>	{ < }
+<piece_bridge>	{ > }
+<flag_closure>	{ ) }
+<sip_bridge>	{ ) }
+<sip_bridge>	{ == }
+<sip_bridge>	{ != }
+<sip_bridge>	{ <= }
+<sip_bridge>	{ >= }
+<sip_bridge>	{ < }
+<sip_bridge>	{ > }
+<sip_rel_gate>	{ == }
+<sip_rel_gate>	{ != }
+<sip_rel_gate>	{ <= }
+<sip_rel_gate>	{ >= }
+<sip_rel_gate>	{ < }
+<sip_rel_gate>	{ > }
+<sip_rel_gate>	{ ), ,, ; }
+<chars_bridge>	{ ) }
+<chars_bridge>	{ == }
+<chars_bridge>	{ <= }
+<chars_bridge>	{ >= }
+<chars_bridge>	{ < }
+<chars_bridge>	{ > }
+<chars_bridge>	{ != }
+<chars_rel_gate>	{ <= }
+<chars_rel_gate>	{ >= }
+<chars_rel_gate>	{ < }
+<chars_rel_gate>	{ > }
+<chars_rel_gate>	{ == }
+<chars_rel_gate>	{ != }
+<chars_rel_gate>	{ ), ,, ; }
+<univ_bridge>	{ ) }
+<univ_bridge>	{ == }
+<univ_bridge>	{ != }
+<univ_bridge>	{ <= }
+<univ_bridge>	{ >= }
+<univ_bridge>	{ < }
+<univ_bridge>	{ > }
+<univ_closure>	{ ) }
+<flag_after_paren>	{ ), ,, ; }
+<ret_array>	{ append }
+<ret_array>	{ sort }
+<ret_array>	{ reverse }
+<ret_array>	{ remove }
+<strict_array_expr>	{ [ }
+<strict_array_expr>	{ id, append, sort, reverse, remove }
+<value_tail>	{ [ }
+<value_tail>	{ ), ,, ; }
+<array_accessor>	{ [ }
+<accessor_tail>	{ [ }
+<accessor_tail>	{ : }
+<accessor_tail>	{ *, /, %, +, -, ,, ;, ==, !=, <=, >=, <, >, and, or, ), =, +=, -=, *=, /=, %=, ] }
+<table_accessor>	{ : }
+<flavor_tail>	{ , }
+<flavor_tail>	{ ) }
+<piece_inner_dispatch>	{ topiece, size, search, fact, pow, piece_lit }
+<piece_inner_dispatch>	{ id, append, sort, reverse, remove }
+<piece_inner_dispatch>	{ ( }
+<piece_bridge_recurse>	{ ) }
+<piece_close_recurse>	{ ) }
+<strict_piece_mult_tail>	{ * }
+<strict_piece_mult_tail>	{ / }
+<strict_piece_mult_tail>	{ % }
+<strict_piece_mult_tail>	{ +, -, ,, ;, ), ] }
+<strict_piece_add_tail>	{ + }
+<strict_piece_add_tail>	{ - }
+<strict_piece_add_tail>	{ ,, ;, ), ] }
+<piece_id_tail>	{ , }
+<piece_id_tail>	{ ; }
+<decl_type>	{ [ }
+<dimensions>	{ [ }
+<dimensions_tail>	{ [ }
+<dimensions_tail>	{ of }
+<array_declare>	{ id }
+<array_init>	{ = }
+<array_init>	{ ,, ; }
+<array_declare_tail>	{ , }
+<array_declare_tail>	{ ; }
+<chars_decl>	{ of }
+<chars_decl>	{ [ }
+<chars_id>	{ id }
+<chars_ingredient_init>	{ = }
+<chars_ingredient_init>	{ ,, ; }
+<chars_id_tail>	{ , }
+<chars_id_tail>	{ ; }
+<sip_decl>	{ of }
+<sip_decl>	{ [ }
+<sip_id>	{ id }
+<sip_ingredient_init>	{ = }
+<sip_ingredient_init>	{ ,, ; }
+<sip_id_tail>	{ , }
+<sip_id_tail>	{ ; }
+<flag_decl>	{ of }
+<flag_decl>	{ [ }
+<flag_id>	{ id }
+<flag_ingredient_init>	{ = }
+<flag_ingredient_init>	{ ,, ; }
+<strict_flag_expr>	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
+<strict_flag_term>	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
+<strict_flag_equality>	{ matches, toflag, flag_lit, not, id, (, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, append, sort, reverse, remove }
+<strict_flag_factor>	{ matches, toflag, flag_lit }
+<strict_flag_factor>	{ not }
+<strict_flag_factor>	{ id, append, sort, reverse, remove }
+<strict_flag_factor>	{ ( }
+<strict_flag_factor>	{ topiece, size, search, fact, pow, piece_lit }
+<strict_flag_factor>	{ sqrt, rand, tosip, sip_lit }
+<strict_flag_factor>	{ bill, take, copy, cut, tochars, chars_lit }
+<strict_id_master_tail>	{ * }
+<strict_id_master_tail>	{ / }
+<strict_id_master_tail>	{ % }
+<strict_id_master_tail>	{ + }
+<strict_id_master_tail>	{ - }
+<strict_id_master_tail>	{ == }
+<strict_id_master_tail>	{ != }
+<strict_id_master_tail>	{ <= }
+<strict_id_master_tail>	{ >= }
+<strict_id_master_tail>	{ < }
+<strict_id_master_tail>	{ > }
+<strict_id_master_tail>	{ ==, !=, and, or, ,, ;, ) }
+<strict_forced_gate>	{ == }
+<strict_forced_gate>	{ != }
+<strict_forced_gate>	{ <= }
+<strict_forced_gate>	{ >= }
+<strict_forced_gate>	{ < }
+<strict_forced_gate>	{ > }
+<comparable_expr>	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, (, append, sort, reverse, remove }
+<comparable_term>	{ id, topiece, size, search, fact, pow, piece_lit, sqrt, rand, tosip, sip_lit, bill, take, copy, cut, tochars, chars_lit, (, append, sort, reverse, remove }
+<comparable_factor>	{ id, append, sort, reverse, remove }
+<comparable_factor>	{ topiece, size, search, fact, pow, piece_lit }
+<comparable_factor>	{ sqrt, rand, tosip, sip_lit }
+<comparable_factor>	{ bill, take, copy, cut, tochars, chars_lit }
+<comparable_factor>	{ ( }
+<comparable_mult_tail>	{ * }
+<comparable_mult_tail>	{ / }
+<comparable_mult_tail>	{ % }
+<comparable_mult_tail>	{ +, -, ==, !=, and, or, ,, ;, ) }
+<comparable_add_tail>	{ + }
+<comparable_add_tail>	{ - }
+<comparable_add_tail>	{ ==, !=, and, or, ,, ;, ) }
+<strict_flag_paren_entry>	{ topiece, size, search, fact, pow, piece_lit }
+<strict_flag_paren_entry>	{ sqrt, rand, tosip, sip_lit }
+<strict_flag_paren_entry>	{ bill, take, copy, cut, tochars, chars_lit }
+<strict_flag_paren_entry>	{ matches, toflag, flag_lit }
+<strict_flag_paren_entry>	{ not }
+<strict_flag_paren_entry>	{ id, append, sort, reverse, remove }
+<strict_flag_paren_entry>	{ ( }
+<strict_paren_piece_bridge>	{ ) }
+<strict_paren_piece_bridge>	{ ==, !=, <=, >=, <, > }
+<strict_piece_gate>	{ == }
+<strict_piece_gate>	{ != }
+<strict_piece_gate>	{ <= }
+<strict_piece_gate>	{ >= }
+<strict_piece_gate>	{ < }
+<strict_piece_gate>	{ > }
+<strict_paren_flag_bridge>	{ ) }
+<strict_paren_sip_bridge>	{ ) }
+<strict_paren_sip_bridge>	{ ==, !=, <=, >=, <, > }
+<strict_sip_gate>	{ == }
+<strict_sip_gate>	{ != }
+<strict_sip_gate>	{ <= }
+<strict_sip_gate>	{ >= }
+<strict_sip_gate>	{ < }
+<strict_sip_gate>	{ > }
+<strict_paren_chars_bridge>	{ ) }
+<strict_paren_chars_bridge>	{ <=, >=, <, >, ==, != }
+<strict_chars_gate>	{ <= }
+<strict_chars_gate>	{ >= }
+<strict_chars_gate>	{ < }
+<strict_chars_gate>	{ > }
+<strict_chars_gate>	{ == }
+<strict_chars_gate>	{ != }
+<strict_paren_univ_bridge>	{ ) }
+<strict_paren_univ_bridge>	{ ==, !=, <=, >=, <, > }
+<strict_flag_eq_tail>	{ == }
+<strict_flag_eq_tail>	{ != }
+<strict_flag_eq_tail>	{ and, or, ,, ;, ) }
+<strict_flag_and_tail>	{ and }
+<strict_flag_and_tail>	{ or, ,, ;, ) }
+<strict_flag_or_tail>	{ or }
+<strict_flag_or_tail>	{ ,, ;, ) }
+<flag_id_tail>	{ , }
+<flag_id_tail>	{ ; }
+<table_prototype>	{ table }
+<required_decl>	{ piece, sip, flag, chars, id }
+<decl_head>	{ piece, sip, flag, chars, id }
+<primitive_types_dims>	{ piece }
+<primitive_types_dims>	{ sip }
+<primitive_types_dims>	{ flag }
+<primitive_types_dims>	{ chars }
+<primitive_types_dims>	{ id }
+<required_decl_tail>	{ piece, sip, flag, chars, id }
+<required_decl_tail>	{ ] }
+<table_decl>	{ of }
+<table_decl>	{ [ }
+<table_declare>	{ id }
+<table_init>	{ = }
+<table_init>	{ ,, ; }
+<strict_table_expr>	{ [ }
+<strict_table_expr>	{ id, append, sort, reverse, remove }
+<table_declare_tail>	{ , }
+<table_declare_tail>	{ ; }
+<recipe_decl>	{ prepare }
+<recipe_decl>	{ start }
+<serve_type>	{ piece, sip, flag, chars, id }
+<spice>	{ piece, sip, flag, chars, id }
+<spice>	{ ) }
+<spice_tail>	{ , }
+<spice_tail>	{ ) }
+<platter>	{ { }
+<local_decl>	{ piece }
+<local_decl>	{ chars }
+<local_decl>	{ sip }
+<local_decl>	{ flag }
+<local_decl>	{ id }
+<local_decl>	{ id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, } }
+<local_id_tail>	{ of }
+<local_id_tail>	{ [ }
+<local_id_tail>	{ : }
+<local_id_tail>	{ =, +=, -=, *=, /=, %= }
+<local_id_tail>	{ ( }
+<]_tail>	{ ] }
+<]_tail>	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
+<assignment_op>	{ = }
+<assignment_op>	{ += }
+<assignment_op>	{ -= }
+<assignment_op>	{ *= }
+<assignment_op>	{ /= }
+<assignment_op>	{ %= }
+<statements>	{ id }
+<statements>	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
+<statements>	{ check, menu }
+<statements>	{ pass, repeat, order }
+<statements>	{ serve }
+<statements>	{ }, id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order }
+<id_statements>	{ id }
+<id_statements_ext>	{ ( }
+<id_statements_ext>	{ [, =, +=, -=, *=, /=, %=, : }
+<tail1>	{ ( }
+<call_tail>	{ ( }
+<assignment_st>	{ [, :, =, +=, -=, *=, /=, %= }
+<built-in_rec_call>	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
+<built-in_rec>	{ append }
+<built-in_rec>	{ bill }
+<built-in_rec>	{ copy }
+<built-in_rec>	{ cut }
+<built-in_rec>	{ fact }
+<built-in_rec>	{ matches }
+<built-in_rec>	{ pow }
+<built-in_rec>	{ rand }
+<built-in_rec>	{ remove }
+<built-in_rec>	{ reverse }
+<built-in_rec>	{ search }
+<built-in_rec>	{ size }
+<built-in_rec>	{ sort }
+<built-in_rec>	{ sqrt }
+<built-in_rec>	{ take }
+<built-in_rec>	{ tochars }
+<built-in_rec>	{ topiece }
+<built-in_rec>	{ tosip }
+<conditional_st>	{ check }
+<conditional_st>	{ menu }
+<cond_check>	{ check }
+<alt_clause>	{ alt }
+<alt_clause>	{ instead, id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, }, stop, choice, usual }
+<instead_clause>	{ instead }
+<instead_clause>	{ id, serve, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, check, menu, pass, repeat, order, }, stop, choice, usual }
+<cond_menu>	{ menu }
+<menu_platter>	{ { }
+<choice_clause>	{ choice }
+<choice_clause>	{ usual, } }
+<choice_val>	{ piece_lit }
+<choice_val>	{ chars_lit }
+<statements_menu>	{ id }
+<statements_menu>	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
+<statements_menu>	{ menu, check }
+<statements_menu>	{ pass, repeat, order }
+<statements_menu>	{ stop }
+<statements_menu>	{ serve }
+<statements_menu>	{ choice, usual, }, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, menu, stop, serve, check, pass, repeat, order }
+<id_statements_menu>	{ id }
+<conditional_st_menu>	{ check }
+<conditional_st_menu>	{ menu }
+<cond_check_menu>	{ check }
+<menu_check_platter>	{ { }
+<local_decl_menu>	{ piece }
+<local_decl_menu>	{ chars }
+<local_decl_menu>	{ sip }
+<local_decl_menu>	{ flag }
+<local_decl_menu>	{ id }
+<local_decl_menu>	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, menu, stop, serve, check, pass, repeat, order, } }
+<local_id_tail_menu>	{ of }
+<local_id_tail_menu>	{ [ }
+<local_id_tail_menu>	{ : }
+<local_id_tail_menu>	{ =, +=, -=, *=, /=, %= }
+<local_id_tail_menu>	{ ( }
+<]_tail_menu>	{ ] }
+<]_tail_menu>	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
+<looping_st>	{ pass }
+<looping_st>	{ repeat }
+<looping_st>	{ order }
+<loop_pass>	{ pass }
+<initialization>	{ id }
+<loop_init>	{ = }
+<loop_init>	{ ; }
+<update>	{ id }
+<loop_platter>	{ { }
+<local_decl_loop>	{ piece }
+<local_decl_loop>	{ chars }
+<local_decl_loop>	{ sip }
+<local_decl_loop>	{ flag }
+<local_decl_loop>	{ id }
+<local_decl_loop>	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, } }
+<local_id_tail_loop>	{ of }
+<local_id_tail_loop>	{ [ }
+<local_id_tail_loop>	{ : }
+<local_id_tail_loop>	{ =, +=, -=, *=, /=, %= }
+<local_id_tail_loop>	{ ( }
+<]_tail_loop>	{ ] }
+<]_tail_loop>	{ (, topiece, size, search, fact, pow, piece_lit, id, append, sort, reverse, remove }
+<statements_loop>	{ id }
+<statements_loop>	{ append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip }
+<statements_loop>	{ check, menu }
+<statements_loop>	{ pass, repeat, order }
+<statements_loop>	{ next, stop, serve }
+<statements_loop>	{ }, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, choice, usual }
+<id_statements_loop>	{ id }
+<conditional_st_loop>	{ check }
+<conditional_st_loop>	{ menu }
+<cond_check_loop>	{ check }
+<alt_clause_loop>	{ alt }
+<alt_clause_loop>	{ instead, id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, }, choice, usual }
+<instead_clause_loop>	{ instead }
+<instead_clause_loop>	{ id, append, bill, copy, cut, fact, matches, pow, rand, remove, reverse, search, size, sort, sqrt, take, tochars, topiece, tosip, pass, repeat, order, check, menu, next, stop, serve, }, choice, usual }
+<cond_menu_loop>	{ menu }
+<menu_loop_platter>	{ { }
+<choice_clause_loop>	{ choice }
+<choice_clause_loop>	{ usual, } }
+<usual_clause_loop>	{ usual }
+<usual_clause_loop>	{ } }
+<jump_st>	{ next }
+<jump_st>	{ stop }
+<jump_st>	{ serve }
+<jump_next>	{ next }
+<jump_stop>	{ stop }
+<jump_serve>	{ serve }
+<loop_repeat>	{ repeat }
+<loop_order>	{ order }
+<usual_clause>	{ usual }
+<usual_clause>	{ } }

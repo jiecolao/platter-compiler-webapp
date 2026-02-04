@@ -18,6 +18,7 @@ Parsing rules implemented:
 from __future__ import annotations
 
 import csv
+import sys
 from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
@@ -43,7 +44,7 @@ SEARCH_ROOT = PROJECT_ROOT / "static/python/app/utils/sources"   # <--- your TSV
 TSV_NAME = "predict_set.tsv"
 
 # Merge behavior
-MERGE_NONTERMINALS = False  # True => merge duplicates, False => suffix _1, _2, ...
+MERGE_NONTERMINALS = True  # True => merge duplicates, False => suffix _1, _2, ...
 
 # Output
 PREDICT_SET_HEADER = "PREDICT_SET_M" if MERGE_NONTERMINALS else "PREDICT_SET"
@@ -243,6 +244,12 @@ def write_predict_set_py(tsv_path: Path, predict_set: "OrderedDict[str, List[str
 
 
 def main() -> None:
+    # Allow: python -m ... m
+    # if len(sys.argv) > 1 and sys.argv[1].lower() in {"m", "merged"}:
+        # MERGE_NONTERMINALS = True
+    # else:
+        # MERGE_NONTERMINALS = False
+
     root = Path(SEARCH_ROOT)
     if not root.exists():
         raise RuntimeError(f"[ERROR] SEARCH_ROOT does not exist: {root}\n[DEBUG] PROJECT_ROOT: {PROJECT_ROOT}")
